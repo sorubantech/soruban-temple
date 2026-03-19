@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Darshan - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .ld-temple-header {
+      background: linear-gradient(135deg, #1a0f0a, #3e1f0d);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ld-temple-header .ld-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; color: white;
+      flex-shrink: 0;
+    }
+    .ld-temple-header .ld-info h3 {
+      color: white; font-size: 0.95rem; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;
+    }
+    .ld-temple-header .ld-info p {
+      color: rgba(255,255,255,0.7); font-size: 0.75rem; margin-top: 2px;
+    }
+    .ld-temple-header .ld-change {
+      margin-left: auto;
+      background: rgba(255,255,255,0.15);
+      border: none; color: white; border-radius: 8px;
+      padding: 6px 12px; font-size: 0.75rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+    }
+
+    .ld-stream-tabs {
+      display: flex; gap: 0; background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+    }
+    .ld-stream-tab {
+      flex-shrink: 0; padding: 10px 16px; font-size: 0.8rem; font-weight: 600;
+      border: none; background: none; cursor: pointer;
+      color: var(--text-light); border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .ld-stream-tab.active {
+      color: var(--primary); border-bottom-color: var(--primary);
+    }
+
+    .ld-status-bar {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; background: #e8f5e9; font-size: 0.82rem;
+    }
+    .ld-status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #2e7d32; animation: pulse 1.5s infinite;
+    }
+    .ld-status-bar.offline { background: #fce4ec; }
+    .ld-status-bar.offline .ld-status-dot { background: #c62828; animation: none; }
+
+    .ld-stream-card {
+      background: var(--card-bg); border-radius: var(--radius);
+      box-shadow: var(--shadow); border: 1px solid var(--border);
+      overflow: hidden; margin-bottom: 12px; cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .ld-stream-card:active { transform: scale(0.98); }
+    .ld-stream-card .ld-sc-thumb {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; position: relative;
+    }
+    .ld-stream-card .ld-sc-info {
+      padding: 12px 14px;
+    }
+    .ld-stream-card .ld-sc-info h4 {
+      font-size: 0.9rem; font-weight: 700; margin-bottom: 3px;
+    }
+    .ld-stream-card .ld-sc-info p {
+      font-size: 0.78rem; color: var(--text-light); line-height: 1.4;
+    }
+    .ld-sc-badge {
+      position: absolute; top: 10px; left: 10px;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700;
+      color: white;
+    }
+    .ld-sc-badge.live { background: #c62828; }
+    .ld-sc-badge.live::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: white; animation: pulse 1.5s infinite;
+    }
+    .ld-sc-badge.scheduled { background: #1565c0; }
+    .ld-sc-badge.ended { background: #757575; }
+    .ld-sc-viewers {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0,0,0,0.6); color: white; font-size: 0.7rem;
+      padding: 3px 8px; border-radius: 4px;
+    }
+
+    /* Temple Selector */
+    .ld-selector { padding: 1.25rem; }
+    .ld-selector h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; text-align: center; }
+    .ld-selector p { font-size: 0.82rem; color: var(--text-light); text-align: center; margin-bottom: 16px; }
+    .ld-temple-list { display: flex; flex-direction: column; gap: 8px; }
+    .ld-temple-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; background: var(--card-bg);
+      border-radius: var(--radius); border: 1px solid var(--border);
+      box-shadow: var(--shadow); cursor: pointer; transition: all 0.2s;
+    }
+    .ld-temple-item:active { transform: scale(0.98); background: #f5f5f5; }
+    .ld-temple-item .lti-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .ld-temple-item .lti-info { flex: 1; min-width: 0; }
+    .ld-temple-item .lti-info h4 {
+      font-size: 0.88rem; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ld-temple-item .lti-info p {
+      font-size: 0.75rem; color: var(--text-light); margin-top: 1px;
+    }
+    .ld-temple-item .lti-live {
+      flex-shrink: 0; font-size: 0.7rem; font-weight: 700;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .ld-temple-item .lti-live.online { background: #e8f5e9; color: #2e7d32; }
+    .ld-temple-item .lti-live.offline { background: #fce4ec; color: #c62828; }
+
+    .ld-no-stream {
+      text-align: center; padding: 50px 20px;
+    }
+    .ld-no-stream .ns-icon { font-size: 3rem; margin-bottom: 12px; }
+    .ld-no-stream h3 { font-size: 1rem; margin-bottom: 6px; }
+    .ld-no-stream p { font-size: 0.82rem; color: var(--text-light); line-height: 1.5; }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2 data-lang="live_darshan">Live Darshan</h2>
+      <span class="live-badge" style="margin-left:auto;">LIVE</span>
+    </div>
+
+    <div id="ld-app"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  (function() {
+    'use strict';
+
+    var app = document.getElementById('ld-app');
+
+    // Temple-specific darshan data
+    var templeStreams = {
+      chidambaram: {
+        streams: [
+          { id: 'main', name: 'Sanctum Sanctorum', desc: 'Live view of Lord Nataraja - Chit Sabha', bg: 'linear-gradient(135deg,#1a237e,#283593)', icon: '🙏', status: 'live', viewers: 1245 },
+          { id: 'gopuram', name: 'Raja Gopuram View', desc: 'Main entrance and the iconic gopuram tower', bg: 'linear-gradient(135deg,#4a148c,#6a1b9a)', icon: '🛕', status: 'live', viewers: 432 },
+          { id: 'queue', name: 'Queue Status', desc: 'Real-time darshan queue and wait times', bg: 'linear-gradient(135deg,#004d40,#00695c)', icon: '👥', status: 'live', viewers: 189 },
+          { id: 'aarti', name: 'Evening Deeparadhanai', desc: 'Daily evening lamp ceremony at Chit Sabha', bg: 'linear-gradient(135deg,#bf360c,#e64a19)', icon: '🪔', status: 'scheduled', time: '6:30 PM' }
+        ],
+        schedule: [
+          { time: '5:00 AM', event: 'Thirupalliyezhuchi (Suprabhatam)' },
+          { time: '6:00 AM', event: 'Morning Darshan Opens' },
+          { time: '7:00 AM', event: 'Kalasandhi Pooja' },
+          { time: '9:00 AM', event: 'Uchikala Pooja' },
+          { time: '12:00 PM', event: 'Noon Aarti & Deeparadhanai' },
+          { time: '12:30 PM', event: 'Afternoon Break' },
+          { time: '4:00 PM', event: 'Evening Darshan Opens' },
+          { time: '5:30 PM', event: 'Sayarakshai Pooja' },
+          { time: '6:30 PM', event: 'Evening Deeparadhanai' },
+          { time: '8:00 PM', event: 'Arthajama Pooja' },
+          { time: '9:00 PM', event: 'Darshan Closes' }
+        ]
+      },
+      meenakshi: {
+        streams: [
+          { id: 'main', name: 'Meenakshi Sanctum', desc: 'Live darshan of Goddess Meenakshi', bg: 'linear-gradient(135deg,#880e4f,#ad1457)', icon: '🙏', status: 'live', viewers: 3842 },
+          { id: 'sundareswarar', name: 'Sundareswarar Shrine', desc: 'Live view of Lord Sundareswarar sanctum', bg: 'linear-gradient(135deg,#1a237e,#283593)', icon: '🕉️', status: 'live', viewers: 2105 },
+          { id: 'gopuram', name: 'Golden Lotus Tank', desc: 'View of Potramarai Kulam (Golden Lotus Tank)', bg: 'linear-gradient(135deg,#e65100,#f57c00)', icon: '🪷', status: 'live', viewers: 876 },
+          { id: 'aarti', name: 'Night Ceremony', desc: 'Sundareswarar procession to Meenakshi shrine', bg: 'linear-gradient(135deg,#4a148c,#7b1fa2)', icon: '🪔', status: 'scheduled', time: '9:00 PM' }
+        ],
+        schedule: [
+          { time: '5:00 AM', event: 'Thirupalliyezhuchi' },
+          { time: '5:30 AM', event: 'Morning Darshan Opens' },
+          { time: '6:30 AM', event: 'Kalasandhi Pooja' },
+          { time: '9:00 AM', event: 'Uchikala Pooja' },
+          { time: '12:00 PM', event: 'Noon Abhishekam' },
+          { time: '12:30 PM', event: 'Afternoon Break' },
+          { time: '4:00 PM', event: 'Evening Darshan Opens' },
+          { time: '5:00 PM', event: 'Sayarakshai Pooja' },
+          { time: '6:00 PM', event: 'Evening Deeparadhanai' },
+          { time: '7:30 PM', event: 'Arthajama Pooja' },
+          { time: '9:00 PM', event: 'Palliarai Ceremony (Night)' },
+          { time: '9:30 PM', event: 'Temple Closes' }
+        ]
+      },
+      tirumala: {
+        streams: [
+          { id: 'main', name: 'Sri Venkateswara Sanctum', desc: 'Live darshan of Lord Balaji from Garbha Griha', bg: 'linear-gradient(135deg,#e65100,#bf360c)', icon: '🙏', status: 'live', viewers: 12847 },
+          { id: 'queue', name: 'Darshan Queue Status', desc: 'Real-time queue updates and estimated wait', bg: 'linear-gradient(135deg,#1565c0,#1976d2)', icon: '👥', status: 'live', viewers: 5230 },
+          { id: 'gopuram', name: 'Main Gopuram View', desc: 'View of the golden vimana and temple entrance', bg: 'linear-gradient(135deg,#f57f17,#fbc02d)', icon: '🛕', status: 'live', viewers: 1890 },
+          { id: 'aarti', name: 'Ekanta Seva', desc: 'Night ceremony and closing rituals', bg: 'linear-gradient(135deg,#4a148c,#6a1b9a)', icon: '🪔', status: 'scheduled', time: '10:00 PM' }
+        ],
+        schedule: [
+          { time: '2:30 AM', event: 'Suprabhatam' },
+          { time: '3:00 AM', event: 'Thomala Seva' },
+          { time: '4:00 AM', event: 'Archana' },
+          { time: '5:00 AM', event: 'General Darshan Opens' },
+          { time: '9:00 AM', event: 'Kalyanotsavam' },
+          { time: '11:30 AM', event: 'Rajabhogam (Noon)' },
+          { time: '12:00 PM', event: 'Afternoon Break' },
+          { time: '1:00 PM', event: 'Evening Darshan Opens' },
+          { time: '6:00 PM', event: 'Evening Aarti' },
+          { time: '7:00 PM', event: 'Dolotsavam' },
+          { time: '9:00 PM', event: 'Sahasra Deepalankarana Seva' },
+          { time: '10:00 PM', event: 'Ekanta Seva (Final)' }
+        ]
+      }
+    };
+
+    // Default stream data for temples not in the map
+    var defaultStreams = {
+      streams: [
+        { id: 'main', name: 'Main Sanctum Darshan', desc: 'Live view from the sanctum sanctorum', bg: 'linear-gradient(135deg,#1a237e,#283593)', icon: '🙏', status: 'live', viewers: 0 },
+        { id: 'gopuram', name: 'Temple Entrance View', desc: 'Live view of the main temple entrance and gopuram', bg: 'linear-gradient(135deg,#4a148c,#6a1b9a)', icon: '🛕', status: 'live', viewers: 0 },
+        { id: 'queue', name: 'Queue Status', desc: 'Real-time darshan queue and wait times', bg: 'linear-gradient(135deg,#004d40,#00695c)', icon: '👥', status: 'live', viewers: 0 },
+        { id: 'aarti', name: 'Evening Aarti', desc: 'Daily evening lamp ceremony', bg: 'linear-gradient(135deg,#bf360c,#e64a19)', icon: '🪔', status: 'scheduled', time: '6:30 PM' }
+      ],
+      schedule: []
+    };
+
+    // Category icons for temple selector
+    var catIcons = { shiva: '🕉️', vishnu: '🙏', devi: '🔱', ganesh: '🐘', murugan: '🗡️', hanuman: '🛡️', amman: '🔱', local: '🛕' };
+    var catBg = { shiva: '#fff3e0', vishnu: '#e3f2fd', devi: '#fce4ec', ganesh: '#e8f5e9', murugan: '#fbe9e7', hanuman: '#fff8e1', amman: '#fce4ec', local: '#f5f5f5' };
+
+    // Get selected temple
+    var temple = null;
+    try { temple = JSON.parse(localStorage.getItem('selected_temple')); } catch(e) {}
+
+    if (temple) {
+      renderTempleDarshan(temple);
+    } else {
+      renderTempleSelector();
+    }
+
+    function renderTempleDarshan(t) {
+      // Find temple-specific data
+      var tKey = (t.id || '').toLowerCase();
+      var data = templeStreams[tKey] || null;
+
+      // Try matching by name for temples like meenakshi, tirumala
+      if (!data) {
+        var nameLower = (t.name || '').toLowerCase();
+        if (nameLower.indexOf('meenakshi') !== -1) data = templeStreams.meenakshi;
+        else if (nameLower.indexOf('tirumala') !== -1 || nameLower.indexOf('venkateswara') !== -1 || nameLower.indexOf('tirupati') !== -1 || nameLower.indexOf('balaji') !== -1) data = templeStreams.tirumala;
+        else if (nameLower.indexOf('chidambaram') !== -1 || nameLower.indexOf('nataraja') !== -1) data = templeStreams.chidambaram;
+      }
+
+      // Use default with generated viewer counts if no specific data
+      if (!data) {
+        data = JSON.parse(JSON.stringify(defaultStreams));
+        // Generate pseudo-random viewer counts based on temple name
+        var hash = 0;
+        for (var i = 0; i < t.name.length; i++) hash = t.name.charCodeAt(i) + ((hash << 5) - hash);
+        data.streams[0].viewers = 200 + Math.abs(hash % 2000);
+        data.streams[1].viewers = 50 + Math.abs((hash >> 4) % 500);
+        data.streams[2].viewers = 30 + Math.abs((hash >> 8) % 300);
+        // Generate schedule from temple timings
+        data.schedule = generateSchedule(t);
+      }
+
+      // Check if darshan is currently live (within temple hours)
+      var now = new Date();
+      var currentHour = now.getHours();
+      var isLive = (currentHour >= 5 && currentHour < 13) || (currentHour >= 15 && currentHour < 21);
+
+      var html = '';
+
+      // Temple Header
+      html +=
+        '<div class="ld-temple-header">' +
+          '<div class="ld-avatar">' + (catIcons[t.category] || '🛕') + '</div>' +
+          '<div class="ld-info">' +
+            '<h3>' + esc(t.name) + '</h3>' +
+            '<p>📍 ' + esc(t.location || '') + '</p>' +
+          '</div>' +
+          '<button class="ld-change" onclick="showTempleSelector()">Change</button>' +
+        '</div>';
+
+      // Status bar
+      if (isLive) {
+        html += '<div class="ld-status-bar"><div class="ld-status-dot"></div><span>Live streaming from ' + esc(t.name.split(' ')[0]) + ' - Temple is open</span></div>';
+      } else {
+        html += '<div class="ld-status-bar offline"><div class="ld-status-dot"></div><span>Temple currently closed - Streams will resume during darshan hours</span></div>';
+      }
+
+      // Stream tabs
+      html +=
+        '<div class="ld-stream-tabs">' +
+          '<button class="ld-stream-tab active" onclick="switchStreamTab(this,\'streams-view\')">Live Streams</button>' +
+          '<button class="ld-stream-tab" onclick="switchStreamTab(this,\'schedule-view\')">Today\'s Schedule</button>' +
+        '</div>';
+
+      // Streams View
+      html += '<div class="section" id="streams-view">';
+      html += '<div class="section-title">Available Streams</div>';
+
+      for (var s = 0; s < data.streams.length; s++) {
+        var stream = data.streams[s];
+        var streamStatus = isLive ? stream.status : (stream.status === 'live' ? 'ended' : stream.status);
+        var badgeClass = streamStatus === 'live' ? 'live' : (streamStatus === 'scheduled' ? 'scheduled' : 'ended');
+        var badgeText = streamStatus === 'live' ? 'LIVE' : (streamStatus === 'scheduled' ? (stream.time || 'Scheduled') : 'OFFLINE');
+        var viewerText = streamStatus === 'live' ? ('👁️ ' + stream.viewers.toLocaleString()) : '';
+
+        html +=
+          '<div class="ld-stream-card" onclick="openStream(\'' + stream.id + '\')">' +
+            '<div class="ld-sc-thumb" style="background:' + stream.bg + ';">' +
+              '<span style="font-size:2.5rem;">' + stream.icon + '</span>' +
+              '<span class="ld-sc-badge ' + badgeClass + '">' + badgeText + '</span>' +
+              (viewerText ? '<span class="ld-sc-viewers">' + viewerText + '</span>' : '') +
+            '</div>' +
+            '<div class="ld-sc-info">' +
+              '<h4>' + stream.name + '</h4>' +
+              '<p>' + stream.desc + '</p>' +
+            '</div>' +
+          '</div>';
+      }
+      html += '</div>';
+
+      // Schedule View
+      html += '<div class="section" id="schedule-view" style="display:none;">';
+      html += '<div class="section-title">📋 Today\'s Darshan Schedule</div>';
+      html += '<div class="stream-info"><div class="schedule-list">';
+
+      var sched = data.schedule;
+      if (sched.length === 0) {
+        sched = generateSchedule(t);
+      }
+
+      for (var j = 0; j < sched.length; j++) {
+        var isNow = isCurrentTime(sched[j].time, sched[j + 1] ? sched[j + 1].time : null);
+        html +=
+          '<div class="schedule-item" style="' + (isNow ? 'background:#e8f5e9; border-radius:8px; padding:8px 10px; margin:0 -10px;' : '') + '">' +
+            '<span class="time">' + sched[j].time + '</span>' +
+            '<span>' + sched[j].event + (isNow ? ' <span class="live-badge" style="font-size:0.6rem; padding:2px 6px; vertical-align:middle;">NOW</span>' : '') + '</span>' +
+          '</div>';
+      }
+
+      html += '</div></div>';
+
+      // Temple darshan info
+      if (t.timings) {
+        html +=
+          '<div style="margin-top:16px; padding:14px; background:linear-gradient(135deg,#fff3e0,#ffe0b2); border-radius:var(--radius);">' +
+            '<div style="font-weight:700; font-size:0.88rem; margin-bottom:8px;">🕐 Darshan Timings</div>' +
+            '<div style="display:flex; gap:16px; font-size:0.82rem;">' +
+              '<div><span style="color:var(--text-light);">Morning:</span> <strong>' + esc(t.timings.morning) + '</strong></div>' +
+              '<div><span style="color:var(--text-light);">Evening:</span> <strong>' + esc(t.timings.evening) + '</strong></div>' +
+            '</div>' +
+          '</div>';
+      }
+
+      html += '</div>';
+
+      app.innerHTML = html;
+    }
+
+    function generateSchedule(t) {
+      var schedule = [];
+      if (t.timings) {
+        var mStart = parseTimeStr(t.timings.morning.split('-')[0]);
+        var mEnd = parseTimeStr(t.timings.morning.split('-')[1]);
+        var eStart = parseTimeStr(t.timings.evening.split('-')[0]);
+        var eEnd = parseTimeStr(t.timings.evening.split('-')[1]);
+
+        // Generate meaningful schedule entries
+        schedule.push({ time: formatAMPM(mStart - 30), event: 'Suprabhatam / Temple Opens' });
+        schedule.push({ time: formatAMPM(mStart), event: 'Morning Darshan Opens' });
+        schedule.push({ time: formatAMPM(mStart + 90), event: 'Kalasandhi Pooja' });
+        schedule.push({ time: formatAMPM(mStart + 180), event: 'Archana & Abhishekam' });
+
+        if (mEnd - mStart > 300) {
+          schedule.push({ time: formatAMPM(mStart + 300), event: 'Uchikala Pooja' });
+        }
+
+        schedule.push({ time: formatAMPM(mEnd - 30), event: 'Noon Aarti & Deeparadhanai' });
+        schedule.push({ time: formatAMPM(mEnd), event: 'Afternoon Break - Temple Closes' });
+        schedule.push({ time: formatAMPM(eStart), event: 'Evening Darshan Opens' });
+        schedule.push({ time: formatAMPM(eStart + 60), event: 'Sayarakshai Pooja' });
+        schedule.push({ time: formatAMPM(eStart + 120), event: 'Evening Deeparadhanai' });
+        schedule.push({ time: formatAMPM(eEnd - 60), event: 'Arthajama Pooja' });
+        schedule.push({ time: formatAMPM(eEnd), event: 'Temple Closes' });
+      } else {
+        // Fallback generic schedule
+        schedule = [
+          { time: '5:30 AM', event: 'Suprabhatam' },
+          { time: '6:00 AM', event: 'Morning Darshan Opens' },
+          { time: '7:30 AM', event: 'Kalasandhi Pooja' },
+          { time: '9:00 AM', event: 'Archana' },
+          { time: '11:30 AM', event: 'Noon Aarti' },
+          { time: '12:30 PM', event: 'Afternoon Break' },
+          { time: '4:00 PM', event: 'Evening Darshan Opens' },
+          { time: '5:30 PM', event: 'Evening Deeparadhanai' },
+          { time: '7:00 PM', event: 'Arthajama Pooja' },
+          { time: '8:30 PM', event: 'Temple Closes' }
+        ];
+      }
+      return schedule;
+    }
+
+    function parseTimeStr(s) {
+      if (!s) return 360;
+      s = s.trim();
+      var match = s.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (!match) return 360;
+      var h = parseInt(match[1]);
+      var m = parseInt(match[2]);
+      if (match[3].toUpperCase() === 'PM' && h !== 12) h += 12;
+      if (match[3].toUpperCase() === 'AM' && h === 12) h = 0;
+      return h * 60 + m;
+    }
+
+    function formatAMPM(mins) {
+      if (mins < 0) mins += 1440;
+      mins = mins % 1440;
+      var h = Math.floor(mins / 60);
+      var m = mins % 60;
+      var ampm = h >= 12 ? 'PM' : 'AM';
+      var h12 = h % 12; if (h12 === 0) h12 = 12;
+      return h12 + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+    }
+
+    function isCurrentTime(timeStr, nextTimeStr) {
+      var now = new Date();
+      var nowMins = now.getHours() * 60 + now.getMinutes();
+      var start = parseTimeStr(timeStr);
+      var end = nextTimeStr ? parseTimeStr(nextTimeStr) : start + 30;
+      return nowMins >= start && nowMins < end;
+    }
+
+    function renderTempleSelector() {
+      // Get temples from multiple sources
+      var temples = [];
+
+      // 1. From selected_temple (already null here)
+      // 2. From followed temples
+      var followingIds = [];
+      try { followingIds = JSON.parse(localStorage.getItem('temple_following') || '[]'); } catch(e) {}
+
+      // 3. Build list of well-known temples for selection
+      var knownTemples = [
+        { id: 'meenakshi', name: 'Meenakshi Amman Temple', location: 'Madurai, Tamil Nadu', category: 'devi', live: true },
+        { id: 'tirumala', name: 'Tirumala Venkateswara Temple', location: 'Tirupati, Andhra Pradesh', category: 'vishnu', live: true },
+        { id: 'chidambaram', name: 'Chidambaram Nataraja Temple', location: 'Chidambaram, Tamil Nadu', category: 'shiva', live: true },
+        { id: 'brihadeeswarar', name: 'Brihadeeswarar Temple', location: 'Thanjavur, Tamil Nadu', category: 'shiva', live: true },
+        { id: 'arunachaleswarar', name: 'Arunachaleswarar Temple', location: 'Thiruvannamalai, Tamil Nadu', category: 'shiva', live: true },
+        { id: 'ekambareswarar', name: 'Ekambareswarar Temple', location: 'Kanchipuram, Tamil Nadu', category: 'shiva', live: true },
+        { id: 'kapaleeshwarar', name: 'Kapaleeshwarar Temple', location: 'Chennai, Tamil Nadu', category: 'shiva', live: true },
+        { id: 'ramanathaswamy', name: 'Ramanathaswamy Temple', location: 'Rameswaram, Tamil Nadu', category: 'shiva', live: true },
+        { id: 'kamakshi', name: 'Kamakshi Amman Temple', location: 'Kanchipuram, Tamil Nadu', category: 'devi', live: true },
+        { id: 'palani', name: 'Palani Murugan Temple', location: 'Palani, Tamil Nadu', category: 'murugan', live: true },
+        { id: 'ranganathaswamy', name: 'Ranganathaswamy Temple', location: 'Srirangam, Tamil Nadu', category: 'vishnu', live: true },
+        { id: 'siddhivinayak', name: 'Siddhivinayak Temple', location: 'Mumbai, Maharashtra', category: 'ganesh', live: true }
+      ];
+
+      var html = '';
+      html += '<div class="ld-selector">';
+      html += '<div style="text-align:center; margin-bottom:20px;"><span style="font-size:2.5rem;">📺</span></div>';
+      html += '<h2>Select a Temple</h2>';
+      html += '<p>Choose a temple to watch the live darshan stream</p>';
+
+      html += '<div class="ld-temple-list">';
+      for (var i = 0; i < knownTemples.length; i++) {
+        var kt = knownTemples[i];
+        var isFollowed = followingIds.indexOf(kt.id) !== -1;
+        html +=
+          '<div class="ld-temple-item" onclick="selectTempleForDarshan(\'' + kt.id + '\')">' +
+            '<div class="lti-icon" style="background:' + (catBg[kt.category] || '#f5f5f5') + ';">' + (catIcons[kt.category] || '🛕') + '</div>' +
+            '<div class="lti-info">' +
+              '<h4>' + kt.name + (isFollowed ? ' ✓' : '') + '</h4>' +
+              '<p>📍 ' + kt.location + '</p>' +
+            '</div>' +
+            '<span class="lti-live ' + (kt.live ? 'online' : 'offline') + '">' + (kt.live ? '● Live' : '○ Offline') + '</span>' +
+          '</div>';
+      }
+      html += '</div>';
+
+      html += '<div style="text-align:center; margin-top:20px;">';
+      html += '<p style="font-size:0.78rem; color:var(--text-light);">Or <a href="temple-list.html" style="color:var(--primary); font-weight:600;">browse all temples</a> to select one first</p>';
+      html += '</div>';
+
+      html += '</div>';
+
+      app.innerHTML = html;
+    }
+
+    // Escape HTML
+    function esc(str) {
+      var div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    // Global functions
+    window.switchStreamTab = function(btn, tabId) {
+      var tabs = btn.parentElement.querySelectorAll('.ld-stream-tab');
+      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+      btn.classList.add('active');
+      var views = ['streams-view', 'schedule-view'];
+      for (var j = 0; j < views.length; j++) {
+        var el = document.getElementById(views[j]);
+        if (el) el.style.display = views[j] === tabId ? '' : 'none';
+      }
+    };
+
+    window.openStream = function(streamId) {
+      // In a real app this would open a video player
+      // For demo, show a fullscreen player simulation
+      var t = null;
+      try { t = JSON.parse(localStorage.getItem('selected_temple')); } catch(e) {}
+      var tName = t ? t.name : 'Temple';
+
+      var overlay = document.createElement('div');
+      overlay.style.cssText = 'position:fixed;inset:0;background:#000;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+      overlay.innerHTML =
+        '<div style="position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:2;">' +
+          '<button onclick="this.closest(\'div[style]\').remove()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1.2rem;cursor:pointer;">✕</button>' +
+          '<span class="live-badge" style="font-size:0.7rem;">LIVE</span>' +
+        '</div>' +
+        '<div style="font-size:4rem;margin-bottom:20px;">🎥</div>' +
+        '<div style="color:white;font-size:1rem;font-weight:700;margin-bottom:6px;">' + esc(tName) + '</div>' +
+        '<div style="color:rgba(255,255,255,0.6);font-size:0.82rem;">Live Stream - ' + streamId + '</div>' +
+        '<div style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:20px;">Tap ✕ to close</div>';
+      document.body.appendChild(overlay);
+    };
+
+    window.showTempleSelector = function() {
+      renderTempleSelector();
+    };
+
+    window.selectTempleForDarshan = function(templeId) {
+      // Minimal temple data for darshan viewing
+      var minimalData = {
+        meenakshi: { id: 'meenakshi', name: 'Meenakshi Amman Temple', location: 'Madurai, Tamil Nadu', category: 'devi', deity: 'Goddess Meenakshi', timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 9:30 PM' } },
+        tirumala: { id: 'tirumala', name: 'Tirumala Venkateswara Temple', location: 'Tirupati, Andhra Pradesh', category: 'vishnu', deity: 'Lord Venkateswara', timings: { morning: '2:30 AM - 12:00 PM', evening: '1:00 PM - 10:00 PM' } },
+        chidambaram: { id: 'chidambaram', name: 'Chidambaram Nataraja Temple', location: 'Chidambaram, Tamil Nadu', category: 'shiva', deity: 'Lord Nataraja', timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' } },
+        brihadeeswarar: { id: 'brihadeeswarar', name: 'Brihadeeswarar Temple', location: 'Thanjavur, Tamil Nadu', category: 'shiva', deity: 'Lord Shiva', timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' } },
+        arunachaleswarar: { id: 'arunachaleswarar', name: 'Arunachaleswarar Temple', location: 'Thiruvannamalai, Tamil Nadu', category: 'shiva', deity: 'Lord Shiva', timings: { morning: '5:30 AM - 12:30 PM', evening: '3:30 PM - 9:30 PM' } },
+        ekambareswarar: { id: 'ekambareswarar', name: 'Ekambareswarar Temple', location: 'Kanchipuram, Tamil Nadu', category: 'shiva', deity: 'Lord Shiva', timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' } },
+        kapaleeshwarar: { id: 'kapaleeshwarar', name: 'Kapaleeshwarar Temple', location: 'Chennai, Tamil Nadu', category: 'shiva', deity: 'Lord Shiva', timings: { morning: '5:30 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' } },
+        ramanathaswamy: { id: 'ramanathaswamy', name: 'Ramanathaswamy Temple', location: 'Rameswaram, Tamil Nadu', category: 'shiva', deity: 'Lord Shiva', timings: { morning: '5:00 AM - 1:00 PM', evening: '3:00 PM - 9:00 PM' } },
+        kamakshi: { id: 'kamakshi', name: 'Kamakshi Amman Temple', location: 'Kanchipuram, Tamil Nadu', category: 'devi', deity: 'Goddess Kamakshi', timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' } },
+        palani: { id: 'palani', name: 'Palani Murugan Temple', location: 'Palani, Tamil Nadu', category: 'murugan', deity: 'Lord Murugan', timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' } },
+        ranganathaswamy: { id: 'ranganathaswamy', name: 'Ranganathaswamy Temple', location: 'Srirangam, Tamil Nadu', category: 'vishnu', deity: 'Lord Ranganatha', timings: { morning: '6:00 AM - 1:00 PM', evening: '3:15 PM - 9:00 PM' } },
+        siddhivinayak: { id: 'siddhivinayak', name: 'Siddhivinayak Temple', location: 'Mumbai, Maharashtra', category: 'ganesh', deity: 'Lord Ganesha', timings: { morning: '5:30 AM - 12:00 PM', evening: '12:00 PM - 9:50 PM' } }
+      };
+
+      var t = minimalData[templeId];
+      if (t) {
+        // Don't overwrite selected_temple if user has one - store darshan temple separately
+        localStorage.setItem('ld_darshan_temple', JSON.stringify(t));
+        renderTempleDarshan(t);
+      }
+    };
+
+    // On load, also check ld_darshan_temple if no selected_temple
+    if (!temple) {
+      var darshanTemple = null;
+      try { darshanTemple = JSON.parse(localStorage.getItem('ld_darshan_temple')); } catch(e) {}
+      if (darshanTemple) {
+        renderTempleDarshan(darshanTemple);
+      }
+    }
+
+  })();
+  </script>
+</body>
+</html>

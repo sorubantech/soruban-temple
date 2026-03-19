@@ -1,0 +1,235 @@
+/* ============================================================
+   SORUBAN TEMPLE — Landing Page
+   ============================================================ */
+
+.landing-page {
+  min-height: 100vh;
+  background: var(--bg-body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6) var(--space-5);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== Header ===== */
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: var(--space-8);
+}
+
+.landing-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: var(--shadow-glow);
+}
+
+.logo-text h1 {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: var(--tracking-tight);
+}
+
+.logo-text p {
+  font-size: var(--text-sm);
+  color: var(--text-light);
+  margin-top: 1px;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.theme-toggle:hover {
+  background: var(--primary-bg);
+  color: var(--primary);
+  border-color: var(--primary-light);
+}
+
+/* ===== Hero ===== */
+.landing-hero {
+  text-align: center;
+  margin-bottom: var(--space-8);
+}
+
+.landing-hero h2 {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.landing-hero p {
+  font-size: var(--text-base);
+  color: var(--text-light);
+}
+
+/* ===== App Cards ===== */
+.app-cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.app-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.app-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-light);
+}
+
+.app-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.app-card-devotee::before { background: var(--gradient-primary); }
+.app-card-provider::before { background: linear-gradient(90deg, var(--sacred-red), var(--sacred-purple)); }
+.app-card-admin::before { background: var(--gradient-gold); }
+.app-card-super::before { background: var(--gradient-dark); }
+
+.ac-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.app-card-devotee .ac-icon { background: var(--primary-bg); color: var(--primary); }
+.app-card-provider .ac-icon { background: var(--sacred-red-bg); color: var(--sacred-red); }
+.app-card-admin .ac-icon { background: var(--accent-bg); color: var(--accent-dark); }
+.app-card-super .ac-icon { background: rgba(62, 39, 35, 0.08); color: var(--text-secondary); }
+
+.ac-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ac-content h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.ac-content p {
+  font-size: var(--text-sm);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-3);
+}
+
+.ac-meta {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.ac-arrow {
+  position: absolute;
+  top: var(--space-5);
+  right: var(--space-5);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.app-card:hover .ac-arrow { transform: translateX(4px); color: var(--primary); }
+
+.ac-users {
+  width: 100%;
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--divider);
+  margin-top: var(--space-1);
+}
+
+.ac-users span {
+  font-size: var(--text-xs);
+  color: var(--text-light);
+  padding: 2px 8px;
+  background: var(--bg-inset);
+  border-radius: var(--radius-full);
+}
+
+/* ===== Footer ===== */
+.landing-footer {
+  text-align: center;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--divider);
+  width: 100%;
+}
+
+.landing-footer p {
+  font-size: var(--text-sm);
+  color: var(--text-light);
+}
+
+.landing-footer p:last-child {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .landing-page { padding: var(--space-4) var(--space-4); }
+  .app-card { padding: var(--space-4); }
+}

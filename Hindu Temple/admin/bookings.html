@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management - Temple Digital Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+
+            <a href="index.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link active" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="posts.html" class="nav-link" data-page="posts">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <div class="admin-main">
+
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+</button>
+                <div>
+                    <h1 class="page-title">Booking Management</h1>
+                    <div class="page-breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span class="separator">&#x25B8;</span>
+                        <span>Bookings</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-search">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+                <input type="text" placeholder="Search bookings..." id="header-search-input">
+            </div>
+
+            <div class="header-actions">
+                <button class="header-action-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="header-divider"></div>
+                <div class="admin-avatar">
+                    <div class="avatar-placeholder" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                    <div>
+                        <div class="admin-avatar-name">Admin</div>
+                        <div class="admin-avatar-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+
+            <!-- ========== Stats Row ========== -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Total Bookings</div>
+                        <div class="stat-number" id="total-bookings">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-circle-check"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Confirmed</div>
+                        <div class="stat-number" id="confirmed-count">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon yellow"><i class="fas fa-hourglass-half"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-number" id="pending-count">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-circle-xmark"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Cancelled</div>
+                        <div class="stat-number" id="cancelled-count">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== Filter / Action Bar ========== -->
+            <div class="card" style="margin-bottom:24px;">
+                <div class="filter-bar">
+                    <div style="display:flex;gap:4px;">
+                        <button class="btn btn-sm btn-primary" data-booking-filter="All" onclick="filterBookings('All')">All</button>
+                        <button class="btn btn-sm btn-secondary" data-booking-filter="Confirmed" onclick="filterBookings('Confirmed')">Confirmed</button>
+                        <button class="btn btn-sm btn-secondary" data-booking-filter="Pending" onclick="filterBookings('Pending')">Pending</button>
+                        <button class="btn btn-sm btn-secondary" data-booking-filter="Cancelled" onclick="filterBookings('Cancelled')">Cancelled</button>
+                    </div>
+
+                    <div class="filter-search">
+                        <span class="search-icon"><i class="fas fa-search"></i></span>
+                        <input type="text" id="booking-search" placeholder="Search by name, ID or service..." oninput="searchBookings(this.value)">
+                    </div>
+
+                    <button class="btn btn-sm btn-secondary" id="exportBookings" onclick="exportBookings()" title="Export CSV">
+                        <i class="fas fa-file-export"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========== Bookings Table ========== -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>All Bookings</h3>
+                </div>
+                <div class="card-body" style="overflow-x:auto;">
+                    <table class="data-table" id="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Temple Name</th>
+                                <th>Devotee Name</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align:center;padding:40px;color:#999;">
+                                    <div style="font-size:2rem;margin-bottom:8px;"><i class="fas fa-file-lines"></i></div>
+                                    No bookings found. Bookings made by devotees will appear here.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="card-footer">
+                    <div style="font-size:0.8125rem;color:var(--text-muted);">
+                        Showing <span id="pagination-info">0</span> bookings
+                    </div>
+                    <div class="pagination" id="bookings-pagination">
+                        <button class="pagination-btn" disabled title="Previous">&#x25C0;</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn" disabled title="Next">&#x25B6;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.admin-content -->
+    </div><!-- /.admin-main -->
+
+</div><!-- /.admin-wrapper -->
+
+
+<!-- ============================================================
+     BOOKING DETAIL MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="booking-detail-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>Booking Details</h3>
+            <button class="modal-close" onclick="closeBookingModal()" title="Close">&times;</button>
+        </div>
+        <div class="modal-body" id="booking-detail-body">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Booking ID</label>
+                    <div id="detail-booking-id" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Service / Pooja</label>
+                    <div id="detail-service" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Devotee Name</label>
+                    <div id="detail-devotee" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Date</label>
+                    <div id="detail-date" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Nakshatram</label>
+                    <div id="detail-nakshatram" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Amount</label>
+                    <div id="detail-amount" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div style="grid-column:1/-1;">
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Status</label>
+                    <div id="detail-status" style="margin-top:4px;">-</div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success btn-sm" id="modal-approve-btn" onclick="approveFromModal()"><i class="fas fa-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" id="modal-reject-btn" onclick="rejectFromModal()"><i class="fas fa-xmark"></i> Reject</button>
+            <button class="btn btn-secondary btn-sm" onclick="closeBookingModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modal Container (used by adminApp.showModal) -->
+<div id="modal-container"></div>
+
+
+<script src="js/admin.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    // --- Helpers ---
+    var currentModalBookingId = null;
+
+    function updateStats() {
+        var bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+        var total = bookings.length;
+        var confirmed = 0, pending = 0, cancelled = 0;
+        bookings.forEach(function (b) {
+            var s = (b.status || 'Pending').toLowerCase();
+            if (s === 'confirmed') confirmed++;
+            else if (s === 'pending') pending++;
+            else if (s === 'cancelled') cancelled++;
+        });
+        var el;
+        el = document.getElementById('total-bookings'); if (el) el.textContent = total;
+        el = document.getElementById('confirmed-count'); if (el) el.textContent = confirmed;
+        el = document.getElementById('pending-count'); if (el) el.textContent = pending;
+        el = document.getElementById('cancelled-count'); if (el) el.textContent = cancelled;
+
+        var info = document.getElementById('pagination-info');
+        if (info) info.textContent = total;
+    }
+
+    // --- Filter tab highlighting ---
+    window.filterBookings = function (status) {
+        var btns = document.querySelectorAll('[data-booking-filter]');
+        btns.forEach(function (btn) {
+            if (btn.getAttribute('data-booking-filter') === status) {
+                btn.className = 'btn btn-sm btn-primary';
+            } else {
+                btn.className = 'btn btn-sm btn-secondary';
+            }
+        });
+        if (window.adminApp && window.adminApp.filterBookings) {
+            window.adminApp.filterBookings(status);
+        }
+        updateStats();
+    };
+
+    window.searchBookings = function (query) {
+        if (window.adminApp && window.adminApp.searchBookings) {
+            window.adminApp.searchBookings(query);
+        }
+    };
+
+    window.exportBookings = function () {
+        if (window.adminApp && window.adminApp.exportBookings) {
+            window.adminApp.exportBookings();
+        }
+    };
+
+    // --- Booking Detail Modal ---
+    window.openBookingModal = function (id) {
+        var bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+        var booking = null;
+        for (var i = 0; i < bookings.length; i++) {
+            if (bookings[i].id === id) { booking = bookings[i]; break; }
+        }
+        if (!booking) return;
+
+        currentModalBookingId = id;
+
+        var esc = function (s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
+
+        document.getElementById('detail-booking-id').textContent = booking.id || '-';
+        document.getElementById('detail-service').textContent = booking.service || booking.pooja || '-';
+        document.getElementById('detail-devotee').textContent = booking.userName || booking.name || '-';
+        document.getElementById('detail-date').textContent = booking.date || booking.bookingDate || '-';
+        document.getElementById('detail-nakshatram').textContent = booking.nakshatram || booking.nakshatra || '-';
+        document.getElementById('detail-amount').textContent = booking.amount ? '\u20B9' + Number(booking.amount).toLocaleString('en-IN') : '-';
+
+        var statusText = booking.status || 'Pending';
+        var statusClass = 'badge badge-' + statusText.toLowerCase();
+        document.getElementById('detail-status').innerHTML = '<span class="' + statusClass + '"><span class="badge-dot"></span> ' + esc(statusText) + '</span>';
+
+        // Show/hide approve/reject based on current status
+        var approveBtn = document.getElementById('modal-approve-btn');
+        var rejectBtn = document.getElementById('modal-reject-btn');
+        if (statusText.toLowerCase() === 'confirmed') {
+            approveBtn.style.display = 'none';
+            rejectBtn.style.display = '';
+        } else if (statusText.toLowerCase() === 'cancelled') {
+            approveBtn.style.display = '';
+            rejectBtn.style.display = 'none';
+        } else {
+            approveBtn.style.display = '';
+            rejectBtn.style.display = '';
+        }
+
+        document.getElementById('booking-detail-modal').classList.add('active');
+    };
+
+    window.closeBookingModal = function () {
+        document.getElementById('booking-detail-modal').classList.remove('active');
+        currentModalBookingId = null;
+    };
+
+    window.approveFromModal = function () {
+        if (!currentModalBookingId) return;
+        if (window.adminApp && window.adminApp.updateBookingStatus) {
+            window.adminApp.updateBookingStatus(currentModalBookingId, 'Confirmed');
+        }
+        closeBookingModal();
+        updateStats();
+    };
+
+    window.rejectFromModal = function () {
+        if (!currentModalBookingId) return;
+        if (window.adminApp && window.adminApp.updateBookingStatus) {
+            window.adminApp.updateBookingStatus(currentModalBookingId, 'Cancelled');
+        }
+        closeBookingModal();
+        updateStats();
+    };
+
+    // Close modal on overlay click
+    document.getElementById('booking-detail-modal').addEventListener('click', function (e) {
+        if (e.target === this) closeBookingModal();
+    });
+
+    // Close modal on Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeBookingModal();
+    });
+
+    // --- Page Init ---
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.adminApp && window.adminApp.loadBookings) {
+            window.adminApp.loadBookings();
+        }
+        updateStats();
+    });
+
+})();
+</script>
+
+</body>
+</html>

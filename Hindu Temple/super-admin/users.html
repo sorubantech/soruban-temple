@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management - Super Admin</title>
+  <link rel="stylesheet" href="css/super-admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="sa-layout">
+    <aside class="sa-sidebar" id="sa-sidebar">
+      <div class="sa-sidebar-header">
+        <div class="sa-sidebar-logo"><i class="fas fa-shield-halved"></i></div>
+        <div><h2>Temple Digital</h2><small>Super Admin Panel</small></div>
+      </div>
+      <nav class="sa-nav">
+        <div class="sa-nav-section">
+          <div class="sa-nav-section-title">Main</div>
+          <a href="dashboard.html" class="sa-nav-item"><i class="fas fa-chart-pie"></i> Dashboard</a>
+          <a href="temples.html" class="sa-nav-item"><i class="fas fa-place-of-worship"></i> Temple Management</a>
+          <a href="users.html" class="sa-nav-item active"><i class="fas fa-users"></i> User Management</a>
+          <a href="temple-admins.html" class="sa-nav-item"><i class="fas fa-user-shield"></i> Temple Admins</a>
+          <a href="bookings.html" class="sa-nav-item"><i class="fas fa-calendar-check"></i> Bookings</a>
+        </div>
+        <div class="sa-nav-section">
+          <div class="sa-nav-section-title">Analytics</div>
+          <a href="reports.html" class="sa-nav-item"><i class="fas fa-chart-bar"></i> Reports & Analytics</a>
+          <a href="finance.html" class="sa-nav-item"><i class="fas fa-indian-rupee-sign"></i> Financial</a>
+        </div>
+        <div class="sa-nav-section">
+          <div class="sa-nav-section-title">Control</div>
+          <a href="content.html" class="sa-nav-item"><i class="fas fa-images"></i> Content Control</a>
+          <a href="notifications.html" class="sa-nav-item"><i class="fas fa-bell"></i> Notifications</a>
+          <a href="app-management.html" class="sa-nav-item"><i class="fas fa-cogs"></i> App Management</a>
+        </div>
+        <div class="sa-nav-section" style="margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.1);">
+          <a href="#" class="sa-nav-item" onclick="SA.logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="sa-main">
+      <header class="sa-header">
+        <div class="sa-header-left">
+          <button class="sa-menu-toggle" onclick="SA.toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <h1>User Management</h1>
+        </div>
+        <div class="sa-header-right">
+          <div class="notif-bell-wrap" onclick="SA.toggleNotifDropdown(event)" style="position:relative; cursor:pointer;">
+            <i class="fas fa-bell" style="font-size:1.2rem; color:#555;"></i>
+            <span id="bell-unread-count" style="position:absolute; top:-6px; right:-8px; background:#c62828; color:#fff; font-size:0.65rem; font-weight:700; min-width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #f0f2f5;"></span>
+            <div id="notif-dropdown" style="position:absolute; top:42px; right:0; width:360px; max-height:420px; background:#fff; border-radius:14px; box-shadow:0 8px 30px rgba(0,0,0,0.15); z-index:999; display:none; overflow:hidden; border:1px solid #e0e0e0;">
+              <div style="padding:14px 16px; border-bottom:1px solid #e0e0e0; display:flex; justify-content:space-between; align-items:center;">
+                <h4 style="font-size:0.95rem; font-weight:700; margin:0;">Notifications</h4>
+                <button class="sa-btn sa-btn-sm sa-btn-outline" onclick="SA.markAllRead(event)" style="font-size:0.72rem; padding:3px 10px;">Mark all read</button>
+              </div>
+              <div id="notif-dropdown-body" style="max-height:320px; overflow-y:auto;"></div>
+              <div style="padding:10px 16px; border-top:1px solid #e0e0e0; text-align:center;">
+                <a href="notifications.html" style="font-size:0.82rem; color:#1a237e; text-decoration:none; font-weight:600;">View All Notifications</a>
+              </div>
+            </div>
+          </div>
+          <span class="sa-header-badge"><i class="fas fa-shield-halved"></i> Super Admin</span>
+        </div>
+      </header>
+
+      <div class="sa-content">
+        <div class="sa-stats-grid">
+          <div class="sa-stat-card">
+            <div class="sa-stat-icon blue"><i class="fas fa-users"></i></div>
+            <div class="sa-stat-info"><h4 id="total-users">0</h4><p>Total Users</p></div>
+          </div>
+          <div class="sa-stat-card">
+            <div class="sa-stat-icon green"><i class="fas fa-user-check"></i></div>
+            <div class="sa-stat-info"><h4 id="active-users">0</h4><p>Active Users</p></div>
+          </div>
+          <div class="sa-stat-card">
+            <div class="sa-stat-icon red"><i class="fas fa-user-slash"></i></div>
+            <div class="sa-stat-info"><h4 id="blocked-users">0</h4><p>Blocked Users</p></div>
+          </div>
+          <div class="sa-stat-card">
+            <div class="sa-stat-icon purple"><i class="fas fa-user-plus"></i></div>
+            <div class="sa-stat-info"><h4 id="new-users">0</h4><p>New This Month</p></div>
+          </div>
+          <div class="sa-stat-card">
+            <div class="sa-stat-icon indigo"><i class="fas fa-user-check"></i></div>
+            <div class="sa-stat-info"><h4 id="verified-users">0</h4><p>Verified Users</p></div>
+          </div>
+          <div class="sa-stat-card">
+            <div class="sa-stat-icon orange"><i class="fas fa-clock"></i></div>
+            <div class="sa-stat-info"><h4 id="pending-verifications">0</h4><p>Pending Verification</p></div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="sa-tabs">
+          <button class="sa-tab active" onclick="SA.switchTab(this,'all-users-tab')">All Users</button>
+          <button class="sa-tab" onclick="SA.switchTab(this,'verification-tab')">Verification Requests <span class="sa-badge sa-badge-danger" id="verif-badge" style="margin-left:6px;">0</span></button>
+        </div>
+
+        <!-- All Users Tab -->
+        <div class="sa-tab-content active" id="all-users-tab">
+        <div class="sa-toolbar">
+          <div class="sa-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="user-search" placeholder="Search users by name, email..." oninput="SA.filterUsers()">
+          </div>
+          <select class="sa-filter-select" id="user-status-filter" onchange="SA.filterUsers()">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
+          </select>
+          <button class="sa-btn sa-btn-outline" onclick="SA.exportUsers()">
+            <i class="fas fa-download"></i> Export
+          </button>
+        </div>
+
+        <div class="sa-card" style="padding:0;">
+          <div class="sa-table-wrapper">
+            <table class="sa-table">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Bookings</th>
+                  <th>Donations</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+        </div><!-- end all-users-tab -->
+
+        <!-- Verification Requests Tab -->
+        <div class="sa-tab-content" id="verification-tab">
+          <div class="sa-card">
+            <div class="sa-card-header">
+              <h3><i class="fas fa-user-check"></i> Community Verification Requests</h3>
+              <p style="font-size:0.82rem; color:var(--sa-text-muted);">Users must be verified before they can post, like, comment, or follow in the community.</p>
+            </div>
+            <div class="sa-table-wrapper">
+              <table class="sa-table">
+                <thead>
+                  <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Requested</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="verification-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- User Detail Modal -->
+  <div class="sa-modal-overlay" id="user-detail-modal">
+    <div class="sa-modal">
+      <div class="sa-modal-header">
+        <h3>User Details</h3>
+        <button class="sa-modal-close" onclick="SA.closeModal('user-detail-modal')">&times;</button>
+      </div>
+      <div class="sa-modal-body" id="user-detail-content"></div>
+      <div class="sa-modal-footer">
+        <button class="sa-btn sa-btn-outline" onclick="SA.closeModal('user-detail-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sa-toast" id="sa-toast"></div>
+  <script src="js/super-admin.js"></script>
+  <script>SA.initUsers();</script>
+  <script>
+    // Init notification bell
+    (function() {
+      var ALERTS_KEY = 'sa_system_alerts';
+      try {
+        var alerts = JSON.parse(localStorage.getItem(ALERTS_KEY)) || [];
+        var unread = alerts.filter(function(a) { return !a.read; }).length;
+        var countEl = document.getElementById('bell-unread-count');
+        if (countEl) { countEl.textContent = unread > 0 ? (unread > 9 ? '9+' : unread) : ''; if (!unread) countEl.style.display = 'none'; }
+        var body = document.getElementById('notif-dropdown-body');
+        if (body) {
+          var recent = alerts.slice(0, 6);
+          body.innerHTML = recent.map(function(a) {
+            var iconMap = { blue: '#e3f2fd', green: '#e8f5e9', orange: '#fff8e1', red: '#ffebee', purple: '#f3e5f5' };
+            var colorMap = { blue: '#1565c0', green: '#2e7d32', orange: '#f57f17', red: '#c62828', purple: '#7b1fa2' };
+            return '<div style="padding:12px 16px; border-bottom:1px solid #f5f5f5; display:flex; gap:12px; cursor:pointer;' + (!a.read ? 'background:#f0f4ff;' : '') + '" onclick="SA.markAlertRead(\'' + a.id + '\')">' +
+              '<div style="width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; background:' + (iconMap[a.color]||iconMap.blue) + '; color:' + (colorMap[a.color]||colorMap.blue) + ';"><i class="fas ' + a.icon + '"></i></div>' +
+              '<div style="flex:1; min-width:0;"><p style="font-size:0.82rem; color:#555; line-height:1.4; margin:0;">' + (!a.read ? '<strong>' : '') + a.title + (!a.read ? '</strong>' : '') + '</p>' +
+              '<small style="font-size:0.7rem; color:#999;">' + (function(ts) { var d = Date.now() - new Date(ts).getTime(); var m = Math.floor(d/60000); if(m<1) return 'Just now'; if(m<60) return m+'m ago'; var h=Math.floor(m/60); if(h<24) return h+'h ago'; return Math.floor(h/24)+'d ago'; })(a.time) + '</small></div></div>';
+          }).join('') || '<div style="padding:30px; text-align:center; color:#999;">No notifications</div>';
+        }
+      } catch(e) {}
+      // Toggle dropdown
+      if (typeof SA.toggleNotifDropdown === 'undefined') {
+        window.addEventListener('click', function(e) {
+          var dd = document.getElementById('notif-dropdown');
+          if (dd && dd.style.display === 'block' && !e.target.closest('.notif-bell-wrap')) dd.style.display = 'none';
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

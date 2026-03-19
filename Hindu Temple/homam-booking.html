@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homam Services - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .homam-hero {
+      background: linear-gradient(135deg, #d84315, #bf360c);
+      color: white;
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+    .homam-hero .hero-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .homam-hero h1 { font-size: 1.35rem; margin-bottom: 0.25rem; }
+    .homam-hero p { font-size: 0.85rem; opacity: 0.85; }
+    .homam-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 0.85rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .homam-card-top {
+      padding: 1.25rem;
+    }
+    .homam-card-top h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+    }
+    .homam-card-top .h-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .homam-card-top p {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      line-height: 1.5;
+      margin-bottom: 0.65rem;
+    }
+    .homam-benefits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
+    .h-benefit {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.2rem 0.55rem;
+      background: #fff3e0;
+      color: var(--primary);
+      border-radius: 10px;
+    }
+    .homam-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-light);
+    }
+    .homam-card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 1.25rem;
+      border-top: 1px solid #f5f5f5;
+      background: #fafafa;
+    }
+    .homam-card-bottom .duration {
+      font-size: 0.82rem;
+      color: var(--text-light);
+    }
+    .h-book-btn {
+      padding: 0.45rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      transition: all 0.3s;
+    }
+    .h-book-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(230,81,0,0.3);
+    }
+    .info-banner {
+      background: #fff3e0;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .info-banner strong { color: var(--primary); }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>Homam / Yogam Services</h2>
+    </div>
+
+    <!-- Hero -->
+    <div class="homam-hero">
+      <div class="hero-icon">🔥</div>
+      <h1>Sacred Fire Rituals</h1>
+      <p>Book Homam & Yogam sevas online</p>
+    </div>
+
+    <div class="section">
+      <div class="info-banner">
+        <strong>About Homam:</strong> Homam is a sacred fire ritual performed to invoke divine blessings. Each Homam is dedicated to a specific deity and performed by experienced temple priests with proper Vedic mantras.
+      </div>
+
+      <!-- Ganapathi Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>🐘 Ganapathi Homam</h3>
+          <div class="h-price">&#8377;1,500</div>
+          <p>Sacred fire ritual dedicated to Lord Ganesha, the remover of obstacles. Performed for new beginnings, success in ventures, and removal of hurdles in life.</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Remove Obstacles</span>
+            <span class="h-benefit">New Beginnings</span>
+            <span class="h-benefit">Success</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; Morning Only</span>
+            <span>&#128101; Max 10 persons</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 1.5 hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Ganapathi Homam', 1500)">Book</button>
+        </div>
+      </div>
+
+      <!-- Sudarshana Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>🔱 Sudarshana Homam</h3>
+          <div class="h-price">&#8377;2,500</div>
+          <p>Powerful fire ritual invoking Lord Sudarshana (Vishnu's divine disc). Performed for protection from negative energies and evil eye (drishti dosha).</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Protection</span>
+            <span class="h-benefit">Remove Evil Eye</span>
+            <span class="h-benefit">Positive Energy</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; 7 AM - 10 AM</span>
+            <span>&#128101; Max 15 persons</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 2 hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Sudarshana Homam', 2500)">Book</button>
+        </div>
+      </div>
+
+      <!-- Navagraha Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>🪐 Navagraha Homam</h3>
+          <div class="h-price">&#8377;2,000</div>
+          <p>Fire ritual for the nine planets. Performed to balance planetary positions in horoscope, reduce dosha effects, and bring harmony in life.</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Planetary Balance</span>
+            <span class="h-benefit">Dosha Removal</span>
+            <span class="h-benefit">Life Harmony</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; 6 AM - 9 AM</span>
+            <span>&#128101; Max 10 persons</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 2.5 hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Navagraha Homam', 2000)">Book</button>
+        </div>
+      </div>
+
+      <!-- Mrityunjaya Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>🔱 Mrityunjaya Homam</h3>
+          <div class="h-price">&#8377;3,000</div>
+          <p>Sacred fire ritual invoking Lord Shiva's healing aspect. Performed for good health, longevity, recovery from illness, and overcoming fear.</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Health</span>
+            <span class="h-benefit">Longevity</span>
+            <span class="h-benefit">Healing</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; 5 AM - 8 AM</span>
+            <span>&#128101; Max 8 persons</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 2 hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Mrityunjaya Homam', 3000)">Book</button>
+        </div>
+      </div>
+
+      <!-- Lakshmi Kubera Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>💰 Lakshmi Kubera Homam</h3>
+          <div class="h-price">&#8377;2,500</div>
+          <p>Fire ritual for wealth and prosperity. Invoking Goddess Lakshmi and Lord Kubera for financial growth, debt removal, and material abundance.</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Wealth</span>
+            <span class="h-benefit">Prosperity</span>
+            <span class="h-benefit">Debt Relief</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; 6 AM - 9 AM</span>
+            <span>&#128101; Max 12 persons</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 2 hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Lakshmi Kubera Homam', 2500)">Book</button>
+        </div>
+      </div>
+
+      <!-- Ayush Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>👶 Ayush Homam</h3>
+          <div class="h-price">&#8377;1,800</div>
+          <p>Sacred fire ritual for children's well-being, longevity, and good health. Traditionally performed on the child's first birthday.</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Child Health</span>
+            <span class="h-benefit">Long Life</span>
+            <span class="h-benefit">First Birthday</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; 7 AM - 10 AM</span>
+            <span>&#128101; Family</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 1.5 hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Ayush Homam', 1800)">Book</button>
+        </div>
+      </div>
+
+      <!-- Chandi Homam -->
+      <div class="homam-card">
+        <div class="homam-card-top">
+          <h3>🙏 Chandi Homam</h3>
+          <div class="h-price">&#8377;5,000</div>
+          <p>Grand fire ritual invoking Goddess Chandi (Durga). One of the most powerful homams for protection, victory over enemies, and removal of all negativity.</p>
+          <div class="homam-benefits">
+            <span class="h-benefit">Supreme Protection</span>
+            <span class="h-benefit">Victory</span>
+            <span class="h-benefit">Remove Negativity</span>
+          </div>
+          <div class="homam-meta">
+            <span>&#128337; 5 AM - 10 AM</span>
+            <span>&#128101; Max 20 persons</span>
+          </div>
+        </div>
+        <div class="homam-card-bottom">
+          <span class="duration">&#9201; Duration: 3+ hours</span>
+          <button class="h-book-btn" onclick="bookHomam('Chandi Homam', 5000)">Book</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function bookHomam(name, price) {
+      showModal('🔥', 'Book ' + name,
+        `${name} - ₹${price}. Select your preferred date and provide devotee details to complete booking.`,
+        'Continue Booking', () => navigateTo('book-pooja.html'));
+    }
+  </script>
+</body>
+</html>

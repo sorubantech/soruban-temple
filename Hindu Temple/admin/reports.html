@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports &amp; Analytics - Temple Digital Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Period Selector ===== */
+        .period-selector {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .period-tabs {
+            display: flex;
+            background: var(--bg-card, #fff);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color, #e5e7eb);
+        }
+        .period-tab {
+            padding: 10px 22px;
+            border: none;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted, #6b7280);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .period-tab:hover {
+            color: var(--text-primary, #1f2937);
+            background: rgba(230,81,0,0.04);
+        }
+        .period-tab.active {
+            color: #fff;
+            background: linear-gradient(135deg, #e65100, #ff9800);
+        }
+        .date-range-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+        .date-range-picker input[type="date"] {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 8px;
+            font-size: 0.8125rem;
+            font-family: inherit;
+            background: var(--bg-card, #fff);
+            color: var(--text-primary, #1f2937);
+        }
+        .date-range-picker span {
+            color: var(--text-muted, #6b7280);
+            font-size: 0.8125rem;
+        }
+
+        /* ===== Report Stat Cards ===== */
+        .report-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .report-stat-card {
+            background: var(--bg-card, #fff);
+            border-radius: 14px;
+            padding: 22px 24px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color, #e5e7eb);
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .report-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        .report-stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .report-stat-icon.revenue { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+        .report-stat-icon.bookings { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+        .report-stat-icon.users { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+        .report-stat-icon.meals { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+        .report-stat-details {
+            flex: 1;
+        }
+        .report-stat-label {
+            font-size: 0.8125rem;
+            color: var(--text-muted, #6b7280);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .report-stat-value {
+            font-size: 1.625rem;
+            font-weight: 800;
+            color: var(--text-primary, #1f2937);
+            line-height: 1.2;
+        }
+        .report-stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 6px;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .report-stat-trend.up {
+            color: #2e7d32;
+            background: rgba(46,125,50,0.08);
+        }
+        .report-stat-trend.down {
+            color: #c62828;
+            background: rgba(198,40,40,0.08);
+        }
+
+        /* ===== Charts Grid ===== */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+        @media (max-width: 900px) {
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== CSS Bar Chart ===== */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            height: 200px;
+            padding: 16px 0 0;
+        }
+        .bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: flex-end;
+        }
+        .bar-value {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: var(--text-primary, #1f2937);
+            margin-bottom: 4px;
+        }
+        .bar-fill {
+            width: 100%;
+            max-width: 40px;
+            border-radius: 6px 6px 0 0;
+            background: linear-gradient(180deg, #e65100, #ff9800);
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 4px;
+        }
+        .bar-label {
+            font-size: 0.6875rem;
+            color: var(--text-muted, #6b7280);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        /* ===== Horizontal Bar Chart ===== */
+        .h-bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 8px 0;
+        }
+        .h-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .h-bar-label {
+            width: 110px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--text-primary, #1f2937);
+            text-align: right;
+            flex-shrink: 0;
+        }
+        .h-bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--bg-body, #f3f4f6);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        .h-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            padding-left: 10px;
+        }
+        .h-bar-fill-text {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+        .h-bar-fill.green { background: linear-gradient(90deg, #2e7d32, #66bb6a); }
+        .h-bar-fill.blue { background: linear-gradient(90deg, #1565c0, #42a5f5); }
+        .h-bar-fill.orange { background: linear-gradient(90deg, #e65100, #ff9800); }
+        .h-bar-fill.purple { background: linear-gradient(90deg, #6a1b9a, #ab47bc); }
+        .h-bar-fill.teal { background: linear-gradient(90deg, #00695c, #26a69a); }
+
+        /* ===== Popular Services ===== */
+        .service-rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .service-rank-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .service-rank-num {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e65100, #ff9800);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+        .service-rank-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .service-rank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .service-rank-name {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary, #1f2937);
+        }
+        .service-rank-count {
+            font-size: 0.75rem;
+            color: var(--text-muted, #6b7280);
+            font-weight: 500;
+        }
+        .service-rank-bar {
+            height: 8px;
+            background: var(--bg-body, #f3f4f6);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .service-rank-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #e65100, #ff9800);
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ===== Report Tabs ===== */
+        .report-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color, #e5e7eb);
+            gap: 0;
+            margin-bottom: 0;
+        }
+        .report-tab {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted, #6b7280);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .report-tab:hover {
+            color: var(--text-primary, #1f2937);
+        }
+        .report-tab.active {
+            color: #e65100;
+            border-bottom-color: #e65100;
+        }
+        .report-tab-content {
+            display: none;
+        }
+        .report-tab-content.active {
+            display: block;
+        }
+
+        /* ===== Export Section ===== */
+        .export-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 0 0;
+            flex-wrap: wrap;
+        }
+        .btn-export {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-export.csv {
+            background: linear-gradient(135deg, #e65100, #ff9800);
+            color: #fff;
+        }
+        .btn-export.csv:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(230,81,0,0.3);
+        }
+        .btn-export.print {
+            background: var(--bg-body, #f3f4f6);
+            color: var(--text-primary, #1f2937);
+            border: 1px solid var(--border-color, #e5e7eb);
+        }
+        .btn-export.print:hover {
+            background: var(--border-color, #e5e7eb);
+        }
+
+        /* ===== Card helpers ===== */
+        .report-card {
+            background: var(--bg-card, #fff);
+            border-radius: 14px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color, #e5e7eb);
+            overflow: hidden;
+        }
+        .report-card .card-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+        .report-card .card-header h3 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary, #1f2937);
+        }
+        .report-card .card-body {
+            padding: 20px 24px;
+        }
+
+        /* ===== Data table inside reports ===== */
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .report-table thead th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted, #6b7280);
+            border-bottom: 2px solid var(--border-color, #e5e7eb);
+            white-space: nowrap;
+        }
+        .report-table tbody td {
+            padding: 12px 14px;
+            font-size: 0.8125rem;
+            color: var(--text-primary, #1f2937);
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+        .report-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .report-table tbody tr:hover {
+            background: rgba(230,81,0,0.02);
+        }
+        .report-table .amount {
+            font-weight: 700;
+            color: #2e7d32;
+        }
+
+        @media (max-width: 768px) {
+            .period-selector { flex-direction: column; align-items: stretch; }
+            .date-range-picker { margin-left: 0; }
+            .report-stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 480px) {
+            .report-stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+
+            <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link active" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <div class="admin-main">
+
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Reports &amp; Analytics</h1>
+                    <div class="page-breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <span class="separator">&#x25B8;</span>
+                        <span>Reports</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-search">
+                <span class="search-icon"><i class="fas fa-magnifying-glass"></i></span>
+                <input type="text" placeholder="Search reports..." id="header-search-input">
+            </div>
+
+            <div class="header-actions">
+                <button class="header-action-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="header-divider"></div>
+                <div class="admin-avatar">
+                    <div class="avatar-placeholder" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                    <div>
+                        <div class="admin-avatar-name">Admin</div>
+                        <div class="admin-avatar-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+
+            <!-- ========== Period Selector ========== -->
+            <div class="period-selector">
+                <div class="period-tabs">
+                    <button class="period-tab active" data-period="daily" onclick="switchPeriod('daily')">Daily</button>
+                    <button class="period-tab" data-period="weekly" onclick="switchPeriod('weekly')">Weekly</button>
+                    <button class="period-tab" data-period="monthly" onclick="switchPeriod('monthly')">Monthly</button>
+                    <button class="period-tab" data-period="yearly" onclick="switchPeriod('yearly')">Yearly</button>
+                </div>
+                <div class="date-range-picker">
+                    <input type="date" id="report-date-from" title="From date">
+                    <span>to</span>
+                    <input type="date" id="report-date-to" title="To date">
+                    <button class="btn btn-sm btn-primary" onclick="applyDateRange()" style="padding:8px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;font-weight:600;cursor:pointer;">Apply</button>
+                </div>
+            </div>
+
+            <!-- ========== Overview Stats ========== -->
+            <div class="report-stats-grid">
+                <div class="report-stat-card">
+                    <div class="report-stat-icon revenue"><i class="fas fa-indian-rupee-sign"></i></div>
+                    <div class="report-stat-details">
+                        <div class="report-stat-label">Total Revenue</div>
+                        <div class="report-stat-value" id="stat-revenue">&#x20B9;0</div>
+                        <div class="report-stat-trend up" id="trend-revenue"><i class="fas fa-arrow-up"></i> 12.5%</div>
+                    </div>
+                </div>
+                <div class="report-stat-card">
+                    <div class="report-stat-icon bookings"><i class="fas fa-calendar-check"></i></div>
+                    <div class="report-stat-details">
+                        <div class="report-stat-label">Total Bookings</div>
+                        <div class="report-stat-value" id="stat-bookings">0</div>
+                        <div class="report-stat-trend up" id="trend-bookings"><i class="fas fa-arrow-up"></i> 8.3%</div>
+                    </div>
+                </div>
+                <div class="report-stat-card">
+                    <div class="report-stat-icon users"><i class="fas fa-user-plus"></i></div>
+                    <div class="report-stat-details">
+                        <div class="report-stat-label">New Users</div>
+                        <div class="report-stat-value" id="stat-new-users">0</div>
+                        <div class="report-stat-trend up" id="trend-users"><i class="fas fa-arrow-up"></i> 5.2%</div>
+                    </div>
+                </div>
+                <div class="report-stat-card">
+                    <div class="report-stat-icon meals"><i class="fas fa-utensils"></i></div>
+                    <div class="report-stat-details">
+                        <div class="report-stat-label">Meals Served</div>
+                        <div class="report-stat-value" id="stat-meals">0</div>
+                        <div class="report-stat-trend up" id="trend-meals"><i class="fas fa-arrow-up"></i> 15.1%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== Charts Section ========== -->
+            <div class="charts-grid">
+
+                <!-- Booking Trends Bar Chart -->
+                <div class="report-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Booking Trends</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="bar-chart" id="booking-bar-chart">
+                            <!-- Populated by script -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donation Distribution Horizontal Bar Chart -->
+                <div class="report-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-hand-holding-heart"></i> Donation Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="h-bar-chart" id="donation-h-bar-chart">
+                            <!-- Populated by script -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ========== Popular Services ========== -->
+            <div class="report-card" style="margin-bottom:28px;">
+                <div class="card-header">
+                    <h3><i class="fas fa-star"></i> Popular Services</h3>
+                </div>
+                <div class="card-body">
+                    <div class="service-rank-list" id="popular-services-list">
+                        <!-- Populated by script -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== Detailed Report Tables ========== -->
+            <div class="report-card" style="margin-bottom:28px;">
+                <div class="card-header" style="padding-bottom:0;border-bottom:none;">
+                    <h3 style="margin-bottom:14px;"><i class="fas fa-clipboard-list"></i> Detailed Reports</h3>
+                    <div class="report-tabs" id="detail-report-tabs">
+                        <button class="report-tab active" data-tab="booking-report" onclick="switchReportTab('booking-report')">Booking Report</button>
+                        <button class="report-tab" data-tab="donation-report" onclick="switchReportTab('donation-report')">Donation Report</button>
+                        <button class="report-tab" data-tab="annadhanam-report" onclick="switchReportTab('annadhanam-report')">Annadhanam Report</button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <!-- Booking Report Tab -->
+                    <div class="report-tab-content active" id="booking-report">
+                        <div style="overflow-x:auto;">
+                            <table class="report-table" id="booking-report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Service</th>
+                                        <th>Count</th>
+                                        <th>Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;padding:32px;color:#999;">Loading report data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Donation Report Tab -->
+                    <div class="report-tab-content" id="donation-report">
+                        <div style="overflow-x:auto;">
+                            <table class="report-table" id="donation-report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Count</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;padding:32px;color:#999;">Loading report data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Annadhanam Report Tab -->
+                    <div class="report-tab-content" id="annadhanam-report">
+                        <div style="overflow-x:auto;">
+                            <table class="report-table" id="annadhanam-report-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Meals Served</th>
+                                        <th>Sponsors</th>
+                                        <th>Funds</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;padding:32px;color:#999;">Loading report data...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Export Section -->
+                    <div class="export-section">
+                        <button class="btn-export csv" onclick="exportReportCSV()">
+                            <i class="fas fa-file-export"></i> Export as CSV
+                        </button>
+                        <button class="btn-export print" onclick="printReport()">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div><!-- /.admin-content -->
+    </div><!-- /.admin-main -->
+
+</div><!-- /.admin-wrapper -->
+
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modal Container -->
+<div id="modal-container"></div>
+
+
+<script src="js/admin.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    /* ==========================================================================
+       REPORT DATA & STATE
+       ========================================================================== */
+
+    var currentPeriod = 'daily';
+
+    // Multipliers to simulate period-based data scaling
+    var periodMultipliers = {
+        daily:   1,
+        weekly:  7,
+        monthly: 30,
+        yearly:  365
+    };
+
+    /* ==========================================================================
+       HELPER FUNCTIONS
+       ========================================================================== */
+
+    function getBookings() {
+        return JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+    }
+
+    function getDonations() {
+        return JSON.parse(localStorage.getItem('temple_donations') || '[]');
+    }
+
+    function getUsers() {
+        return JSON.parse(localStorage.getItem('temple_users') || '[]');
+    }
+
+    function getAnnadhanam() {
+        return JSON.parse(localStorage.getItem('temple_annadhanam') || '[]');
+    }
+
+    function formatCurrency(num) {
+        return '\u20B9' + Number(num).toLocaleString('en-IN');
+    }
+
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    function randomTrend() {
+        var val = (Math.random() * 20 + 1).toFixed(1);
+        var isUp = Math.random() > 0.3;
+        return { value: val, up: isUp };
+    }
+
+    /* ==========================================================================
+       PERIOD SWITCHING
+       ========================================================================== */
+
+    window.switchPeriod = function (period) {
+        currentPeriod = period;
+        var tabs = document.querySelectorAll('.period-tab');
+        tabs.forEach(function (tab) {
+            tab.classList.toggle('active', tab.getAttribute('data-period') === period);
+        });
+        loadAllReportData();
+    };
+
+    window.applyDateRange = function () {
+        // Re-load data (date range filtering would apply here in production)
+        loadAllReportData();
+        if (window.adminApp && window.adminApp.showToast) {
+            window.adminApp.showToast('Date range applied', 'success');
+        }
+    };
+
+    /* ==========================================================================
+       REPORT TAB SWITCHING
+       ========================================================================== */
+
+    window.switchReportTab = function (tabId) {
+        var tabs = document.querySelectorAll('.report-tab');
+        var contents = document.querySelectorAll('.report-tab-content');
+
+        tabs.forEach(function (tab) {
+            tab.classList.toggle('active', tab.getAttribute('data-tab') === tabId);
+        });
+        contents.forEach(function (content) {
+            content.classList.toggle('active', content.id === tabId);
+        });
+    };
+
+    /* ==========================================================================
+       OVERVIEW STATS
+       ========================================================================== */
+
+    function loadOverviewStats() {
+        var bookings = getBookings();
+        var donations = getDonations();
+        var users = getUsers();
+        var annadhanam = getAnnadhanam();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        // Revenue = sum of donation amounts + booking amounts
+        var totalRevenue = 0;
+        donations.forEach(function (d) { totalRevenue += Number(d.amount || 0); });
+        bookings.forEach(function (b) { totalRevenue += Number(b.amount || 0); });
+        if (totalRevenue === 0) totalRevenue = 48750 * mult;
+
+        var totalBookings = bookings.length || Math.round(24 * mult);
+        var newUsers = users.length || Math.round(12 * mult);
+
+        var totalMeals = 0;
+        annadhanam.forEach(function (a) { totalMeals += Number(a.meals || a.count || 0); });
+        if (totalMeals === 0) totalMeals = Math.round(350 * mult);
+
+        document.getElementById('stat-revenue').textContent = formatCurrency(totalRevenue);
+        document.getElementById('stat-bookings').textContent = totalBookings;
+        document.getElementById('stat-new-users').textContent = newUsers;
+        document.getElementById('stat-meals').textContent = totalMeals.toLocaleString('en-IN');
+
+        // Trend indicators
+        var trends = [
+            { id: 'trend-revenue', data: randomTrend() },
+            { id: 'trend-bookings', data: randomTrend() },
+            { id: 'trend-users', data: randomTrend() },
+            { id: 'trend-meals', data: randomTrend() }
+        ];
+
+        trends.forEach(function (t) {
+            var el = document.getElementById(t.id);
+            if (el) {
+                el.className = 'report-stat-trend ' + (t.data.up ? 'up' : 'down');
+                el.innerHTML = (t.data.up ? '<i class="fas fa-arrow-up"></i>' : '<i class="fas fa-arrow-down"></i>') + ' ' + t.data.value + '%';
+            }
+        });
+    }
+
+    /* ==========================================================================
+       BOOKING TRENDS BAR CHART (CSS bars)
+       ========================================================================== */
+
+    function renderBookingBarChart() {
+        var container = document.getElementById('booking-bar-chart');
+        if (!container) return;
+
+        var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        var bookings = getBookings();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        // Count bookings per day-of-week or use sample data
+        var dayCounts = [0, 0, 0, 0, 0, 0, 0];
+        var hasData = false;
+
+        bookings.forEach(function (b) {
+            var dateStr = b.date || b.bookingDate;
+            if (dateStr) {
+                var d = new Date(dateStr);
+                if (!isNaN(d.getTime())) {
+                    var dayIdx = (d.getDay() + 6) % 7; // Mon=0
+                    dayCounts[dayIdx]++;
+                    hasData = true;
+                }
+            }
+        });
+
+        if (!hasData) {
+            dayCounts = [
+                Math.round(12 * mult),
+                Math.round(18 * mult),
+                Math.round(15 * mult),
+                Math.round(22 * mult),
+                Math.round(28 * mult),
+                Math.round(35 * mult),
+                Math.round(30 * mult)
+            ];
+        }
+
+        var maxVal = Math.max.apply(null, dayCounts);
+        if (maxVal === 0) maxVal = 1;
+
+        var html = '';
+        for (var i = 0; i < days.length; i++) {
+            var heightPct = Math.round((dayCounts[i] / maxVal) * 100);
+            html += '<div class="bar-col">';
+            html += '  <div class="bar-value">' + dayCounts[i] + '</div>';
+            html += '  <div class="bar-fill" style="height:0%" data-height="' + heightPct + '%"></div>';
+            html += '  <div class="bar-label">' + days[i] + '</div>';
+            html += '</div>';
+        }
+
+        container.innerHTML = html;
+
+        // Animate bars in
+        requestAnimationFrame(function () {
+            var bars = container.querySelectorAll('.bar-fill');
+            bars.forEach(function (bar) {
+                bar.style.height = bar.getAttribute('data-height');
+            });
+        });
+    }
+
+    /* ==========================================================================
+       DONATION DISTRIBUTION HORIZONTAL BAR CHART
+       ========================================================================== */
+
+    function renderDonationDistribution() {
+        var container = document.getElementById('donation-h-bar-chart');
+        if (!container) return;
+
+        var donations = getDonations();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        var categories = {};
+        donations.forEach(function (d) {
+            var type = d.type || d.category || 'General';
+            categories[type] = (categories[type] || 0) + Number(d.amount || 0);
+        });
+
+        // If no data, use sample
+        if (Object.keys(categories).length === 0) {
+            categories = {
+                'General Fund': Math.round(25000 * mult),
+                'Temple Maintenance': Math.round(18000 * mult),
+                'Annadhanam': Math.round(15000 * mult),
+                'Festival Fund': Math.round(12000 * mult),
+                'Kula Theivam': Math.round(8000 * mult)
+            };
+        }
+
+        var colorClasses = ['green', 'blue', 'orange', 'purple', 'teal'];
+        var entries = Object.keys(categories).map(function (k) { return { label: k, value: categories[k] }; });
+        entries.sort(function (a, b) { return b.value - a.value; });
+
+        var maxVal = entries.length > 0 ? entries[0].value : 1;
+        if (maxVal === 0) maxVal = 1;
+
+        var html = '';
+        entries.forEach(function (entry, idx) {
+            var pct = Math.round((entry.value / maxVal) * 100);
+            var colorClass = colorClasses[idx % colorClasses.length];
+            html += '<div class="h-bar-row">';
+            html += '  <div class="h-bar-label">' + esc(entry.label) + '</div>';
+            html += '  <div class="h-bar-track">';
+            html += '    <div class="h-bar-fill ' + colorClass + '" style="width:0%" data-width="' + pct + '%">';
+            html += '      <span class="h-bar-fill-text">' + formatCurrency(entry.value) + '</span>';
+            html += '    </div>';
+            html += '  </div>';
+            html += '</div>';
+        });
+
+        container.innerHTML = html;
+
+        // Animate bars in
+        requestAnimationFrame(function () {
+            var fills = container.querySelectorAll('.h-bar-fill');
+            fills.forEach(function (fill) {
+                fill.style.width = fill.getAttribute('data-width');
+            });
+        });
+    }
+
+    /* ==========================================================================
+       POPULAR SERVICES
+       ========================================================================== */
+
+    function renderPopularServices() {
+        var container = document.getElementById('popular-services-list');
+        if (!container) return;
+
+        var bookings = getBookings();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        var serviceCounts = {};
+        bookings.forEach(function (b) {
+            var svc = b.service || b.pooja || 'General Darshan';
+            serviceCounts[svc] = (serviceCounts[svc] || 0) + 1;
+        });
+
+        // Default popular services if no data
+        var services;
+        if (Object.keys(serviceCounts).length === 0) {
+            services = [
+                { name: 'Archana', count: Math.round(145 * mult) },
+                { name: 'Abhishekam', count: Math.round(98 * mult) },
+                { name: 'Special Darshan', count: Math.round(76 * mult) },
+                { name: 'Homam', count: Math.round(52 * mult) },
+                { name: 'Family Function', count: Math.round(34 * mult) }
+            ];
+        } else {
+            services = Object.keys(serviceCounts).map(function (k) {
+                return { name: k, count: serviceCounts[k] };
+            });
+            services.sort(function (a, b) { return b.count - a.count; });
+            services = services.slice(0, 5);
+        }
+
+        var maxCount = services.length > 0 ? services[0].count : 1;
+        if (maxCount === 0) maxCount = 1;
+
+        var html = '';
+        services.forEach(function (svc, idx) {
+            var pct = Math.round((svc.count / maxCount) * 100);
+            html += '<div class="service-rank-item">';
+            html += '  <div class="service-rank-num">' + (idx + 1) + '</div>';
+            html += '  <div class="service-rank-info">';
+            html += '    <div class="service-rank-header">';
+            html += '      <span class="service-rank-name">' + esc(svc.name) + '</span>';
+            html += '      <span class="service-rank-count">' + svc.count + ' bookings (' + pct + '%)</span>';
+            html += '    </div>';
+            html += '    <div class="service-rank-bar">';
+            html += '      <div class="service-rank-fill" style="width:0%" data-width="' + pct + '%"></div>';
+            html += '    </div>';
+            html += '  </div>';
+            html += '</div>';
+        });
+
+        container.innerHTML = html;
+
+        // Animate bars
+        requestAnimationFrame(function () {
+            var fills = container.querySelectorAll('.service-rank-fill');
+            fills.forEach(function (fill) {
+                fill.style.width = fill.getAttribute('data-width');
+            });
+        });
+    }
+
+    /* ==========================================================================
+       DETAILED REPORT TABLES
+       ========================================================================== */
+
+    function renderBookingReport() {
+        var tbody = document.querySelector('#booking-report-table tbody');
+        if (!tbody) return;
+
+        var bookings = getBookings();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        if (bookings.length === 0) {
+            // Sample data
+            var sampleServices = ['Archana', 'Abhishekam', 'Special Darshan', 'Homam', 'Family Function'];
+            var rows = '';
+            for (var i = 0; i < 7; i++) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                var svc = sampleServices[i % sampleServices.length];
+                var count = Math.round((Math.random() * 15 + 5) * mult);
+                var revenue = count * (Math.floor(Math.random() * 400) + 100);
+                rows += '<tr>';
+                rows += '<td>' + dateStr + '</td>';
+                rows += '<td>' + svc + '</td>';
+                rows += '<td>' + count + '</td>';
+                rows += '<td class="amount">' + formatCurrency(revenue) + '</td>';
+                rows += '</tr>';
+            }
+            tbody.innerHTML = rows;
+            return;
+        }
+
+        // Aggregate bookings by date and service
+        var agg = {};
+        bookings.forEach(function (b) {
+            var dateStr = b.date || b.bookingDate || 'Unknown';
+            var svc = b.service || b.pooja || 'General';
+            var key = dateStr + '|' + svc;
+            if (!agg[key]) agg[key] = { date: dateStr, service: svc, count: 0, revenue: 0 };
+            agg[key].count++;
+            agg[key].revenue += Number(b.amount || 0);
+        });
+
+        var entries = Object.values(agg);
+        entries.sort(function (a, b) { return b.date > a.date ? 1 : -1; });
+
+        var html = '';
+        entries.forEach(function (e) {
+            html += '<tr>';
+            html += '<td>' + esc(e.date) + '</td>';
+            html += '<td>' + esc(e.service) + '</td>';
+            html += '<td>' + e.count + '</td>';
+            html += '<td class="amount">' + formatCurrency(e.revenue) + '</td>';
+            html += '</tr>';
+        });
+        tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:32px;color:#999;">No booking data available.</td></tr>';
+    }
+
+    function renderDonationReport() {
+        var tbody = document.querySelector('#donation-report-table tbody');
+        if (!tbody) return;
+
+        var donations = getDonations();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        if (donations.length === 0) {
+            var types = ['General Fund', 'Temple Maintenance', 'Annadhanam', 'Festival Fund', 'Kula Theivam'];
+            var rows = '';
+            for (var i = 0; i < 7; i++) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                var type = types[i % types.length];
+                var count = Math.round((Math.random() * 10 + 3) * mult);
+                var amount = count * (Math.floor(Math.random() * 2000) + 500);
+                rows += '<tr>';
+                rows += '<td>' + dateStr + '</td>';
+                rows += '<td>' + type + '</td>';
+                rows += '<td>' + count + '</td>';
+                rows += '<td class="amount">' + formatCurrency(amount) + '</td>';
+                rows += '</tr>';
+            }
+            tbody.innerHTML = rows;
+            return;
+        }
+
+        var agg = {};
+        donations.forEach(function (don) {
+            var dateStr = don.date || 'Unknown';
+            var type = don.type || don.category || 'General';
+            var key = dateStr + '|' + type;
+            if (!agg[key]) agg[key] = { date: dateStr, type: type, count: 0, amount: 0 };
+            agg[key].count++;
+            agg[key].amount += Number(don.amount || 0);
+        });
+
+        var entries = Object.values(agg);
+        entries.sort(function (a, b) { return b.date > a.date ? 1 : -1; });
+
+        var html = '';
+        entries.forEach(function (e) {
+            html += '<tr>';
+            html += '<td>' + esc(e.date) + '</td>';
+            html += '<td>' + esc(e.type) + '</td>';
+            html += '<td>' + e.count + '</td>';
+            html += '<td class="amount">' + formatCurrency(e.amount) + '</td>';
+            html += '</tr>';
+        });
+        tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:32px;color:#999;">No donation data available.</td></tr>';
+    }
+
+    function renderAnnadhanamReport() {
+        var tbody = document.querySelector('#annadhanam-report-table tbody');
+        if (!tbody) return;
+
+        var annadhanam = getAnnadhanam();
+        var mult = periodMultipliers[currentPeriod] || 1;
+
+        if (annadhanam.length === 0) {
+            var rows = '';
+            for (var i = 0; i < 7; i++) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var dateStr = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+                var meals = Math.round((Math.random() * 200 + 100) * mult);
+                var sponsors = Math.round(Math.random() * 8 + 2);
+                var funds = sponsors * (Math.floor(Math.random() * 5000) + 2000);
+                rows += '<tr>';
+                rows += '<td>' + dateStr + '</td>';
+                rows += '<td>' + meals + '</td>';
+                rows += '<td>' + sponsors + '</td>';
+                rows += '<td class="amount">' + formatCurrency(funds) + '</td>';
+                rows += '</tr>';
+            }
+            tbody.innerHTML = rows;
+            return;
+        }
+
+        var html = '';
+        annadhanam.forEach(function (a) {
+            html += '<tr>';
+            html += '<td>' + esc(a.date || 'Unknown') + '</td>';
+            html += '<td>' + (a.meals || a.count || 0) + '</td>';
+            html += '<td>' + (a.sponsors || a.sponsorCount || 0) + '</td>';
+            html += '<td class="amount">' + formatCurrency(a.funds || a.amount || 0) + '</td>';
+            html += '</tr>';
+        });
+        tbody.innerHTML = html || '<tr><td colspan="4" style="text-align:center;padding:32px;color:#999;">No annadhanam data available.</td></tr>';
+    }
+
+    /* ==========================================================================
+       EXPORT & PRINT
+       ========================================================================== */
+
+    window.exportReportCSV = function () {
+        // Determine active tab
+        var activeTab = document.querySelector('.report-tab-content.active');
+        if (!activeTab) return;
+
+        var table = activeTab.querySelector('.report-table');
+        if (!table) return;
+
+        var csv = [];
+        var rows = table.querySelectorAll('tr');
+        rows.forEach(function (row) {
+            var cols = row.querySelectorAll('th, td');
+            var rowData = [];
+            cols.forEach(function (col) {
+                var text = col.textContent.replace(/"/g, '""').trim();
+                rowData.push('"' + text + '"');
+            });
+            csv.push(rowData.join(','));
+        });
+
+        var csvContent = csv.join('\n');
+        var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'temple_report_' + activeTab.id + '_' + new Date().toISOString().slice(0, 10) + '.csv';
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        if (window.adminApp && window.adminApp.showToast) {
+            window.adminApp.showToast('Report exported as CSV', 'success');
+        }
+    };
+
+    window.printReport = function () {
+        window.print();
+    };
+
+    /* ==========================================================================
+       LOAD ALL DATA
+       ========================================================================== */
+
+    function loadAllReportData() {
+        loadOverviewStats();
+        renderBookingBarChart();
+        renderDonationDistribution();
+        renderPopularServices();
+        renderBookingReport();
+        renderDonationReport();
+        renderAnnadhanamReport();
+    }
+
+    /* ==========================================================================
+       INIT
+       ========================================================================== */
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Set default date range (last 7 days)
+        var today = new Date();
+        var weekAgo = new Date();
+        weekAgo.setDate(today.getDate() - 7);
+
+        var fromInput = document.getElementById('report-date-from');
+        var toInput = document.getElementById('report-date-to');
+
+        if (fromInput) fromInput.value = weekAgo.toISOString().slice(0, 10);
+        if (toInput) toInput.value = today.toISOString().slice(0, 10);
+
+        // Load report data from adminApp if available
+        if (window.adminApp && window.adminApp.loadReportData) {
+            window.adminApp.loadReportData();
+        }
+
+        loadAllReportData();
+    });
+
+})();
+</script>
+
+</body>
+</html>

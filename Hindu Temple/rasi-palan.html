@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rasi Palan - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .rp-date-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.85rem 1.25rem;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 52px;
+      z-index: 99;
+    }
+    .rp-date-bar h3 { font-size: 0.95rem; font-weight: 700; }
+    .rp-date-bar p { font-size: 0.72rem; color: var(--text-light); text-align: center; }
+    .rp-date-bar .rp-nav {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: white;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rp-date-bar .rp-nav:hover { border-color: var(--primary); color: var(--primary); }
+
+    .rasi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      padding: 1rem 1.25rem;
+    }
+    .rasi-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .rasi-card:hover, .rasi-card.active {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(230,81,0,0.15);
+    }
+    .rasi-card.active { background: #fff3e0; }
+    .rasi-card .rc-icon { font-size: 1.75rem; margin-bottom: 0.3rem; }
+    .rasi-card .rc-name { font-size: 0.78rem; font-weight: 700; }
+    .rasi-card .rc-en { font-size: 0.62rem; color: var(--text-light); }
+    .rasi-card .rc-stars {
+      margin-top: 0.3rem;
+      font-size: 0.65rem;
+      color: var(--accent);
+    }
+
+    .palan-detail {
+      display: none;
+      margin: 0 1.25rem 1rem;
+    }
+    .palan-detail.show { display: block; }
+
+    .pd-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .pd-header .pd-icon { font-size: 2.5rem; }
+    .pd-header h2 { font-size: 1.15rem; font-weight: 700; }
+    .pd-header p { font-size: 0.8rem; opacity: 0.85; }
+
+    .pd-body {
+      background: var(--card-bg);
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      border-top: none;
+    }
+
+    .pd-rating {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .pd-meter {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+    }
+    .pd-meter .pm-label {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .pm-bar {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 0.2rem;
+    }
+    .pm-bar .pm-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.6s ease;
+    }
+    .pm-fill.high { background: linear-gradient(90deg, #66bb6a, #2e7d32); }
+    .pm-fill.mid { background: linear-gradient(90deg, #ffa726, #e65100); }
+    .pm-fill.low { background: linear-gradient(90deg, #ef5350, #c62828); }
+    .pd-meter .pm-score {
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .pd-section {
+      margin-bottom: 1rem;
+    }
+    .pd-section h4 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .pd-section p {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      line-height: 1.55;
+    }
+
+    .pd-lucky {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .lucky-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.3rem 0.7rem;
+      border-radius: 15px;
+      background: #fff3e0;
+      color: var(--primary);
+      border: 1px solid var(--accent);
+    }
+
+    .pd-remedy {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 10px;
+      padding: 0.85rem;
+      font-size: 0.8rem;
+      color: #2e7d32;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .overall-score {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      margin-bottom: 0.75rem;
+    }
+    .score-star { font-size: 1.25rem; }
+    .score-star.filled { color: var(--accent); }
+    .score-star.empty { color: #ddd; }
+    .score-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-left: 0.5rem;
+    }
+
+    .save-rasi-bar {
+      margin: 0 1.25rem 1rem;
+      padding: 0.85rem 1rem;
+      background: #fff3e0;
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+    }
+    .save-rasi-bar span { color: var(--text-light); }
+    .save-rasi-bar button {
+      padding: 0.4rem 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ===== Rasi Form ===== */
+    .rasi-form-section {
+      margin: 0 1.25rem 1rem;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .rasi-form-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rasi-form-header .rfh-icon { font-size: 1.4rem; }
+    .rasi-form-header h3 { font-size: 0.95rem; font-weight: 700; }
+    .rasi-form-header p { font-size: 0.72rem; opacity: 0.85; }
+
+    .rasi-form-body { padding: 16px; }
+    .rasi-form-body .form-row {
+      margin-bottom: 14px;
+    }
+    .rasi-form-body .form-row:last-child { margin-bottom: 0; }
+    .rasi-form-body label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+    .rasi-form-body label .optional {
+      font-weight: 400;
+      color: var(--text-light);
+      font-size: 0.7rem;
+    }
+    .rasi-form-body input,
+    .rasi-form-body select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      background: #fffaf5;
+      color: var(--text);
+      transition: border-color 0.3s;
+    }
+    .rasi-form-body input:focus,
+    .rasi-form-body select:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+    .rasi-form-body select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23795548' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6.5 6.5 6.5-6.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .form-row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .rasi-form-submit {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: opacity 0.3s;
+    }
+    .rasi-form-submit:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>Rasi Palan (Daily Horoscope)</h2>
+    </div>
+
+    <!-- Date bar -->
+    <div class="rp-date-bar">
+      <button class="rp-nav" onclick="changeRPDate(-1)">&#8249;</button>
+      <div>
+        <h3 id="rp-date-display">Today</h3>
+        <p id="rp-date-sub"></p>
+      </div>
+      <button class="rp-nav" onclick="changeRPDate(1)">&#8250;</button>
+    </div>
+
+    <!-- Rasi Palan Form -->
+    <div class="rasi-form-section">
+      <div class="rasi-form-header">
+        <span class="rfh-icon">🔮</span>
+        <div>
+          <h3>Get Your Rasi Palan</h3>
+          <p>Fill in your details for personalized predictions</p>
+        </div>
+      </div>
+      <div class="rasi-form-body">
+        <form id="rasi-form" onsubmit="submitRasiForm(event)">
+          <div class="form-row">
+            <label for="rp-devotee-name">Devotee Name</label>
+            <input type="text" id="rp-devotee-name" placeholder="Enter your name" required>
+          </div>
+          <div class="form-row-2col">
+            <div class="form-row">
+              <label for="rp-select-date">Select Date</label>
+              <input type="date" id="rp-select-date" required>
+            </div>
+            <div class="form-row">
+              <label for="rp-rasi-select">Rasi</label>
+              <select id="rp-rasi-select" required>
+                <option value="">Select Rasi</option>
+                <option value="0">♈ Mesham (Aries)</option>
+                <option value="1">♉ Rishabam (Taurus)</option>
+                <option value="2">♊ Mithunam (Gemini)</option>
+                <option value="3">♋ Kadagam (Cancer)</option>
+                <option value="4">♌ Simmam (Leo)</option>
+                <option value="5">♍ Kanni (Virgo)</option>
+                <option value="6">♎ Thulam (Libra)</option>
+                <option value="7">♏ Viruchigam (Scorpio)</option>
+                <option value="8">♐ Dhanusu (Sagittarius)</option>
+                <option value="9">♑ Magaram (Capricorn)</option>
+                <option value="10">♒ Kumbam (Aquarius)</option>
+                <option value="11">♓ Meenam (Pisces)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2col">
+            <div class="form-row">
+              <label for="rp-nakshatram">Nakshatram <span class="optional">(Optional)</span></label>
+              <select id="rp-nakshatram">
+                <option value="">Select Nakshatram</option>
+                <option value="Ashwini">Ashwini</option>
+                <option value="Bharani">Bharani</option>
+                <option value="Krittika">Krittika</option>
+                <option value="Rohini">Rohini</option>
+                <option value="Mrigashira">Mrigashira</option>
+                <option value="Ardra">Ardra</option>
+                <option value="Punarvasu">Punarvasu</option>
+                <option value="Pushya">Pushya</option>
+                <option value="Ashlesha">Ashlesha</option>
+                <option value="Magha">Magha</option>
+                <option value="Purva Phalguni">Purva Phalguni</option>
+                <option value="Uttara Phalguni">Uttara Phalguni</option>
+                <option value="Hasta">Hasta</option>
+                <option value="Chitra">Chitra</option>
+                <option value="Swati">Swati</option>
+                <option value="Vishakha">Vishakha</option>
+                <option value="Anuradha">Anuradha</option>
+                <option value="Jyeshtha">Jyeshtha</option>
+                <option value="Mula">Mula</option>
+                <option value="Purva Ashadha">Purva Ashadha</option>
+                <option value="Uttara Ashadha">Uttara Ashadha</option>
+                <option value="Shravana">Shravana</option>
+                <option value="Dhanishta">Dhanishta</option>
+                <option value="Shatabhisha">Shatabhisha</option>
+                <option value="Purva Bhadrapada">Purva Bhadrapada</option>
+                <option value="Uttara Bhadrapada">Uttara Bhadrapada</option>
+                <option value="Revati">Revati</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="rp-gothram">Gothram <span class="optional">(Optional)</span></label>
+              <input type="text" id="rp-gothram" placeholder="e.g. Bharadwaja">
+            </div>
+          </div>
+          <button type="submit" class="rasi-form-submit">🔮 View Rasi Palan</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Save preference -->
+    <div class="save-rasi-bar" id="save-bar">
+      <span>Set your rasi for quick access</span>
+      <button onclick="saveMyRasi()">Save Rasi</button>
+    </div>
+
+    <!-- Rasi Grid -->
+    <div class="rasi-grid" id="rasi-grid"></div>
+
+    <!-- Palan Detail -->
+    <div class="palan-detail" id="palan-detail"></div>
+
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const rasiData = [
+      { tamil: 'Mesham', en: 'Aries', icon: '♈', ruling: 'Mars', element: 'Fire', dates: 'Apr 14 - May 14' },
+      { tamil: 'Rishabam', en: 'Taurus', icon: '♉', ruling: 'Venus', element: 'Earth', dates: 'May 15 - Jun 14' },
+      { tamil: 'Mithunam', en: 'Gemini', icon: '♊', ruling: 'Mercury', element: 'Air', dates: 'Jun 15 - Jul 14' },
+      { tamil: 'Kadagam', en: 'Cancer', icon: '♋', ruling: 'Moon', element: 'Water', dates: 'Jul 15 - Aug 14' },
+      { tamil: 'Simmam', en: 'Leo', icon: '♌', ruling: 'Sun', element: 'Fire', dates: 'Aug 15 - Sep 15' },
+      { tamil: 'Kanni', en: 'Virgo', icon: '♍', ruling: 'Mercury', element: 'Earth', dates: 'Sep 16 - Oct 15' },
+      { tamil: 'Thulam', en: 'Libra', icon: '♎', ruling: 'Venus', element: 'Air', dates: 'Oct 16 - Nov 14' },
+      { tamil: 'Viruchigam', en: 'Scorpio', icon: '♏', ruling: 'Mars', element: 'Water', dates: 'Nov 15 - Dec 14' },
+      { tamil: 'Dhanusu', en: 'Sagittarius', icon: '♐', ruling: 'Jupiter', element: 'Fire', dates: 'Dec 15 - Jan 13' },
+      { tamil: 'Magaram', en: 'Capricorn', icon: '♑', ruling: 'Saturn', element: 'Earth', dates: 'Jan 14 - Feb 12' },
+      { tamil: 'Kumbam', en: 'Aquarius', icon: '♒', ruling: 'Saturn', element: 'Air', dates: 'Feb 13 - Mar 13' },
+      { tamil: 'Meenam', en: 'Pisces', icon: '♓', ruling: 'Jupiter', element: 'Water', dates: 'Mar 14 - Apr 13' }
+    ];
+
+    const predictions = {
+      general: [
+        'A productive day awaits you. Focus on your goals and avoid distractions. Your hard work will be recognized by those around you.',
+        'Today brings opportunities for personal growth. Be open to new experiences and trust your instincts. Financial matters look promising.',
+        'A challenging day that will test your patience. Stay calm and composed. Solutions will emerge if you remain focused.',
+        'Excellent day for social interactions and networking. Old friends may reconnect. Creative pursuits will flourish.',
+        'A day of reflection and inner peace. Spiritual activities will bring clarity. Health matters need attention.',
+        'Dynamic energy surrounds you today. Take initiative in professional matters. Avoid unnecessary arguments with loved ones.',
+        'Financial gains are indicated today. Property-related matters may progress. Family relationships will be harmonious.'
+      ],
+      career: [
+        'Professional growth is on the horizon. A senior colleague may offer valuable guidance. Stay focused on deadlines.',
+        'New opportunities may arise at work. Be prepared to showcase your skills. Teamwork will be crucial for success.',
+        'Avoid making major career decisions today. Focus on completing pending tasks. Recognition for past efforts is likely.',
+        'Business ventures look promising. Networking with industry peers will open doors. Stay updated with market trends.',
+        'A productive day at work. Your leadership skills will be noticed. Delegate tasks effectively for better results.',
+        'Creative ideas will flow freely. Presentations and meetings will go well. Avoid office politics.',
+        'Steady progress in career matters. Focus on skill development. A mentor may offer important advice.'
+      ],
+      finance: [
+        'Good day for investments. Avoid lending money to acquaintances. Savings will grow if managed wisely.',
+        'Moderate financial gains expected. Avoid impulsive purchases. Budget planning will be beneficial.',
+        'Unexpected expenses may arise. Review insurance and financial plans. Property investments are favorable.',
+        'Strong financial position today. Business profits look good. Consider charitable donations for spiritual merit.',
+        'Be cautious with finances. Avoid risky investments. Past investments may show returns.',
+        'Good day for financial planning. Government-related financial benefits possible. Save for future goals.',
+        'Profitable day for business owners. Freelancers may get new clients. Control unnecessary spending.'
+      ],
+      health: [
+        'Good health indicated. Maintain regular exercise routine. Stay hydrated and eat fresh fruits.',
+        'Minor health concerns possible. Avoid heavy meals. Evening walks will be beneficial for mind and body.',
+        'Excellent vitality today. Start a new fitness routine. Yoga and pranayama will be particularly effective.',
+        'Pay attention to digestive health. Avoid spicy food. Meditation will help reduce stress.',
+        'Strong physical energy. Good day to start health goals. Avoid late nights and get adequate rest.',
+        'Moderate health day. Take breaks from screen time. Include green vegetables in your diet.',
+        'Energetic day ahead. Outdoor activities recommended. Avoid cold drinks and processed food.'
+      ],
+      love: [
+        'Harmonious day for relationships. Plan quality time with your partner. Singles may meet someone special.',
+        'Communication is key today. Express your feelings openly. Family bonds will strengthen.',
+        'Romantic surprises await. Be spontaneous with your partner. Avoid misunderstandings through clear dialogue.',
+        'Focus on emotional connections. Long-distance relationships will improve. Show appreciation to loved ones.',
+        'Passionate day for couples. Singles should socialize more. Family gatherings will be joyful.',
+        'Patience needed in relationships today. Avoid unnecessary arguments. Focus on understanding your partner.',
+        'Beautiful day for love. Marriage proposals favored. Spend time nurturing family relationships.'
+      ]
+    };
+
+    const luckyColors = ['Red','Gold','White','Blue','Green','Yellow','Orange','Purple','Silver','Pink','Maroon','Cream'];
+    const luckyNumbers = ['3,7,9','2,6,8','1,5,7','4,8,9','2,3,6','1,7,8','3,5,9','2,4,7','6,8,9','1,3,5','4,6,7','2,5,8'];
+    const luckyDirections = ['East','South-East','South','South-West','West','North-West','North','North-East','East','South','West','North'];
+
+    const remedies = [
+      'Offer red flowers to Lord Hanuman. Chant Hanuman Chalisa for protection and strength.',
+      'Light a ghee lamp before Lord Vishnu. Donate food to the needy for blessings.',
+      'Visit a Shiva temple and offer Bilva leaves. Chant Om Namah Shivaya 108 times.',
+      'Offer white flowers to Goddess Parvati. Pour milk on Shivalinga for peace of mind.',
+      'Worship Lord Ganesha before starting any new work. Offer modak and durva grass.',
+      'Perform Lakshmi pooja at home. Light a lamp with sesame oil for financial prosperity.',
+      'Chant Vishnu Sahasranamam for overall well-being. Offer tulsi to Lord Vishnu.',
+      'Visit Murugan temple. Offer vel puja for removing obstacles and enemy problems.',
+      'Worship Navagraha for planetary blessings. Donate sesame seeds and black cloth.',
+      'Perform Surya Namaskar at sunrise. Offer water to the Sun god facing east.',
+      'Chant Gayatri Mantra 108 times. Feed cows with green grass for spiritual merit.',
+      'Visit a Devi temple. Offer kumkum and bangles to the Goddess for family harmony.'
+    ];
+
+    let rpDate = new Date();
+    let selectedRasi = null;
+
+    function getDOY(d) {
+      return Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
+    }
+
+    function getScore(rasiIndex, category, doy) {
+      // Deterministic pseudo-random score based on rasi, category, and day
+      const seed = (rasiIndex * 31 + doy * 7 + category) % 100;
+      return Math.max(30, Math.min(95, 50 + ((seed * 13 + 17) % 51)));
+    }
+
+    function renderGrid() {
+      const savedRasi = localStorage.getItem('temple_user_rasi');
+      const doy = getDOY(rpDate);
+      document.getElementById('rasi-grid').innerHTML = rasiData.map((r, i) => {
+        const overall = getScore(i, 0, doy);
+        const stars = Math.round(overall / 20);
+        return `<div class="rasi-card ${selectedRasi === i ? 'active' : ''} ${savedRasi == i ? 'active' : ''}" onclick="selectRasi(${i})">
+          <div class="rc-icon">${r.icon}</div>
+          <div class="rc-name">${r.tamil}</div>
+          <div class="rc-en">${r.en}</div>
+          <div class="rc-stars">${'★'.repeat(stars)}${'☆'.repeat(5-stars)}</div>
+        </div>`;
+      }).join('');
+
+      // Auto-select saved rasi
+      if (selectedRasi === null && savedRasi !== null) {
+        selectRasi(parseInt(savedRasi));
+      }
+    }
+
+    function selectRasi(index) {
+      selectedRasi = index;
+      renderGrid();
+      renderDetail(index);
+    }
+
+    function renderDetail(index) {
+      const r = rasiData[index];
+      const doy = getDOY(rpDate);
+      const generalScore = getScore(index, 0, doy);
+      const careerScore = getScore(index, 1, doy);
+      const financeScore = getScore(index, 2, doy);
+      const healthScore = getScore(index, 3, doy);
+      const loveScore = getScore(index, 4, doy);
+      const overallStars = Math.round(generalScore / 20);
+
+      const generalPred = predictions.general[(index + doy) % predictions.general.length];
+      const careerPred = predictions.career[(index + doy + 1) % predictions.career.length];
+      const financePred = predictions.finance[(index + doy + 2) % predictions.finance.length];
+      const healthPred = predictions.health[(index + doy + 3) % predictions.health.length];
+      const lovePred = predictions.love[(index + doy + 4) % predictions.love.length];
+      const remedy = remedies[(index + doy) % remedies.length];
+
+      const luckyColor = luckyColors[(index + doy) % luckyColors.length];
+      const luckyNum = luckyNumbers[(index + doy) % luckyNumbers.length];
+      const luckyDir = luckyDirections[(index + doy) % luckyDirections.length];
+
+      function barClass(score) { return score >= 70 ? 'high' : score >= 45 ? 'mid' : 'low'; }
+
+      const detail = document.getElementById('palan-detail');
+      detail.className = 'palan-detail show';
+      detail.innerHTML = `
+        <div class="pd-header">
+          <div class="pd-icon">${r.icon}</div>
+          <div>
+            <h2>${r.tamil} - ${r.en}</h2>
+            <p>Ruling Planet: ${r.ruling} | Element: ${r.element}</p>
+          </div>
+        </div>
+        <div class="pd-body">
+          <div class="overall-score">
+            ${Array.from({length:5}, (_,i) => `<span class="score-star ${i < overallStars ? 'filled' : 'empty'}">${i < overallStars ? '★' : '☆'}</span>`).join('')}
+            <span class="score-text">${generalScore}% Overall</span>
+          </div>
+
+          <div class="pd-rating">
+            <div class="pd-meter">
+              <div class="pm-label">Career</div>
+              <div class="pm-bar"><div class="pm-fill ${barClass(careerScore)}" style="width:${careerScore}%"></div></div>
+              <div class="pm-score">${careerScore}%</div>
+            </div>
+            <div class="pd-meter">
+              <div class="pm-label">Finance</div>
+              <div class="pm-bar"><div class="pm-fill ${barClass(financeScore)}" style="width:${financeScore}%"></div></div>
+              <div class="pm-score">${financeScore}%</div>
+            </div>
+            <div class="pd-meter">
+              <div class="pm-label">Health</div>
+              <div class="pm-bar"><div class="pm-fill ${barClass(healthScore)}" style="width:${healthScore}%"></div></div>
+              <div class="pm-score">${healthScore}%</div>
+            </div>
+            <div class="pd-meter">
+              <div class="pm-label">Love</div>
+              <div class="pm-bar"><div class="pm-fill ${barClass(loveScore)}" style="width:${loveScore}%"></div></div>
+              <div class="pm-score">${loveScore}%</div>
+            </div>
+          </div>
+
+          <div class="pd-section">
+            <h4>🔮 General Prediction</h4>
+            <p>${generalPred}</p>
+          </div>
+          <div class="pd-section">
+            <h4>💼 Career & Business</h4>
+            <p>${careerPred}</p>
+          </div>
+          <div class="pd-section">
+            <h4>💰 Finance & Wealth</h4>
+            <p>${financePred}</p>
+          </div>
+          <div class="pd-section">
+            <h4>❤️ Love & Relationships</h4>
+            <p>${lovePred}</p>
+          </div>
+          <div class="pd-section">
+            <h4>🏥 Health & Wellness</h4>
+            <p>${healthPred}</p>
+          </div>
+
+          <div class="pd-section">
+            <h4>🍀 Lucky Today</h4>
+            <div class="pd-lucky">
+              <span class="lucky-tag">Color: ${luckyColor}</span>
+              <span class="lucky-tag">Numbers: ${luckyNum}</span>
+              <span class="lucky-tag">Direction: ${luckyDir}</span>
+              <span class="lucky-tag">Planet: ${r.ruling}</span>
+            </div>
+          </div>
+
+          <div class="pd-section">
+            <h4>🛕 Temple Remedy</h4>
+            <div class="pd-remedy">
+              <span>🙏</span>
+              <span>${remedy}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function saveMyRasi() {
+      if (selectedRasi === null) {
+        showToast('Please select your rasi first', 'error');
+        return;
+      }
+      localStorage.setItem('temple_user_rasi', selectedRasi);
+      showToast(rasiData[selectedRasi].tamil + ' saved as your rasi!', 'success');
+      document.getElementById('save-bar').innerHTML = `<span>Your Rasi: <strong>${rasiData[selectedRasi].icon} ${rasiData[selectedRasi].tamil}</strong></span><button onclick="clearMyRasi()">Change</button>`;
+    }
+
+    function clearMyRasi() {
+      localStorage.removeItem('temple_user_rasi');
+      selectedRasi = null;
+      document.getElementById('save-bar').innerHTML = `<span>Set your rasi for quick access</span><button onclick="saveMyRasi()">Save Rasi</button>`;
+      document.getElementById('palan-detail').className = 'palan-detail';
+      renderGrid();
+    }
+
+    function changeRPDate(delta) {
+      rpDate = new Date(rpDate.getTime() + delta * 86400000);
+      updateDateDisplay();
+      renderGrid();
+      if (selectedRasi !== null) renderDetail(selectedRasi);
+    }
+
+    function updateDateDisplay() {
+      const now = new Date();
+      const isToday = rpDate.toDateString() === now.toDateString();
+      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('rp-date-display').textContent = isToday ? 'Today\'s Rasi Palan' : rpDate.toLocaleDateString('en-IN', opts);
+      document.getElementById('rp-date-sub').textContent = isToday ? rpDate.toLocaleDateString('en-IN', opts) : 'Daily Horoscope';
+    }
+
+    function submitRasiForm(e) {
+      e.preventDefault();
+      const name = document.getElementById('rp-devotee-name').value.trim();
+      const date = document.getElementById('rp-select-date').value;
+      const rasiIndex = document.getElementById('rp-rasi-select').value;
+      const nakshatram = document.getElementById('rp-nakshatram').value;
+      const gothram = document.getElementById('rp-gothram').value.trim();
+
+      if (!name) { showToast('Please enter your name', 'error'); return; }
+      if (!date) { showToast('Please select a date', 'error'); return; }
+      if (rasiIndex === '') { showToast('Please select your Rasi', 'error'); return; }
+
+      // Set the date and rasi
+      rpDate = new Date(date + 'T00:00:00');
+      updateDateDisplay();
+
+      // Select the rasi
+      selectedRasi = parseInt(rasiIndex);
+      renderGrid();
+      renderDetail(selectedRasi);
+
+      // Show personalized greeting in the detail
+      const detailEl = document.getElementById('palan-detail');
+      const naksInfo = nakshatram ? ' | Nakshatram: ' + nakshatram : '';
+      const gothInfo = gothram ? ' | Gothram: ' + gothram : '';
+      const personalBar = `<div style="background:#fff3e0;border:1px solid var(--accent);border-radius:10px;padding:12px 14px;margin:0 0 1rem;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:1.5rem;">🙏</span>
+        <div>
+          <div style="font-size:0.88rem;font-weight:700;color:var(--primary-dark);">${name}'s Rasi Palan</div>
+          <div style="font-size:0.72rem;color:var(--text-light);">${rasiData[selectedRasi].tamil} (${rasiData[selectedRasi].en})${naksInfo}${gothInfo}</div>
+        </div>
+      </div>`;
+
+      // Insert personalized bar at top of pd-body
+      const pdBody = detailEl.querySelector('.pd-body');
+      if (pdBody) {
+        pdBody.insertAdjacentHTML('afterbegin', personalBar);
+      }
+
+      showToast('Showing Rasi Palan for ' + name, 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set today's date as default in form
+      const today = new Date();
+      const dateStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+      document.getElementById('rp-select-date').value = dateStr;
+
+      // Pre-fill name from user profile
+      try {
+        const user = JSON.parse(localStorage.getItem('temple_user'));
+        if (user && user.name) {
+          document.getElementById('rp-devotee-name').value = user.name;
+        }
+      } catch(e) {}
+
+      // Pre-select saved rasi in form dropdown
+      const saved = localStorage.getItem('temple_user_rasi');
+      if (saved !== null) {
+        document.getElementById('rp-rasi-select').value = saved;
+      }
+
+      updateDateDisplay();
+      renderGrid();
+      // Check saved rasi
+      if (saved !== null) {
+        const i = parseInt(saved);
+        document.getElementById('save-bar').innerHTML = `<span>Your Rasi: <strong>${rasiData[i].icon} ${rasiData[i].tamil}</strong></span><button onclick="clearMyRasi()">Change</button>`;
+      }
+    });
+  </script>
+</body>
+</html>

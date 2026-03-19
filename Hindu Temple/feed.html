@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple Feed - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Header */
+    .feed-header {
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: white;
+      padding: 1rem 1.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .feed-header h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .feed-header-icons { display: flex; gap: 1rem; font-size: 1.3rem; }
+
+    /* Stories Bar */
+    .stories-bar {
+      display: flex;
+      gap: 1rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      background: white;
+      border-bottom: 1px solid #eee;
+      scrollbar-width: none;
+    }
+    .stories-bar::-webkit-scrollbar { display: none; }
+    .story-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .story-ring {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .story-ring-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      border: 2px solid white;
+    }
+    .story-name {
+      font-size: 0.65rem;
+      color: #262626;
+      max-width: 64px;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Feed Tabs */
+    .feed-tabs {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid #dbdbdb;
+      position: sticky;
+      top: 52px;
+      z-index: 99;
+    }
+    .feed-tab {
+      flex: 1;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #8e8e8e;
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+    }
+    .feed-tab.active {
+      color: #262626;
+      border-bottom-color: #262626;
+    }
+
+    /* Feed Posts */
+    #feed-content {
+      padding-bottom: 1rem;
+      background: #fafafa;
+    }
+    .feed-post {
+      background: white;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #efefef;
+    }
+    .feed-post-header {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.75rem 1rem;
+    }
+    .feed-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .feed-post-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .feed-post-info h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #262626;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .feed-post-info span {
+      font-size: 0.7rem;
+      color: #8e8e8e;
+    }
+    .feed-follow-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #0095f6;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      flex-shrink: 0;
+    }
+    .feed-follow-btn.following { color: #8e8e8e; }
+    .feed-post-type {
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .type-event { background: #e8f5e9; color: #2e7d32; }
+    .type-update { background: #e3f2fd; color: #1565c0; }
+    .type-pooja { background: #fff3e0; color: #e65100; }
+    .type-photo { background: #fce4ec; color: #c62828; }
+    .type-donation { background: #f3e5f5; color: #6a1b9a; }
+
+    /* Post Image */
+    .feed-post-image {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5rem;
+      position: relative;
+      user-select: none;
+    }
+    .feed-post-image .dbl-heart {
+      position: absolute;
+      font-size: 5rem;
+      animation: heartBurst 0.8s ease-out forwards;
+      pointer-events: none;
+      z-index: 5;
+    }
+    @keyframes heartBurst {
+      0% { transform: scale(0); opacity: 1; }
+      30% { transform: scale(1.3); opacity: 1; }
+      60% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+
+    /* Action Bar */
+    .feed-action-bar {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+    }
+    .feed-action-bar .left-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .feed-action-bar .right-actions {
+      margin-left: auto;
+    }
+    .feed-action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.4rem;
+      padding: 0.2rem;
+      transition: transform 0.15s;
+      line-height: 1;
+    }
+    .feed-action-btn:active { transform: scale(1.2); }
+    .feed-action-btn.liked { animation: likeAnim 0.3s ease; }
+    @keyframes likeAnim {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    /* Like count & Caption */
+    .feed-like-count {
+      padding: 0 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #262626;
+    }
+    .feed-caption {
+      padding: 0.25rem 1rem 0;
+      font-size: 0.85rem;
+      color: #262626;
+      line-height: 1.4;
+    }
+    .feed-caption .temple-name {
+      font-weight: 600;
+      margin-right: 0.35rem;
+    }
+    .feed-view-comments {
+      padding: 0.2rem 1rem;
+      font-size: 0.8rem;
+      color: #8e8e8e;
+      cursor: pointer;
+      border: none;
+      background: none;
+      display: block;
+    }
+    .feed-preview-comment {
+      padding: 0 1rem;
+      font-size: 0.82rem;
+      color: #262626;
+      line-height: 1.4;
+    }
+    .feed-preview-comment .cmt-user {
+      font-weight: 600;
+      margin-right: 0.3rem;
+    }
+    .feed-comment-input-row {
+      display: flex;
+      align-items: center;
+      padding: 0.6rem 1rem;
+      border-top: 1px solid #efefef;
+      margin-top: 0.4rem;
+      gap: 0.5rem;
+    }
+    .feed-comment-input-row .mini-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #efefef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      flex-shrink: 0;
+    }
+    .feed-comment-input-row input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.8rem;
+      color: #262626;
+      background: transparent;
+    }
+    .feed-comment-input-row input::placeholder { color: #8e8e8e; }
+
+    /* Comment Bottom Sheet Modal */
+    .comment-modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .comment-modal-overlay.open { display: flex; }
+    .comment-modal {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      max-height: 70vh;
+      border-radius: 16px 16px 0 0;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .comment-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      border-bottom: 1px solid #efefef;
+      position: relative;
+    }
+    .comment-modal-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #262626;
+    }
+    .comment-modal-close {
+      position: absolute;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #262626;
+    }
+    .comment-modal-handle {
+      width: 36px;
+      height: 4px;
+      background: #dbdbdb;
+      border-radius: 2px;
+      margin: 0.5rem auto 0;
+    }
+    .comment-modal-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.75rem 1rem;
+    }
+    .comment-item {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .comment-item .cmt-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #efefef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      font-weight: 600;
+      color: #8e8e8e;
+    }
+    .comment-item .cmt-body {
+      flex: 1;
+    }
+    .comment-item .cmt-body .cmt-username {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #262626;
+      margin-right: 0.3rem;
+    }
+    .comment-item .cmt-body .cmt-text {
+      font-size: 0.82rem;
+      color: #262626;
+      line-height: 1.4;
+    }
+    .comment-item .cmt-body .cmt-time {
+      font-size: 0.7rem;
+      color: #8e8e8e;
+      margin-top: 0.2rem;
+    }
+    .comment-modal-input {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid #efefef;
+    }
+    .comment-modal-input .cmt-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f09433, #dc2743);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      color: white;
+      font-weight: 600;
+    }
+    .comment-modal-input input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 0.85rem;
+      color: #262626;
+    }
+    .comment-modal-input input::placeholder { color: #8e8e8e; }
+    .comment-modal-input .post-cmt-btn {
+      background: none;
+      border: none;
+      color: #0095f6;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+    .comment-modal-input .post-cmt-btn.active { opacity: 1; }
+
+    /* Toast */
+    .ig-toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #262626;
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      z-index: 2000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .ig-toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="feed-header">
+      <h2>Temple Feed</h2>
+      <div class="feed-header-icons">
+        <span>🔔</span>
+        <span>✉️</span>
+      </div>
+    </div>
+
+    <!-- Stories Bar -->
+    <div class="stories-bar" id="stories-bar"></div>
+
+    <!-- Tabs -->
+    <div class="feed-tabs">
+      <button class="feed-tab active" onclick="switchFeedTab(this, 'foryou')">For You</button>
+      <button class="feed-tab" onclick="switchFeedTab(this, 'following')">Following</button>
+      <button class="feed-tab" onclick="switchFeedTab(this, 'trending')">Trending</button>
+    </div>
+
+    <!-- Feed Posts -->
+    <div id="feed-content"></div>
+
+    <!-- Comment Bottom Sheet Modal -->
+    <div class="comment-modal-overlay" id="commentModal" onclick="closeCommentModal(event)">
+      <div class="comment-modal" onclick="event.stopPropagation()">
+        <div class="comment-modal-handle"></div>
+        <div class="comment-modal-header">
+          <h3>Comments</h3>
+          <button class="comment-modal-close" onclick="closeCommentModalDirect()">✕</button>
+        </div>
+        <div class="comment-modal-list" id="commentModalList"></div>
+        <div class="comment-modal-input">
+          <div class="cmt-avatar" id="cmtUserAvatar">🙏</div>
+          <input type="text" id="commentModalInput" placeholder="Add a comment..." oninput="onCommentInput()" onkeydown="if(event.key==='Enter')addComment(currentCommentPost)">
+          <button class="post-cmt-btn" id="postCmtBtn" onclick="addComment(currentCommentPost)">Post</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="ig-toast" id="igToast"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item active"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Stories data
+    const stories = [
+      { name: 'Meenakshi', icon: '🙏' },
+      { name: 'Tirumala', icon: '🛕' },
+      { name: 'Brihadeeswarar', icon: '🔱' },
+      { name: 'Palani', icon: '🗡' },
+      { name: 'Ranganatha', icon: '🛕' },
+      { name: 'Chidambaram', icon: '💃' }
+    ];
+
+    // Feed posts data
+    const feedPosts = [
+      { temple: 'Sri Ranganathaswamy Temple', icon: '🛕', color: '#e8f5e9', time: '2h', image_bg: '#1565c0,#0d47a1', image_emoji: '🎆', title: 'Maha Shivaratri Special', caption: 'Special abhishekam with Rudra Namakam & Chamakam. Temple open 6 AM to midnight. Free annadhanam for all devotees.', likes: 128, comments_count: 24, comments: [{user: 'Priya_M', text: 'Amazing celebration! 🙏'}, {user: 'Venkat.R', text: 'Will be there!'}], type: 'Event' },
+      { temple: 'Meenakshi Amman Temple', icon: '🙏', color: '#fce4ec', time: '5h', image_bg: '#c62828,#b71c1c', image_emoji: '📸', title: 'Gopuram Illumination', caption: 'The majestic gopurams lit up beautifully for Panguni Uthiram. A divine sight not to be missed!', likes: 342, comments_count: 56, comments: [{user: 'Lakshmi.S', text: 'Breathtaking view 😍'}, {user: 'Karthik_V', text: 'Best temple in India'}], type: 'Photo' },
+      { temple: 'Tirumala Venkateswara', icon: '🙏', color: '#fff3e0', time: '8h', image_bg: '#2e7d32,#1b5e20', image_emoji: '🌄', title: 'Sunrise at Tirumala', caption: 'The divine sunrise view from Tirumala hills. Early morning darshan is a blissful experience.', likes: 567, comments_count: 89, comments: [{user: 'Ravi_K', text: 'Govinda Govinda! 🙏'}, {user: 'Anitha.P', text: 'Planning to visit next month'}], type: 'Photo' },
+      { temple: 'Palani Murugan Temple', icon: '🗡', color: '#fff8e1', time: '12h', image_bg: '#d84315,#bf360c', image_emoji: '⛰️', title: 'Motta Seva Online Booking', caption: 'Book your tonsure seva online now! Select preferred date & time. Walk-in also available with longer wait.', likes: 178, comments_count: 31, comments: [{user: 'Murugan_D', text: 'Booked for next week!'}, {user: 'Selvi.M', text: 'Very convenient service'}], type: 'Update' },
+      { temple: 'Brihadeeswarar Temple', icon: '🔱', color: '#e8eaf6', time: '1d', image_bg: '#4a148c,#311b92', image_emoji: '🏛️', title: 'Annadhanam Drive - Feed 10,000', caption: 'This Shivaratri, help us serve free meals to 10,000 devotees. Just ₹100 feeds one person. Join the cause!', likes: 421, comments_count: 67, comments: [{user: 'Senthil.K', text: 'Donated! Great initiative 💪'}, {user: 'Divya.R', text: 'Sharing with family'}], type: 'Donation' },
+      { temple: 'Siddhivinayak Temple', icon: '🐘', color: '#fff3e0', time: '1d', image_bg: '#e65100,#bf360c', image_emoji: '🪔', title: 'Sankashti Chaturthi Pooja', caption: 'Special Ganapathi Abhishekam and 21 Modak offering. Moonrise aarti live streamed. Book now!', likes: 215, comments_count: 43, comments: [{user: 'Ganesh.P', text: 'Vakratunda Mahakaya! 🙏'}, {user: 'Sneha.J', text: 'Booked my pooja online'}], type: 'Pooja' },
+      { temple: 'Chidambaram Nataraja', icon: '🔱', color: '#e3f2fd', time: '2d', image_bg: '#0d47a1,#01579b', image_emoji: '💃', title: 'Natyanjali Dance Festival', caption: 'Annual Natyanjali festival begins! Watch classical dance performances dedicated to Lord Nataraja.', likes: 289, comments_count: 52, comments: [{user: 'Bharathi.N', text: 'The best dance festival!'}, {user: 'Kumar.S', text: 'Coming from Chennai'}], type: 'Event' },
+      { temple: 'Kapaleeswarar Temple', icon: '🛕', color: '#e8f5e9', time: '3d', image_bg: '#ff6f00,#e65100', image_emoji: '🎉', title: 'Arubathu Moovar Festival', caption: 'Grand 63 Nayanmars procession through Mylapore streets. Evening cultural programs and annadhanam.', likes: 156, comments_count: 28, comments: [{user: 'Ramya.S', text: 'Mylapore vibes! ❤️'}, {user: 'Arun.V', text: 'Best time to visit'}], type: 'Event' }
+    ];
+
+    let currentCommentPost = null;
+
+    // Initialize
+    function initFeed() {
+      renderStories();
+      renderPosts();
+    }
+
+    // Render Stories
+    function renderStories() {
+      const bar = document.getElementById('stories-bar');
+      bar.innerHTML = stories.map(s => `
+        <div class="story-item" onclick="igToast('Coming soon!')">
+          <div class="story-ring">
+            <div class="story-ring-inner">${s.icon}</div>
+          </div>
+          <span class="story-name">${s.name}</span>
+        </div>
+      `).join('');
+    }
+
+    // Get persisted data
+    function getFeedLikes() {
+      try { return JSON.parse(localStorage.getItem('feed_likes')) || {}; } catch(e) { return {}; }
+    }
+    function getFeedSaves() {
+      try { return JSON.parse(localStorage.getItem('feed_saves')) || {}; } catch(e) { return {}; }
+    }
+    function getFeedComments() {
+      try { return JSON.parse(localStorage.getItem('feed_comments')) || {}; } catch(e) { return {}; }
+    }
+    function getFollowing() {
+      try { return JSON.parse(localStorage.getItem('temple_following')) || []; } catch(e) { return []; }
+    }
+    function getUserName() {
+      try {
+        const u = JSON.parse(localStorage.getItem('temple_user'));
+        return u && u.name ? u.name : 'Devotee';
+      } catch(e) { return 'Devotee'; }
+    }
+
+    // Render Posts
+    function renderPosts(filter) {
+      const container = document.getElementById('feed-content');
+      const likes = getFeedLikes();
+      const saves = getFeedSaves();
+      const following = getFollowing();
+      const userComments = getFeedComments();
+
+      let posts = feedPosts;
+      if (filter === 'following') {
+        posts = feedPosts.filter(p => following.includes(p.temple));
+      } else if (filter === 'trending') {
+        posts = [...feedPosts].sort((a, b) => b.likes - a.likes);
+      }
+
+      if (posts.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:3rem 1rem;color:#8e8e8e;"><p style="font-size:2.5rem;">🛕</p><p style="font-weight:600;color:#262626;margin:0.5rem 0;">No posts yet</p><p style="font-size:0.85rem;">Follow temples to see their updates here</p></div>';
+        return;
+      }
+
+      container.innerHTML = posts.map((post, realIdx) => {
+        const idx = feedPosts.indexOf(post);
+        const isLiked = likes[idx] === true;
+        const isSaved = saves[idx] === true;
+        const isFollowing = following.includes(post.temple);
+        const likeCount = isLiked ? post.likes + 1 : post.likes;
+        const extraComments = userComments[idx] || [];
+        const allPreviewComments = [...post.comments, ...extraComments];
+        const totalComments = post.comments_count + extraComments.length;
+        const typeClass = 'type-' + post.type.toLowerCase();
+
+        return `
+        <div class="feed-post" data-post-idx="${idx}">
+          <div class="feed-post-header">
+            <div class="feed-avatar" style="background:${post.color};">${post.icon}</div>
+            <div class="feed-post-info">
+              <h4>${post.temple}</h4>
+              <span>${post.time} ago · <span class="feed-post-type ${typeClass}">${post.type}</span></span>
+            </div>
+            <button class="feed-follow-btn ${isFollowing ? 'following' : ''}" onclick="toggleFeedFollow('${post.temple.replace(/'/g, "\\'")}', this)">${isFollowing ? 'Following' : 'Follow'}</button>
+          </div>
+          <div class="feed-post-image" style="background:linear-gradient(135deg,${post.image_bg});" ondblclick="doubleTapLike(${idx}, this)">${post.image_emoji}</div>
+          <div class="feed-action-bar">
+            <div class="left-actions">
+              <button class="feed-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleFeedLike(${idx})" id="likeBtn${idx}">${isLiked ? '❤️' : '🤍'}</button>
+              <button class="feed-action-btn" onclick="openComments(${idx})">💬</button>
+              <button class="feed-action-btn" onclick="shareFeedPost(${idx})">📤</button>
+            </div>
+            <div class="right-actions">
+              <button class="feed-action-btn" onclick="toggleFeedSave(${idx})" id="saveBtn${idx}">${isSaved ? '🔖' : '🔖'}</button>
+            </div>
+          </div>
+          <div class="feed-like-count" id="likeCount${idx}">Liked by <b>${likeCount.toLocaleString()}</b> devotees</div>
+          <div class="feed-caption"><span class="temple-name">${post.temple}</span>${post.caption}</div>
+          <button class="feed-view-comments" onclick="openComments(${idx})">View all ${totalComments} comments</button>
+          ${allPreviewComments.slice(0, 2).map(c => `<div class="feed-preview-comment"><span class="cmt-user">${c.user}</span>${c.text}</div>`).join('')}
+          <div class="feed-comment-input-row">
+            <div class="mini-avatar">🙏</div>
+            <input type="text" placeholder="Add a comment..." onfocus="openComments(${idx})" readonly>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Toggle Like
+    function toggleFeedLike(postIdx) {
+      const likes = getFeedLikes();
+      likes[postIdx] = !likes[postIdx];
+      localStorage.setItem('feed_likes', JSON.stringify(likes));
+
+      const btn = document.getElementById('likeBtn' + postIdx);
+      const countEl = document.getElementById('likeCount' + postIdx);
+      const post = feedPosts[postIdx];
+      const isLiked = likes[postIdx];
+      btn.textContent = isLiked ? '❤️' : '🤍';
+      btn.classList.toggle('liked', isLiked);
+      if (isLiked) btn.style.animation = 'none'; // reset
+      requestAnimationFrame(() => { btn.style.animation = ''; });
+      const count = isLiked ? post.likes + 1 : post.likes;
+      countEl.innerHTML = 'Liked by <b>' + count.toLocaleString() + '</b> devotees';
+    }
+
+    // Double-tap to like
+    function doubleTapLike(postIdx, imageEl) {
+      const likes = getFeedLikes();
+      if (!likes[postIdx]) {
+        toggleFeedLike(postIdx);
+      }
+      // Show heart animation
+      const heart = document.createElement('span');
+      heart.className = 'dbl-heart';
+      heart.textContent = '❤️';
+      imageEl.appendChild(heart);
+      setTimeout(() => heart.remove(), 900);
+    }
+
+    // Toggle Save
+    function toggleFeedSave(postIdx) {
+      const saves = getFeedSaves();
+      saves[postIdx] = !saves[postIdx];
+      localStorage.setItem('feed_saves', JSON.stringify(saves));
+      const btn = document.getElementById('saveBtn' + postIdx);
+      btn.textContent = saves[postIdx] ? '📑' : '🔖';
+      igToast(saves[postIdx] ? 'Post saved' : 'Post unsaved');
+    }
+
+    // Switch Tab
+    let currentFilter = 'foryou';
+    function switchFeedTab(btn, type) {
+      document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = type;
+      if (type === 'foryou') renderPosts();
+      else renderPosts(type);
+    }
+
+    // Follow / Unfollow
+    function toggleFeedFollow(templeName, btn) {
+      let following = getFollowing();
+      const idx = following.indexOf(templeName);
+      if (idx > -1) {
+        following.splice(idx, 1);
+        if (btn) { btn.textContent = 'Follow'; btn.classList.remove('following'); }
+        igToast('Unfollowed ' + templeName);
+      } else {
+        following.push(templeName);
+        if (btn) { btn.textContent = 'Following'; btn.classList.add('following'); }
+        igToast('Following ' + templeName);
+      }
+      localStorage.setItem('temple_following', JSON.stringify(following));
+      // Re-render if on following tab
+      if (currentFilter === 'following') renderPosts('following');
+    }
+
+    // Share
+    function shareFeedPost(postIdx) {
+      const post = feedPosts[postIdx];
+      const text = post.temple + ' - ' + post.title + ': ' + post.caption;
+      if (navigator.share) {
+        navigator.share({ title: post.title, text: text }).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(text).then(() => {
+          igToast('Copied to clipboard!');
+        }).catch(() => {
+          igToast('Could not share');
+        });
+      }
+    }
+
+    // Open Comments Modal
+    function openComments(postIdx) {
+      currentCommentPost = postIdx;
+      const post = feedPosts[postIdx];
+      const userComments = getFeedComments();
+      const extra = userComments[postIdx] || [];
+      const allComments = [...post.comments, ...extra];
+
+      const list = document.getElementById('commentModalList');
+      list.innerHTML = allComments.map(c => `
+        <div class="comment-item">
+          <div class="cmt-avatar">${c.user.charAt(0).toUpperCase()}</div>
+          <div class="cmt-body">
+            <span class="cmt-username">${c.user}</span>
+            <span class="cmt-text">${c.text}</span>
+            <div class="cmt-time">${c.time || post.time + ' ago'}</div>
+          </div>
+        </div>
+      `).join('');
+
+      const userName = getUserName();
+      document.getElementById('cmtUserAvatar').textContent = userName.charAt(0).toUpperCase();
+      document.getElementById('commentModalInput').value = '';
+      document.getElementById('postCmtBtn').classList.remove('active');
+
+      document.getElementById('commentModal').classList.add('open');
+    }
+
+    function closeCommentModal(e) {
+      if (e.target === document.getElementById('commentModal')) {
+        document.getElementById('commentModal').classList.remove('open');
+        currentCommentPost = null;
+      }
+    }
+    function closeCommentModalDirect() {
+      document.getElementById('commentModal').classList.remove('open');
+      currentCommentPost = null;
+    }
+
+    function onCommentInput() {
+      const val = document.getElementById('commentModalInput').value.trim();
+      document.getElementById('postCmtBtn').classList.toggle('active', val.length > 0);
+    }
+
+    // Add Comment
+    function addComment(postIdx) {
+      if (postIdx === null) return;
+      const input = document.getElementById('commentModalInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const userName = getUserName();
+      const userComments = getFeedComments();
+      if (!userComments[postIdx]) userComments[postIdx] = [];
+      const newComment = { user: userName, text: text, time: 'Just now' };
+      userComments[postIdx].push(newComment);
+      localStorage.setItem('feed_comments', JSON.stringify(userComments));
+
+      input.value = '';
+      document.getElementById('postCmtBtn').classList.remove('active');
+
+      // Re-render comment list in modal
+      openComments(postIdx);
+      // Re-render posts to update preview
+      renderPosts(currentFilter === 'foryou' ? undefined : currentFilter);
+      // Re-open modal since render resets DOM
+      setTimeout(() => {
+        document.getElementById('commentModal').classList.add('open');
+      }, 50);
+    }
+
+    // Toast
+    function igToast(msg) {
+      const t = document.getElementById('igToast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    // Init on load
+    initFeed();
+  </script>
+</body>
+</html>

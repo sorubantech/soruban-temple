@@ -1,0 +1,298 @@
+/* ============================================================
+   SORUBAN TEMPLE — Phone Frame (iPhone 15 Pro)
+   ============================================================ */
+
+@layer components {
+  /* ===== Page Background ===== */
+  .demo-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-body);
+    padding: 20px;
+  }
+
+  /* ===== Phone Container ===== */
+  .phone-container {
+    width: 393px;
+    height: 852px;
+    border-radius: 48px;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-primary);
+    box-shadow:
+      0 0 0 2px #2D2420,
+      0 0 0 4px #4E342E,
+      var(--shadow-xl),
+      0 0 60px rgba(var(--primary-rgb), 0.12);
+    flex-shrink: 0;
+  }
+
+  /* ===== Dynamic Island ===== */
+  .phone-container::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #000;
+    border-radius: 20px;
+    z-index: var(--z-max);
+  }
+
+  /* ===== Status Bar ===== */
+  .status-bar {
+    height: 54px;
+    padding: 14px 28px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: var(--z-sticky);
+    background: transparent;
+  }
+
+  .status-bar .sb-time {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+  }
+
+  .status-bar .sb-icons {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.72rem;
+    color: var(--text-primary);
+  }
+
+  .status-bar .sb-icons i {
+    font-size: 0.68rem;
+  }
+
+  /* Status bar on gradient headers */
+  .header-gradient + .status-bar,
+  .status-bar.sb-light {
+    color: white;
+  }
+  .status-bar.sb-light .sb-time,
+  .status-bar.sb-light .sb-icons {
+    color: white;
+  }
+
+  /* ===== App Shell ===== */
+  .app-shell {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--bg-primary);
+  }
+
+  /* ===== Screen Content Area ===== */
+  .screen-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .screen-content::-webkit-scrollbar { width: 0; }
+  .screen-content { scrollbar-width: none; }
+
+  /* ===== App Header ===== */
+  .app-header {
+    padding: 0 var(--space-5) var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-primary);
+    position: relative;
+    z-index: var(--z-sticky);
+  }
+
+  .app-header-gradient {
+    background: var(--gradient-primary);
+    padding: var(--space-4) var(--space-5);
+    color: white;
+  }
+
+  .app-header .header-title {
+    font-size: var(--text-lg);
+    font-weight: 800;
+    color: var(--text-primary);
+  }
+
+  .app-header-gradient .header-title {
+    color: white;
+  }
+
+  .app-header .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .header-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: background var(--duration-fast) var(--ease-out);
+    backdrop-filter: blur(8px);
+  }
+
+  .header-icon-btn:hover { background: rgba(255, 255, 255, 0.25); }
+
+  .header-icon-btn.btn-subtle {
+    background: var(--bg-inset);
+    color: var(--text-secondary);
+  }
+  .header-icon-btn.btn-subtle:hover { background: var(--border-light); }
+
+  /* ===== Back Header ===== */
+  .back-header {
+    padding: 0 var(--space-4) var(--space-3);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    background: var(--bg-primary);
+    position: relative;
+    z-index: var(--z-sticky);
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: var(--bg-inset);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: none;
+    transition: all var(--duration-fast) var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .back-btn:hover { background: var(--border-light); }
+
+  .back-header .bh-title {
+    font-size: var(--text-md);
+    font-weight: 700;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  /* ===== Bottom Navigation ===== */
+  .bottom-nav {
+    display: flex;
+    align-items: stretch;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-light);
+    padding: var(--space-1) 0;
+    padding-bottom: calc(var(--space-1) + env(safe-area-inset-bottom, 8px));
+    position: relative;
+    z-index: var(--z-sticky);
+  }
+
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: var(--space-2) var(--space-1);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    color: var(--text-muted);
+    border: none;
+    background: none;
+    position: relative;
+  }
+
+  .nav-item i {
+    font-size: 1.15rem;
+    transition: transform var(--duration-normal) var(--ease-spring);
+  }
+
+  .nav-item span {
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-item.active {
+    color: var(--primary);
+  }
+
+  .nav-item.active i {
+    transform: scale(1.1);
+  }
+
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2.5px;
+    background: var(--primary);
+    border-radius: 0 0 var(--radius-full) var(--radius-full);
+  }
+
+  /* ===== Notification Badge on Nav ===== */
+  .nav-item .nav-badge {
+    position: absolute;
+    top: 4px;
+    right: calc(50% - 16px);
+    min-width: 16px;
+    height: 16px;
+    border-radius: var(--radius-full);
+    background: var(--sacred-red);
+    color: white;
+    font-size: 0.55rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+  }
+
+  /* ===== Responsive — Full Screen on Mobile ===== */
+  @media (max-width: 420px) {
+    .demo-page {
+      padding: 0;
+      align-items: stretch;
+    }
+
+    .phone-container {
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .phone-container::before {
+      /* Keep dynamic island on notch phones */
+    }
+  }
+}

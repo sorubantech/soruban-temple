@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Darshan Token - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .darshan-type {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 0.75rem;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .darshan-type:hover, .darshan-type.selected {
+      border-color: var(--primary);
+    }
+    .darshan-type.selected { background: #fff3e0; }
+    .dt-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.15rem;
+    }
+    .dt-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .dt-info h3 { font-size: 0.95rem; font-weight: 700; }
+    .dt-info p { font-size: 0.78rem; color: var(--text-light); margin-top: 0.15rem; }
+    .dt-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.65rem 1.15rem;
+      border-top: 1px solid #f5f5f5;
+      background: #fafafa;
+      font-size: 0.8rem;
+    }
+    .dt-price { font-weight: 700; color: var(--primary); font-size: 0.95rem; }
+    .dt-wait { color: var(--text-light); }
+    .time-slots {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .ts-btn {
+      padding: 0.65rem 0.35rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .ts-btn:hover, .ts-btn.selected {
+      border-color: var(--primary);
+      background: #fff3e0;
+    }
+    .ts-btn.full {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .ts-btn .ts-time {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .ts-btn .ts-avail {
+      font-size: 0.65rem;
+      color: var(--text-light);
+      margin-top: 0.15rem;
+    }
+    .ts-btn.selected .ts-time { color: var(--primary); }
+    .token-preview {
+      background: white;
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      margin: 1rem 0;
+      display: none;
+    }
+    .token-preview.show { display: block; }
+    .token-preview .tp-label {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .token-preview .tp-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 0.35rem 0;
+    }
+    .token-preview .tp-details {
+      font-size: 0.85rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .guidelines {
+      background: #fff3e0;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+    .guidelines strong { color: var(--primary); }
+    .guidelines ul { padding-left: 1.25rem; margin-top: 0.35rem; }
+    .guidelines li { list-style: disc; padding: 0.1rem 0; }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2 data-lang="darshan_token">Darshan Token</h2>
+    </div>
+
+    <div class="section">
+      <!-- Darshan Type -->
+      <div class="section-title" data-lang="select_darshan_type">Select Darshan Type</div>
+
+      <div class="darshan-type" onclick="selectDarshan(this, 'Free Darshan', 0, '3-4 hrs')">
+        <div class="dt-top">
+          <div class="dt-badge" style="background:#e8f5e9;">🙏</div>
+          <div class="dt-info">
+            <h3 data-lang="free_darshan">Free Darshan (Sarva Darshan)</h3>
+            <p data-lang="free_darshan_desc">General queue darshan open to all devotees. No booking fee.</p>
+          </div>
+        </div>
+        <div class="dt-meta">
+          <span class="dt-price" data-lang="free">Free</span>
+          <span class="dt-wait">Wait: ~3-4 hours</span>
+        </div>
+      </div>
+
+      <div class="darshan-type" onclick="selectDarshan(this, 'Special Darshan', 300, '30-60 min')">
+        <div class="dt-top">
+          <div class="dt-badge" style="background:#fff3e0;">⭐</div>
+          <div class="dt-info">
+            <h3 data-lang="special_darshan">Special Darshan</h3>
+            <p data-lang="special_darshan_desc">Priority queue with shorter waiting time. Limited tokens per day.</p>
+          </div>
+        </div>
+        <div class="dt-meta">
+          <span class="dt-price">₹300 / person</span>
+          <span class="dt-wait">Wait: ~30-60 min</span>
+        </div>
+      </div>
+
+      <div class="darshan-type" onclick="selectDarshan(this, 'VIP Darshan', 500, '15-20 min')">
+        <div class="dt-top">
+          <div class="dt-badge" style="background:#fce4ec;">💎</div>
+          <div class="dt-info">
+            <h3 data-lang="vip_darshan">VIP Darshan</h3>
+            <p data-lang="vip_darshan_desc">Express queue with minimal wait. Includes close darshan and prasadam.</p>
+          </div>
+        </div>
+        <div class="dt-meta">
+          <span class="dt-price">₹500 / person</span>
+          <span class="dt-wait">Wait: ~15-20 min</span>
+        </div>
+      </div>
+
+      <div class="darshan-type" onclick="selectDarshan(this, 'Senior Citizen / Divyang', 0, '20-30 min')">
+        <div class="dt-top">
+          <div class="dt-badge" style="background:#e3f2fd;">♿</div>
+          <div class="dt-info">
+            <h3 data-lang="senior_darshan">Senior Citizen / Divyang</h3>
+            <p data-lang="senior_darshan_desc">Special queue for age 65+ and differently-abled devotees. ID proof required.</p>
+          </div>
+        </div>
+        <div class="dt-meta">
+          <span class="dt-price">Free</span>
+          <span class="dt-wait">Wait: ~20-30 min</span>
+        </div>
+      </div>
+
+      <!-- Select Temple -->
+      <div class="form-group" style="margin-top:1rem;">
+        <label data-lang="select_temple">Select Temple</label>
+        <select id="darshan-temple" required>
+          <option value="">-- Select Temple --</option>
+          <optgroup label="Shiva Temples">
+            <option value="Chidambaram Nataraja Temple">Chidambaram Nataraja Temple</option>
+            <option value="Brihadeeswarar Temple, Thanjavur">Brihadeeswarar Temple, Thanjavur</option>
+            <option value="Arunachaleswarar Temple, Tiruvannamalai">Arunachaleswarar Temple, Tiruvannamalai</option>
+            <option value="Ramanathaswamy Temple, Rameswaram">Ramanathaswamy Temple, Rameswaram</option>
+            <option value="Ekambareswarar Temple, Kanchipuram">Ekambareswarar Temple, Kanchipuram</option>
+            <option value="Kapaleeswarar Temple, Mylapore">Kapaleeswarar Temple, Mylapore</option>
+          </optgroup>
+          <optgroup label="Vishnu Temples">
+            <option value="Tirumala Venkateswara Temple">Tirumala Venkateswara Temple</option>
+            <option value="Ranganathaswamy Temple, Srirangam">Ranganathaswamy Temple, Srirangam</option>
+            <option value="Oppiliappan Temple, Kumbakonam">Oppiliappan Temple, Kumbakonam</option>
+            <option value="Varadaraja Perumal Temple, Kanchipuram">Varadaraja Perumal Temple, Kanchipuram</option>
+            <option value="Parthasarathy Temple, Chennai">Parthasarathy Temple, Chennai</option>
+          </optgroup>
+          <optgroup label="Devi Temples">
+            <option value="Meenakshi Amman Temple, Madurai">Meenakshi Amman Temple, Madurai</option>
+            <option value="Kamakshi Amman Temple, Kanchipuram">Kamakshi Amman Temple, Kanchipuram</option>
+            <option value="Samayapuram Mariamman Temple">Samayapuram Mariamman Temple</option>
+            <option value="Srivilliputhur Andal Temple">Srivilliputhur Andal Temple</option>
+          </optgroup>
+          <optgroup label="Murugan Temples">
+            <option value="Palani Murugan Temple">Palani Murugan Temple</option>
+            <option value="Tiruchendur Murugan Temple">Tiruchendur Murugan Temple</option>
+            <option value="Thirupparankundram Murugan Temple, Madurai">Thirupparankundram Murugan Temple</option>
+            <option value="Swamimalai Murugan Temple">Swamimalai Murugan Temple</option>
+            <option value="Thiruttani Murugan Temple">Thiruttani Murugan Temple</option>
+            <option value="Siruvapuri Murugan Temple">Siruvapuri Murugan Temple</option>
+          </optgroup>
+          <optgroup label="Ganesh Temples">
+            <option value="Pillayarpatti Ganesh Temple">Pillayarpatti Ganesh Temple</option>
+            <option value="Ucchi Pillayar Temple, Trichy">Ucchi Pillayar Temple, Trichy</option>
+            <option value="Siddhivinayak Temple, Mumbai">Siddhivinayak Temple, Mumbai</option>
+            <option value="Eachanari Vinayagar Temple, Coimbatore">Eachanari Vinayagar Temple, Coimbatore</option>
+          </optgroup>
+          <optgroup label="Hanuman Temples">
+            <option value="Namakkal Anjaneyar Temple">Namakkal Anjaneyar Temple</option>
+            <option value="Hanuman Garhi, Ayodhya">Hanuman Garhi, Ayodhya</option>
+          </optgroup>
+          <optgroup label="Navagraha & Other Temples">
+            <option value="Thirunallar Saniswaran Temple, Karaikal">Thirunallar Saniswaran Temple, Karaikal</option>
+            <option value="Suryanar Kovil, Kumbakonam">Suryanar Kovil, Kumbakonam</option>
+            <option value="Vaitheeswaran Koil, Nagapattinam">Vaitheeswaran Koil, Nagapattinam</option>
+            <option value="Naganathaswamy Temple, Thirunageswaram">Naganathaswamy Temple, Thirunageswaram</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- Date Selection -->
+      <div class="form-group">
+        <label data-lang="select_date">Select Date</label>
+        <input type="date" id="darshan-date" required>
+      </div>
+
+      <!-- Time Slot -->
+      <div class="section-title" data-lang="select_time_slot">Select Time Slot</div>
+      <div class="time-slots">
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'6:00 AM')">
+          <div class="ts-time">6:00 AM</div>
+          <div class="ts-avail">120 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'7:00 AM')">
+          <div class="ts-time">7:00 AM</div>
+          <div class="ts-avail">85 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'8:00 AM')">
+          <div class="ts-time">8:00 AM</div>
+          <div class="ts-avail">42 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'9:00 AM')">
+          <div class="ts-time">9:00 AM</div>
+          <div class="ts-avail">18 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'10:00 AM')">
+          <div class="ts-time">10:00 AM</div>
+          <div class="ts-avail">65 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'11:00 AM')">
+          <div class="ts-time">11:00 AM</div>
+          <div class="ts-avail">90 left</div>
+        </button>
+        <button type="button" class="ts-btn full">
+          <div class="ts-time">12:00 PM</div>
+          <div class="ts-avail">Break</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'2:00 PM')">
+          <div class="ts-time">2:00 PM</div>
+          <div class="ts-avail">110 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'3:00 PM')">
+          <div class="ts-time">3:00 PM</div>
+          <div class="ts-avail">75 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'4:00 PM')">
+          <div class="ts-time">4:00 PM</div>
+          <div class="ts-avail">50 left</div>
+        </button>
+        <button type="button" class="ts-btn" onclick="selectTimeSlot(this,'5:00 PM')">
+          <div class="ts-time">5:00 PM</div>
+          <div class="ts-avail">30 left</div>
+        </button>
+        <button type="button" class="ts-btn full">
+          <div class="ts-time">6:00 PM</div>
+          <div class="ts-avail">Full</div>
+        </button>
+      </div>
+
+      <!-- Devotee Details -->
+      <div class="form-group">
+        <label data-lang="num_persons">Number of Persons</label>
+        <select id="darshan-persons">
+          <option value="1">1 Person</option>
+          <option value="2">2 Persons</option>
+          <option value="3">3 Persons</option>
+          <option value="4">4 Persons</option>
+          <option value="5">5 Persons</option>
+          <option value="6">6 Persons</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label data-lang="primary_devotee">Primary Devotee Name</label>
+        <input type="text" id="darshan-name" data-lang-placeholder="enter_fullname" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label data-lang="phone_number">Phone Number</label>
+        <input type="tel" id="darshan-phone" data-lang-placeholder="for_token_sms" placeholder="For token SMS & updates" required>
+      </div>
+
+      <div class="form-group">
+        <label data-lang="id_proof">ID Proof Number</label>
+        <input type="text" id="darshan-id" data-lang-placeholder="id_placeholder" placeholder="Aadhaar / PAN / Voter ID number">
+      </div>
+
+      <!-- Token Preview -->
+      <div class="token-preview" id="token-preview">
+        <div class="tp-label" data-lang="your_darshan_token">Your Darshan Token</div>
+        <div class="tp-number" id="tp-number">-</div>
+        <div class="tp-details" id="tp-details"></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="bookDarshanToken()" data-lang="get_darshan_token">Get Darshan Token</button>
+
+      <!-- Guidelines -->
+      <div class="guidelines">
+        <strong data-lang="darshan_guidelines">Darshan Guidelines:</strong>
+        <ul>
+          <li data-lang="guideline_1">Arrive 30 minutes before your slot time</li>
+          <li data-lang="guideline_2">Carry a valid government ID proof</li>
+          <li data-lang="guideline_3">Mobile phones & cameras not allowed inside sanctum</li>
+          <li data-lang="guideline_4">Dress code: Traditional attire recommended</li>
+          <li data-lang="guideline_5">Token is non-transferable & valid for selected date only</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let darshanType = null;
+    let selectedSlot = '';
+
+    function selectDarshan(el, type, price, wait) {
+      document.querySelectorAll('.darshan-type').forEach(d => d.classList.remove('selected'));
+      el.classList.add('selected');
+      darshanType = { type, price, wait };
+    }
+
+    function selectTimeSlot(el, time) {
+      document.querySelectorAll('.ts-btn').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedSlot = time;
+    }
+
+    // Pre-fill temple from localStorage if user came from a specific temple page
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        var selTemple = JSON.parse(localStorage.getItem('selected_temple'));
+        if (selTemple && selTemple.name) {
+          var templeSelect = document.getElementById('darshan-temple');
+          if (templeSelect) {
+            var opts = templeSelect.options;
+            for (var i = 0; i < opts.length; i++) {
+              if (opts[i].value && selTemple.name.indexOf(opts[i].value.split(',')[0]) !== -1) {
+                templeSelect.value = opts[i].value;
+                break;
+              }
+            }
+          }
+        }
+      } catch(e) {}
+
+      // Pre-fill name from profile
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user'));
+        if (user && user.name) {
+          var nameEl = document.getElementById('darshan-name');
+          if (nameEl && !nameEl.value) nameEl.value = user.name;
+        }
+        if (user && user.phone) {
+          var phoneEl = document.getElementById('darshan-phone');
+          if (phoneEl && !phoneEl.value) phoneEl.value = user.phone;
+        }
+      } catch(e) {}
+
+      // Set min date to today
+      var dateInput = document.getElementById('darshan-date');
+      if (dateInput) {
+        var today = new Date();
+        dateInput.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+        dateInput.min = dateInput.value;
+      }
+    });
+
+    function bookDarshanToken() {
+      if (!darshanType) { showToast(t('select_darshan_error', 'Please select darshan type'), 'error'); return; }
+      const temple = document.getElementById('darshan-temple').value;
+      if (!temple) { showToast(t('select_temple_error', 'Please select a temple'), 'error'); return; }
+      const date = document.getElementById('darshan-date').value;
+      if (!date) { showToast(t('select_date_error', 'Please select a date'), 'error'); return; }
+      if (!selectedSlot) { showToast(t('select_slot_error', 'Please select a time slot'), 'error'); return; }
+      const name = document.getElementById('darshan-name').value;
+      if (!name) { showToast(t('enter_name_error', 'Please enter your name'), 'error'); return; }
+      const persons = document.getElementById('darshan-persons').value;
+      const total = darshanType.price * persons;
+      const tokenNum = 'T' + Math.floor(1000 + Math.random() * 9000);
+
+      // Show token
+      const preview = document.getElementById('token-preview');
+      preview.classList.add('show');
+      document.getElementById('tp-number').textContent = tokenNum;
+      document.getElementById('tp-details').innerHTML =
+        `${temple}<br>${darshanType.type}<br>${date} at ${selectedSlot}<br>${name} · ${persons} person(s)<br>${total > 0 ? '₹' + total : 'Free'}`;
+
+      // Save booking
+      const bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+      bookings.push({
+        id: Date.now(),
+        type: 'Darshan Token',
+        pooja: darshanType.type,
+        temple: temple,
+        token: tokenNum,
+        price: total,
+        name, date,
+        slot: selectedSlot,
+        persons: Number(persons),
+        status: 'Confirmed'
+      });
+      localStorage.setItem('temple_bookings', JSON.stringify(bookings));
+
+      showModal('🎫', 'Token Booked: ' + tokenNum,
+        `${darshanType.type} for ${persons} person(s) on ${date} at ${selectedSlot}. ${total > 0 ? 'Amount: ₹' + total + '.' : ''} Please arrive 30 min early with ID proof. Token SMS sent to your phone.`,
+        'Done', () => {});
+    }
+  </script>
+</body>
+</html>

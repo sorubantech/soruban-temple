@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple Community - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== Community Header ===== */
+    .community-header {
+      background: linear-gradient(135deg, #e65100, #bf360c);
+      color: white;
+      padding: 1rem 1.25rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .community-header h2 { font-size: 1.2rem; font-weight: 800; }
+    .community-header-icons { display: flex; gap: 0.85rem; font-size: 1.2rem; }
+    .community-header-icons span { cursor: pointer; opacity: 0.9; }
+    .community-header-icons span:hover { opacity: 1; }
+
+    /* ===== Category Tabs ===== */
+    .community-tabs {
+      display: flex;
+      overflow-x: auto;
+      background: white;
+      border-bottom: 1px solid #eee;
+      padding: 0;
+      scrollbar-width: none;
+      position: sticky;
+      top: 52px;
+      z-index: 90;
+    }
+    .community-tabs::-webkit-scrollbar { display: none; }
+    .community-tab {
+      flex-shrink: 0;
+      padding: 0.7rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #999;
+      border: none;
+      background: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+    .community-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* ===== Create Post Button ===== */
+    .create-post-fab {
+      position: fixed;
+      bottom: 80px;
+      right: 16px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e65100, #ff9800);
+      color: white;
+      border: none;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 16px rgba(230,81,0,0.4);
+      cursor: pointer;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: 0.3s;
+    }
+    .create-post-fab:active { transform: scale(0.92); }
+
+    /* ===== Create Post Modal ===== */
+    .create-post-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .create-post-overlay.show { display: flex; }
+    .create-post-sheet {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .create-post-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .create-post-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .create-post-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #999; }
+    .create-post-body { padding: 20px; }
+    .create-post-body .cp-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .create-post-body .cp-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e65100, #ff9800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .create-post-body .cp-name { font-weight: 700; font-size: 0.95rem; }
+    .create-post-body textarea {
+      width: 100%;
+      border: none;
+      font-size: 0.95rem;
+      resize: none;
+      padding: 0;
+      font-family: inherit;
+      color: var(--text);
+      outline: none;
+      min-height: 80px;
+    }
+    .create-post-body textarea::placeholder { color: #bbb; }
+
+    /* Upload Area */
+    .cp-upload-area {
+      border: 2px dashed #ddd;
+      border-radius: 14px;
+      padding: 30px 20px;
+      text-align: center;
+      margin: 16px 0;
+      cursor: pointer;
+      transition: 0.3s;
+      background: #fafafa;
+    }
+    .cp-upload-area:hover { border-color: var(--primary); background: #fff5f0; }
+    .cp-upload-area .upload-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .cp-upload-area p { font-size: 0.85rem; color: #999; }
+    .cp-upload-area small { font-size: 0.75rem; color: #bbb; }
+
+    .cp-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin: 12px 0;
+    }
+    .cp-preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+    .cp-preview-item img, .cp-preview-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .cp-preview-remove {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      border: none;
+      font-size: 0.7rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Post Options */
+    .cp-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0;
+    }
+    .cp-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1.5px solid #e0e0e0;
+      background: white;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #555;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .cp-option.selected { border-color: var(--primary); color: var(--primary); background: #fff5f0; }
+    .cp-option:hover { border-color: var(--primary-light); }
+
+    /* Check-in */
+    .cp-checkin {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #f5f5f5;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+    .cp-checkin.active { background: #fff5f0; border: 1.5px solid var(--primary-light); }
+    .cp-checkin-icon { font-size: 1.3rem; }
+    .cp-checkin-text { font-size: 0.85rem; color: #555; }
+    .cp-checkin-text strong { color: var(--primary); }
+
+    .cp-submit-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e65100, #ff9800);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: 0.3s;
+    }
+    .cp-submit-btn:active { transform: scale(0.97); }
+    .cp-submit-btn:disabled { opacity: 0.5; }
+
+    /* ===== Community Post Card ===== */
+    .community-post {
+      background: white;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .cp-post-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px 8px;
+      gap: 10px;
+    }
+    .cp-post-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    .cp-post-user-info { flex: 1; }
+    .cp-post-user-info .cp-post-name {
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cp-post-user-info .cp-post-meta {
+      font-size: 0.72rem;
+      color: #999;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1px;
+    }
+    .cp-post-checkin {
+      font-size: 0.72rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+    .cp-post-follow {
+      padding: 5px 16px;
+      border-radius: 8px;
+      border: 1.5px solid var(--primary);
+      background: none;
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .cp-post-follow.following {
+      background: var(--primary);
+      color: white;
+    }
+    .cp-post-more {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #999;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    /* Post caption */
+    .cp-post-caption {
+      padding: 0 14px 8px;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .cp-post-caption .hashtag { color: #1565c0; font-weight: 600; }
+    .cp-category-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+    .tag-festival { background: #fff3e0; color: #e65100; }
+    .tag-experience { background: #e8f5e9; color: #2e7d32; }
+    .tag-annadhanam { background: #fce4ec; color: #c62828; }
+    .tag-event { background: #e3f2fd; color: #1565c0; }
+    .tag-travel { background: #f3e5f5; color: #7b1fa2; }
+
+    /* Post Image/Video */
+    .cp-post-media {
+      width: 100%;
+      position: relative;
+      background: #f5f5f5;
+      overflow: hidden;
+    }
+    .cp-post-media img, .cp-post-media video {
+      width: 100%;
+      display: block;
+      max-height: 420px;
+      object-fit: cover;
+    }
+    .cp-media-grid {
+      display: grid;
+      gap: 2px;
+    }
+    .cp-media-grid.grid-2 { grid-template-columns: 1fr 1fr; }
+    .cp-media-grid.grid-3 { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; }
+    .cp-media-grid.grid-3 > :first-child { grid-row: span 2; }
+    .cp-media-grid img, .cp-media-grid video { width: 100%; height: 100%; object-fit: cover; }
+    .cp-video-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    /* Double tap like animation */
+    .cp-post-media .heart-burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 5rem;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+      pointer-events: none;
+      z-index: 10;
+    }
+    .cp-post-media .heart-burst.animate {
+      animation: heartBurst 0.8s ease forwards;
+    }
+    @keyframes heartBurst {
+      0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+      30% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+      60% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+
+    /* Action Bar */
+    .cp-post-actions {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      gap: 16px;
+    }
+    .cp-action-btn {
+      background: none;
+      border: none;
+      font-size: 1.35rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+    }
+    .cp-action-btn:active { transform: scale(1.2); }
+    .cp-action-btn.liked { color: #e53935; }
+    .cp-action-btn.saved { color: var(--primary); }
+    .cp-share-btn { margin-left: auto; }
+
+    /* Likes & Comments */
+    .cp-post-likes {
+      padding: 0 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .cp-post-comment-preview {
+      padding: 4px 14px 10px;
+      font-size: 0.82rem;
+      color: #999;
+    }
+    .cp-post-time {
+      padding: 0 14px 12px;
+      font-size: 0.7rem;
+      color: #bbb;
+    }
+
+    /* Comment Sheet */
+    .comment-sheet-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .comment-sheet-overlay.show { display: flex; }
+    .comment-sheet {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      max-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.3s ease;
+    }
+    .comment-sheet-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .comment-sheet-header h4 { font-size: 0.95rem; font-weight: 700; }
+    .comment-sheet-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+    }
+    .comment-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .comment-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .comment-content { flex: 1; }
+    .comment-content .comment-name { font-weight: 700; font-size: 0.82rem; }
+    .comment-content .comment-text { font-size: 0.82rem; margin-top: 2px; }
+    .comment-content .comment-time { font-size: 0.68rem; color: #bbb; margin-top: 3px; }
+    .comment-input-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-top: 1px solid #eee;
+    }
+    .comment-input-area input {
+      flex: 1;
+      border: none;
+      font-size: 0.88rem;
+      padding: 10px;
+      background: #f5f5f5;
+      border-radius: 20px;
+      outline: none;
+    }
+    .comment-input-area button {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+
+    /* Report Menu */
+    .post-menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .post-menu-overlay.show { display: flex; }
+    .post-menu {
+      background: white;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 20px 20px 0 0;
+      padding: 8px 0 20px;
+      animation: slideUp 0.3s ease;
+    }
+    .post-menu-handle {
+      width: 40px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 4px;
+      margin: 8px auto 12px;
+    }
+    .post-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .post-menu-item:hover { background: #f5f5f5; }
+    .post-menu-item.danger { color: #c62828; }
+    .post-menu-item .pm-icon { font-size: 1.2rem; width: 24px; text-align: center; }
+
+    /* Empty State */
+    .community-empty {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .community-empty .empty-icon { font-size: 3.5rem; margin-bottom: 14px; }
+    .community-empty h3 { font-size: 1.05rem; font-weight: 700; color: #555; margin-bottom: 6px; }
+    .community-empty p { font-size: 0.85rem; color: #999; }
+
+    /* Moderation notice */
+    .moderation-notice {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #fff8e1;
+      font-size: 0.78rem;
+      color: #f57f17;
+      font-weight: 600;
+    }
+
+    /* Unverified user banner */
+    .unverified-banner {
+      background: linear-gradient(135deg, #ffebee, #fff3e0);
+      border: 1.5px solid #ffcdd2;
+      border-radius: 14px;
+      margin: 12px 14px;
+      padding: 18px 16px;
+      text-align: center;
+    }
+    .unverified-banner .ub-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .unverified-banner h3 { font-size: 0.95rem; font-weight: 700; color: #c62828; margin-bottom: 4px; }
+    .unverified-banner p { font-size: 0.8rem; color: #795548; line-height: 1.5; }
+    .unverified-banner .ub-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; padding: 6px 16px;
+      border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+    }
+    .ub-status.pending { background: #fff8e1; color: #f57f17; }
+    .ub-status.not-requested { background: #f5f5f5; color: #999; }
+
+    /* Pending post overlay badge */
+    .cp-pending-badge {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.7);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 5; pointer-events: none;
+    }
+    .cp-pending-badge span {
+      background: #f57f17; color: white;
+      padding: 8px 20px; border-radius: 20px;
+      font-size: 0.8rem; font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .community-post.pending-post {
+      opacity: 0.75; position: relative;
+    }
+    .community-post.pending-post .cp-post-actions button { pointer-events: none; opacity: 0.4; }
+
+    /* Temple select */
+    .temple-select-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin: 8px 0;
+    }
+    .temple-select-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.88rem;
+    }
+    .temple-select-item:hover { background: #f5f5f5; }
+    .temple-select-item.selected { background: #fff5f0; border: 1.5px solid var(--primary-light); }
+    .temple-select-item .ts-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #ff9800, #e65100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+
+    <!-- Header -->
+    <div class="community-header">
+      <h2>🙏 Temple Community</h2>
+      <div class="community-header-icons">
+        <span onclick="openSearch()">🔍</span>
+        <span onclick="openCreatePost()">📷</span>
+      </div>
+    </div>
+
+    <!-- Moderation Notice -->
+    <div class="moderation-notice">
+      ⚠️ All posts require Super Admin approval before publishing. Be respectful.
+    </div>
+
+    <!-- Verification Banner (shown for unverified users) -->
+    <div id="verification-banner"></div>
+
+    <!-- Category Tabs -->
+    <div class="community-tabs">
+      <button class="community-tab active" onclick="filterCommunity(this, 'all')">All</button>
+      <button class="community-tab" onclick="filterCommunity(this, 'festival')">🎉 Festivals</button>
+      <button class="community-tab" onclick="filterCommunity(this, 'experience')">🙏 Experiences</button>
+      <button class="community-tab" onclick="filterCommunity(this, 'annadhanam')">🍚 Annadhanam</button>
+      <button class="community-tab" onclick="filterCommunity(this, 'event')">📅 Events</button>
+      <button class="community-tab" onclick="filterCommunity(this, 'travel')">📸 Travel</button>
+    </div>
+
+    <!-- Posts Container -->
+    <div id="community-posts">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Create Post FAB -->
+    <button class="create-post-fab" onclick="openCreatePost()">+</button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item active"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <!-- Create Post Sheet -->
+  <div class="create-post-overlay" id="create-post-overlay">
+    <div class="create-post-sheet">
+      <div class="create-post-header">
+        <button class="create-post-close" onclick="closeCreatePost()">&times;</button>
+        <h3>New Community Post</h3>
+        <button class="cp-submit-btn" style="width:auto; padding:8px 20px; margin:0; font-size:0.85rem;" id="post-submit-btn" onclick="submitPost()">Post</button>
+      </div>
+      <div class="create-post-body">
+        <div class="cp-user">
+          <div class="cp-avatar" id="cp-user-avatar">🙏</div>
+          <div>
+            <div class="cp-name" id="cp-user-name">Devotee</div>
+            <div style="font-size:0.75rem; color:#999;">Sharing with community</div>
+          </div>
+        </div>
+
+        <textarea id="cp-caption" placeholder="Share your temple experience, darshan moments, festival celebrations..." rows="3"></textarea>
+
+        <!-- Upload Area -->
+        <div class="cp-upload-area" id="cp-upload-area" onclick="document.getElementById('cp-file-input').click()">
+          <div class="upload-icon">📸</div>
+          <p>Tap to add photos or videos</p>
+          <small>Max 5 images or 1 video (30 sec limit)</small>
+        </div>
+        <input type="file" id="cp-file-input" accept="image/*,video/*" multiple style="display:none;" onchange="handleFileSelect(this)">
+        <div class="cp-preview-grid" id="cp-preview-grid" style="display:none;"></div>
+
+        <!-- Category Selection -->
+        <p style="font-size:0.8rem; font-weight:700; color:#555; margin-top:16px; margin-bottom:8px;">Post Category</p>
+        <div class="cp-options">
+          <div class="cp-option" onclick="selectCategory(this, 'festival')">🎉 Festival</div>
+          <div class="cp-option" onclick="selectCategory(this, 'experience')">🙏 Experience</div>
+          <div class="cp-option" onclick="selectCategory(this, 'annadhanam')">🍚 Annadhanam</div>
+          <div class="cp-option" onclick="selectCategory(this, 'event')">📅 Event</div>
+          <div class="cp-option" onclick="selectCategory(this, 'travel')">📸 Travel</div>
+        </div>
+
+        <!-- Temple Check-in -->
+        <p style="font-size:0.8rem; font-weight:700; color:#555; margin-top:16px; margin-bottom:8px;">📍 Temple Check-in</p>
+        <div class="cp-checkin" id="cp-checkin" onclick="toggleCheckinList()">
+          <span class="cp-checkin-icon">🛕</span>
+          <span class="cp-checkin-text" id="cp-checkin-text">Select a temple to check in</span>
+        </div>
+        <div class="temple-select-list" id="temple-select-list" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comment Sheet -->
+  <div class="comment-sheet-overlay" id="comment-overlay">
+    <div class="comment-sheet">
+      <div class="comment-sheet-header">
+        <h4>Comments</h4>
+        <button class="create-post-close" onclick="closeComments()">&times;</button>
+      </div>
+      <div class="comment-sheet-body" id="comment-list"></div>
+      <div class="comment-input-area">
+        <input type="text" id="comment-input" placeholder="Add a comment...">
+        <button onclick="addComment()">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post Menu (Report/etc) -->
+  <div class="post-menu-overlay" id="post-menu-overlay">
+    <div class="post-menu">
+      <div class="post-menu-handle"></div>
+      <div class="post-menu-item" onclick="reportPost()">
+        <span class="pm-icon">🚩</span> Report Post
+      </div>
+      <div class="post-menu-item" onclick="hidePost()">
+        <span class="pm-icon">🙈</span> Hide Post
+      </div>
+      <div class="post-menu-item" onclick="copyPostLink()">
+        <span class="pm-icon">🔗</span> Copy Link
+      </div>
+      <div class="post-menu-item" onclick="sharePostExternal()">
+        <span class="pm-icon">📤</span> Share Post
+      </div>
+      <div class="post-menu-item danger" id="menu-delete-option" style="display:none;" onclick="deleteMyPost()">
+        <span class="pm-icon">🗑️</span> Delete Post
+      </div>
+      <div class="post-menu-item" onclick="closePostMenu()" style="color:#999;">
+        <span class="pm-icon">✕</span> Cancel
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div id="modal-overlay" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:300; align-items:center; justify-content:center;">
+    <div style="background:white; border-radius:16px; padding:32px; text-align:center; max-width:320px; margin:auto;">
+      <div class="modal-icon" style="font-size:2.5rem; margin-bottom:12px;">✅</div>
+      <h3 style="margin-bottom:8px;">Success</h3>
+      <p style="color:#777; font-size:0.9rem; margin-bottom:16px;"></p>
+      <button class="btn" style="background:var(--primary); color:white; border:none; padding:10px 24px; border-radius:10px; font-weight:700; cursor:pointer;" onclick="this.closest('.modal-overlay').style.display='none'">OK</button>
+    </div>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // ===== Community Posts System =====
+    const COMMUNITY_KEYS = {
+      POSTS: 'community_posts',
+      LIKES: 'community_likes',
+      SAVES: 'community_saves',
+      COMMENTS: 'community_comments',
+      FOLLOWING_USERS: 'community_following_users',
+      HIDDEN: 'community_hidden',
+      USER_VERIFIED: 'community_user_verified'  // Stores verified user emails
+    };
+
+    let currentCategory = 'all';
+    let selectedPostCategory = '';
+    let selectedCheckinTemple = '';
+    let selectedFiles = [];
+    let currentMenuPostId = null;
+
+    const TEMPLES_LIST = [
+      'Meenakshi Amman Temple', 'Brihadeeswarar Temple', 'Ramanathaswamy Temple',
+      'Kapaleeshwarar Temple', 'Tirumala Venkateswara Temple', 'Nataraja Temple',
+      'Kamakshi Amman Temple', 'Palani Murugan Temple', 'Vaitheeswaran Koil',
+      'Srirangam Ranganathaswamy Temple', 'Thanjavur Peruvudaiyar Kovil',
+      'Madurai Koodal Azhagar Temple', 'Thiruvannamalai Arunachaleswarar Temple',
+      'Kumbakonam Sarangapani Temple', 'Rameswaram Ramanathaswamy Temple'
+    ];
+
+    // Avatar color generator
+    function avatarColor(name) {
+      const colors = ['#e65100','#c62828','#2e7d32','#1565c0','#6a1b9a','#00838f','#4e342e','#283593','#ad1457','#00695c'];
+      let h = 0;
+      for (let i = 0; i < (name||'').length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+      return colors[Math.abs(h) % colors.length];
+    }
+
+    function getInitials(name) {
+      return (name || '🙏').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    }
+
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem('temple_user')) || {}; } catch { return {}; }
+    }
+
+    // ===== User Verification System =====
+    // Only Super Admin-approved users can: Post, Follow, Like, Comment
+    function isUserVerified() {
+      const user = getUser();
+      if (!user.loggedIn || !user.email) return false;
+      const verified = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.USER_VERIFIED) || '[]');
+      return verified.includes(user.email);
+    }
+
+    function hasRequestedVerification() {
+      const user = getUser();
+      if (!user.email) return false;
+      const requests = JSON.parse(localStorage.getItem('community_verification_requests') || '[]');
+      return requests.some(r => r.email === user.email);
+    }
+
+    function requestVerification() {
+      const user = getUser();
+      if (!user.loggedIn || !user.email) {
+        showToast('Please login first', 'error');
+        return;
+      }
+      const requests = JSON.parse(localStorage.getItem('community_verification_requests') || '[]');
+      if (requests.some(r => r.email === user.email)) {
+        showToast('Verification already requested. Please wait for admin approval.', 'info');
+        return;
+      }
+      requests.push({
+        id: 'vr' + Date.now(),
+        name: user.name || 'Devotee',
+        email: user.email,
+        phone: user.phone || '',
+        requestedAt: new Date().toISOString(),
+        status: 'pending'
+      });
+      localStorage.setItem('community_verification_requests', JSON.stringify(requests));
+      showToast('Verification requested! Admin will review your account.', 'success');
+      renderVerificationBanner();
+    }
+
+    function renderVerificationBanner() {
+      const banner = document.getElementById('verification-banner');
+      if (!banner) return;
+      const user = getUser();
+      if (!user.loggedIn) {
+        banner.innerHTML = `<div class="unverified-banner">
+          <div class="ub-icon">🔐</div>
+          <h3>Login Required</h3>
+          <p>Please login to interact with the community.</p>
+          <a href="login.html" style="display:inline-block; margin-top:10px; padding:8px 20px; background:var(--primary); color:white; border-radius:10px; font-size:0.85rem; font-weight:700; text-decoration:none;">Login</a>
+        </div>`;
+        return;
+      }
+      if (isUserVerified()) {
+        banner.innerHTML = '';
+        return;
+      }
+      const requested = hasRequestedVerification();
+      banner.innerHTML = `<div class="unverified-banner">
+        <div class="ub-icon">${requested ? '⏳' : '🔒'}</div>
+        <h3>${requested ? 'Verification Pending' : 'Account Not Verified'}</h3>
+        <p>${requested
+          ? 'Your verification request is being reviewed by the Super Admin. You will be able to post, like, comment, and follow once approved.'
+          : 'To post, like, comment, and follow others, your account must be verified by the Super Admin.'}</p>
+        ${requested
+          ? '<span class="ub-status pending">⏳ Awaiting Admin Approval</span>'
+          : '<button onclick="requestVerification()" style="margin-top:10px; padding:8px 20px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:0.85rem; font-weight:700; cursor:pointer;">Request Verification</button>'}
+      </div>`;
+    }
+
+    // Guard function - check verification before any social action
+    function requireVerification(actionName) {
+      if (!getUser().loggedIn) {
+        showToast('Please login first', 'error');
+        return false;
+      }
+      if (!isUserVerified()) {
+        showToast('Account verification required to ' + actionName + '. Request verification from your profile.', 'error');
+        return false;
+      }
+      return true;
+    }
+
+    function timeAgo(ts) {
+      const diff = Date.now() - new Date(ts).getTime();
+      const mins = Math.floor(diff / 60000);
+      if (mins < 1) return 'Just now';
+      if (mins < 60) return mins + 'm ago';
+      const hrs = Math.floor(mins / 60);
+      if (hrs < 24) return hrs + 'h ago';
+      const days = Math.floor(hrs / 24);
+      if (days < 7) return days + 'd ago';
+      return new Date(ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+    }
+
+    // ===== Seed Data =====
+    function seedCommunityPosts() {
+      if (localStorage.getItem(COMMUNITY_KEYS.POSTS)) return;
+      const posts = [
+        {
+          id: 'cp1', userId: 'u1', userName: 'Ramesh Kumar', category: 'festival',
+          caption: 'Panguni Uthiram celebrations at Meenakshi Amman Temple! The whole city is alive with devotion and joy. What an incredible experience! 🎉🙏 #PanguniUthiram #MeenakshiTemple',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #ff6f00, #e65100)', icon: '🎉' }],
+          temple: 'Meenakshi Amman Temple', likes: 234, commentCount: 28,
+          timestamp: new Date(Date.now() - 3600000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp2', userId: 'u2', userName: 'Priya Sharma', category: 'experience',
+          caption: 'My first darshan at Tirumala Venkateswara Temple. Waited 4 hours but the divine experience was worth every second. Feeling so blessed! 🙏✨ #TirupatiDarshan #Blessed',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #1565c0, #0d47a1)', icon: '🙏' }],
+          temple: 'Tirumala Venkateswara Temple', likes: 456, commentCount: 52,
+          timestamp: new Date(Date.now() - 7200000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp3', userId: 'u3', userName: 'Lakshmi Devi', category: 'annadhanam',
+          caption: 'Sponsored Annadhanam for 500 devotees at Brihadeeswarar Temple today. Nothing brings more joy than feeding the hungry. Om Namah Shivaya! 🍚🙏',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #2e7d32, #1b5e20)', icon: '🍚' }],
+          temple: 'Brihadeeswarar Temple', likes: 189, commentCount: 15,
+          timestamp: new Date(Date.now() - 18000000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp4', userId: 'u4', userName: 'Arun Venkat', category: 'travel',
+          caption: 'Road trip to Rameswaram! The temple corridor with 1212 pillars is absolutely magnificent. Each pillar is unique. Ancient Indian architecture at its finest! 📸🛕',
+          media: [
+            { type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #6a1b9a, #4a148c)', icon: '🛕' },
+            { type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #00838f, #006064)', icon: '📸' }
+          ],
+          temple: 'Ramanathaswamy Temple', likes: 312, commentCount: 38,
+          timestamp: new Date(Date.now() - 36000000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp5', userId: 'u5', userName: 'Kavitha M', category: 'festival',
+          caption: 'Navaratri Golu display at Kamakshi Amman Temple, Kanchipuram. 9 steps of beautiful dolls representing different deities. Such a beautiful tradition! 🪔✨ #Navaratri #Golu',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #ad1457, #880e4f)', icon: '🪔' }],
+          temple: 'Kamakshi Amman Temple', likes: 178, commentCount: 22,
+          timestamp: new Date(Date.now() - 54000000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp6', userId: 'u6', userName: 'Vijay Krishna', category: 'experience',
+          caption: 'Witnessed the Nataraja Abhishekam at Chidambaram temple. The cosmic dance form revealed during the ceremony left me speechless. Pure divinity! 🕉️',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #283593, #1a237e)', icon: '🕉️' }],
+          temple: 'Nataraja Temple', likes: 267, commentCount: 31,
+          timestamp: new Date(Date.now() - 72000000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp7', userId: 'u7', userName: 'Meena S', category: 'event',
+          caption: 'Special Thai Poosam celebrations at Palani Murugan Temple! Thousands of devotees carrying kavadi. The energy and devotion is overwhelming! 🎊🙏 #ThaiPoosam',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #e65100, #bf360c)', icon: '🎊' }],
+          temple: 'Palani Murugan Temple', likes: 398, commentCount: 45,
+          timestamp: new Date(Date.now() - 86400000).toISOString(), status: 'approved'
+        },
+        {
+          id: 'cp8', userId: 'u1', userName: 'Ramesh Kumar', category: 'travel',
+          caption: 'Sunrise at Thanjavur Big Temple. The 216-feet vimana glowing in golden light is a sight that stays with you forever. A UNESCO masterpiece! 🌅🛕',
+          media: [{ type: 'image', placeholder: true, gradient: 'linear-gradient(135deg, #ff8f00, #ff6f00)', icon: '🌅' }],
+          temple: 'Thanjavur Peruvudaiyar Kovil', likes: 521, commentCount: 67,
+          timestamp: new Date(Date.now() - 129600000).toISOString(), status: 'approved'
+        }
+      ];
+      localStorage.setItem(COMMUNITY_KEYS.POSTS, JSON.stringify(posts));
+
+      // Seed some comments
+      const comments = {
+        'cp1': [
+          { id: 'c1', userName: 'Priya Sharma', text: 'Beautiful! I was there too! 🎉', time: new Date(Date.now() - 3000000).toISOString() },
+          { id: 'c2', userName: 'Lakshmi Devi', text: 'The decorations this year are amazing!', time: new Date(Date.now() - 2500000).toISOString() }
+        ],
+        'cp2': [
+          { id: 'c3', userName: 'Ramesh Kumar', text: 'Govinda Govinda! 🙏', time: new Date(Date.now() - 6000000).toISOString() },
+          { id: 'c4', userName: 'Kavitha M', text: 'So blessed! I plan to visit next month', time: new Date(Date.now() - 5000000).toISOString() }
+        ],
+        'cp4': [
+          { id: 'c5', userName: 'Meena S', text: 'The corridor is breathtaking! Must visit', time: new Date(Date.now() - 30000000).toISOString() }
+        ]
+      };
+      localStorage.setItem(COMMUNITY_KEYS.COMMENTS, JSON.stringify(comments));
+    }
+
+    // ===== Render Posts =====
+    function renderCommunityPosts() {
+      const posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      const likes = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.LIKES) || '[]');
+      const saves = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.SAVES) || '[]');
+      const hidden = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.HIDDEN) || '[]');
+      const followingUsers = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.FOLLOWING_USERS) || '[]');
+      const user = getUser();
+      const container = document.getElementById('community-posts');
+
+      // Show approved posts + user's own pending posts
+      let filtered = posts.filter(p => {
+        if (hidden.includes(p.id)) return false;
+        if (p.status === 'approved') return true;
+        // Show user's own pending posts to them
+        if (p.status === 'pending' && p.userId === 'me') return true;
+        return false;
+      });
+      if (currentCategory !== 'all') {
+        filtered = filtered.filter(p => p.category === currentCategory);
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="community-empty">
+            <div class="empty-icon">📸</div>
+            <h3>No posts yet</h3>
+            <p>Be the first to share your temple experience!</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(post => {
+        const isLiked = likes.includes(post.id);
+        const isSaved = saves.includes(post.id);
+        const isFollowing = followingUsers.includes(post.userId);
+        const isOwn = user.name === post.userName;
+        const categoryTag = getCategoryTag(post.category);
+
+        // Render media
+        let mediaHtml = '';
+        if (post.media && post.media.length > 0) {
+          if (post.media.length === 1) {
+            const m = post.media[0];
+            if (m.placeholder) {
+              mediaHtml = `<div class="cp-post-media" ondblclick="doubleTapLike(event, '${post.id}')">
+                <div style="height:300px; background:${m.gradient}; display:flex; align-items:center; justify-content:center; font-size:4rem;">${m.icon}</div>
+                <div class="heart-burst" id="heart-${post.id}">❤️</div>
+                ${m.type === 'video' ? '<span class="cp-video-badge">🎥 Video</span>' : ''}
+              </div>`;
+            } else {
+              mediaHtml = `<div class="cp-post-media" ondblclick="doubleTapLike(event, '${post.id}')">
+                ${m.type === 'video' ? `<video src="${m.src}" controls style="width:100%;max-height:420px;"></video>` : `<img src="${m.src}" alt="Post">`}
+                <div class="heart-burst" id="heart-${post.id}">❤️</div>
+              </div>`;
+            }
+          } else {
+            const gridClass = post.media.length === 2 ? 'grid-2' : 'grid-3';
+            mediaHtml = `<div class="cp-post-media" ondblclick="doubleTapLike(event, '${post.id}')">
+              <div class="cp-media-grid ${gridClass}">
+                ${post.media.slice(0, 3).map(m => {
+                  if (m.placeholder) {
+                    return `<div style="height:200px; background:${m.gradient}; display:flex; align-items:center; justify-content:center; font-size:2.5rem;">${m.icon}</div>`;
+                  }
+                  return `<img src="${m.src}" alt="Post">`;
+                }).join('')}
+              </div>
+              <div class="heart-burst" id="heart-${post.id}">❤️</div>
+            </div>`;
+          }
+        }
+
+        const isPending = post.status === 'pending';
+
+        return `
+          <div class="community-post ${isPending ? 'pending-post' : ''}" id="post-${post.id}">
+            ${isPending ? '<div class="cp-pending-badge"><span>⏳ Awaiting Admin Approval</span></div>' : ''}
+            <div class="cp-post-header">
+              <div class="cp-post-avatar" style="background:${avatarColor(post.userName)};">${getInitials(post.userName)}</div>
+              <div class="cp-post-user-info">
+                <div class="cp-post-name">
+                  ${post.userName}
+                  ${post.temple ? `<span class="cp-post-checkin">📍 ${post.temple}</span>` : ''}
+                </div>
+                <div class="cp-post-meta">
+                  ${categoryTag}
+                  <span>${timeAgo(post.timestamp)}</span>
+                </div>
+              </div>
+              ${!isOwn ? `<button class="cp-post-follow ${isFollowing ? 'following' : ''}" onclick="toggleFollowUser('${post.userId}', this)">${isFollowing ? 'Following' : 'Follow'}</button>` : ''}
+              <button class="cp-post-more" onclick="openPostMenu('${post.id}', ${isOwn})">⋯</button>
+            </div>
+
+            <div class="cp-post-caption">${formatCaption(post.caption)}</div>
+
+            ${mediaHtml}
+
+            <div class="cp-post-actions">
+              <button class="cp-action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}', this)">
+                ${isLiked ? '❤️' : '🤍'}
+              </button>
+              <button class="cp-action-btn" onclick="openComments('${post.id}')">💬</button>
+              <button class="cp-action-btn" onclick="sharePost('${post.id}')">📤</button>
+              <button class="cp-action-btn cp-share-btn ${isSaved ? 'saved' : ''}" onclick="toggleSave('${post.id}', this)">
+                ${isSaved ? '🔖' : '🏷️'}
+              </button>
+            </div>
+
+            <div class="cp-post-likes">${post.likes + (isLiked ? 1 : 0)} likes</div>
+            <div class="cp-post-comment-preview" onclick="openComments('${post.id}')">View all ${post.commentCount} comments</div>
+            <div class="cp-post-time">${new Date(post.timestamp).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })}</div>
+          </div>`;
+      }).join('');
+    }
+
+    function getCategoryTag(cat) {
+      const tags = {
+        festival: '<span class="cp-category-tag tag-festival">🎉 Festival</span>',
+        experience: '<span class="cp-category-tag tag-experience">🙏 Experience</span>',
+        annadhanam: '<span class="cp-category-tag tag-annadhanam">🍚 Annadhanam</span>',
+        event: '<span class="cp-category-tag tag-event">📅 Event</span>',
+        travel: '<span class="cp-category-tag tag-travel">📸 Travel</span>'
+      };
+      return tags[cat] || '';
+    }
+
+    function formatCaption(text) {
+      return text.replace(/#(\w+)/g, '<span class="hashtag">#$1</span>');
+    }
+
+    // ===== Category Filter =====
+    function filterCommunity(btn, category) {
+      document.querySelectorAll('.community-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = category;
+      renderCommunityPosts();
+    }
+
+    // ===== Like (Requires Verification) =====
+    function toggleLike(postId, btn) {
+      if (!requireVerification('like posts')) return;
+
+      let likes = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.LIKES) || '[]');
+      const posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      const post = posts.find(p => p.id === postId);
+
+      if (likes.includes(postId)) {
+        likes = likes.filter(id => id !== postId);
+        if (post) post.likes = Math.max(0, post.likes - 1);
+      } else {
+        likes.push(postId);
+        if (post) post.likes++;
+      }
+
+      localStorage.setItem(COMMUNITY_KEYS.LIKES, JSON.stringify(likes));
+      localStorage.setItem(COMMUNITY_KEYS.POSTS, JSON.stringify(posts));
+      renderCommunityPosts();
+    }
+
+    function doubleTapLike(e, postId) {
+      if (!requireVerification('like posts')) return;
+
+      const likes = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.LIKES) || '[]');
+      if (!likes.includes(postId)) {
+        toggleLike(postId, null);
+      }
+      // Heart animation
+      const heart = document.getElementById('heart-' + postId);
+      if (heart) {
+        heart.classList.remove('animate');
+        void heart.offsetWidth;
+        heart.classList.add('animate');
+      }
+    }
+
+    // ===== Save =====
+    function toggleSave(postId, btn) {
+      if (!requireVerification('save posts')) return;
+
+      let saves = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.SAVES) || '[]');
+      if (saves.includes(postId)) {
+        saves = saves.filter(id => id !== postId);
+        showToast('Post unsaved', 'info');
+      } else {
+        saves.push(postId);
+        showToast('Post saved!', 'success');
+      }
+      localStorage.setItem(COMMUNITY_KEYS.SAVES, JSON.stringify(saves));
+      renderCommunityPosts();
+    }
+
+    // ===== Follow User (Requires Verification) =====
+    function toggleFollowUser(userId, btn) {
+      if (!requireVerification('follow users')) return;
+
+      let following = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.FOLLOWING_USERS) || '[]');
+      if (following.includes(userId)) {
+        following = following.filter(id => id !== userId);
+        showToast('Unfollowed', 'info');
+      } else {
+        following.push(userId);
+        showToast('Following!', 'success');
+      }
+      localStorage.setItem(COMMUNITY_KEYS.FOLLOWING_USERS, JSON.stringify(following));
+      renderCommunityPosts();
+    }
+
+    // ===== Share =====
+    function sharePost(postId) {
+      const posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      const post = posts.find(p => p.id === postId);
+      if (!post) return;
+
+      if (navigator.share) {
+        navigator.share({ title: 'Temple Community Post', text: post.caption, url: window.location.href });
+      } else {
+        navigator.clipboard.writeText(post.caption.substring(0, 100) + '... - Temple Digital Community');
+        showToast('Post link copied!', 'success');
+      }
+    }
+
+    // ===== Comments =====
+    let currentCommentPostId = null;
+
+    function openComments(postId) {
+      currentCommentPostId = postId;
+      const allComments = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.COMMENTS) || '{}');
+      const comments = allComments[postId] || [];
+
+      const list = document.getElementById('comment-list');
+      if (comments.length === 0) {
+        list.innerHTML = '<div style="text-align:center; padding:30px; color:#999; font-size:0.88rem;">No comments yet. Be the first!</div>';
+      } else {
+        list.innerHTML = comments.map(c => `
+          <div class="comment-item">
+            <div class="comment-avatar" style="background:${avatarColor(c.userName)};">${getInitials(c.userName)}</div>
+            <div class="comment-content">
+              <span class="comment-name">${c.userName}</span>
+              <div class="comment-text">${c.text}</div>
+              <div class="comment-time">${timeAgo(c.time)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('comment-overlay').classList.add('show');
+    }
+
+    function closeComments() {
+      document.getElementById('comment-overlay').classList.remove('show');
+      currentCommentPostId = null;
+    }
+
+    function addComment() {
+      if (!requireVerification('comment on posts')) return;
+
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (!text || !currentCommentPostId) return;
+
+      const user = getUser();
+      const allComments = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.COMMENTS) || '{}');
+      if (!allComments[currentCommentPostId]) allComments[currentCommentPostId] = [];
+
+      allComments[currentCommentPostId].push({
+        id: 'c' + Date.now(),
+        userName: user.name || 'Devotee',
+        text: text,
+        time: new Date().toISOString()
+      });
+
+      localStorage.setItem(COMMUNITY_KEYS.COMMENTS, JSON.stringify(allComments));
+
+      // Update comment count
+      const posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      const post = posts.find(p => p.id === currentCommentPostId);
+      if (post) post.commentCount++;
+      localStorage.setItem(COMMUNITY_KEYS.POSTS, JSON.stringify(posts));
+
+      input.value = '';
+      openComments(currentCommentPostId);
+      renderCommunityPosts();
+      showToast('Comment added!', 'success');
+    }
+
+    // ===== Post Menu =====
+    function openPostMenu(postId, isOwn) {
+      currentMenuPostId = postId;
+      document.getElementById('menu-delete-option').style.display = isOwn ? 'flex' : 'none';
+      document.getElementById('post-menu-overlay').classList.add('show');
+    }
+
+    function closePostMenu() {
+      document.getElementById('post-menu-overlay').classList.remove('show');
+      currentMenuPostId = null;
+    }
+
+    function reportPost() {
+      closePostMenu();
+      showToast('Post reported. Temple admin will review it.', 'info');
+    }
+
+    function hidePost() {
+      if (!currentMenuPostId) return;
+      let hidden = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.HIDDEN) || '[]');
+      hidden.push(currentMenuPostId);
+      localStorage.setItem(COMMUNITY_KEYS.HIDDEN, JSON.stringify(hidden));
+      closePostMenu();
+      renderCommunityPosts();
+      showToast('Post hidden', 'info');
+    }
+
+    function copyPostLink() {
+      navigator.clipboard.writeText(window.location.href + '#post-' + currentMenuPostId);
+      closePostMenu();
+      showToast('Link copied!', 'success');
+    }
+
+    function sharePostExternal() {
+      sharePost(currentMenuPostId);
+      closePostMenu();
+    }
+
+    function deleteMyPost() {
+      if (!currentMenuPostId || !confirm('Delete this post?')) return;
+      let posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      posts = posts.filter(p => p.id !== currentMenuPostId);
+      localStorage.setItem(COMMUNITY_KEYS.POSTS, JSON.stringify(posts));
+      closePostMenu();
+      renderCommunityPosts();
+      showToast('Post deleted', 'info');
+    }
+
+    // ===== Create Post (Requires Verification) =====
+    function openCreatePost() {
+      if (!requireVerification('create posts')) return;
+
+      const user = getUser();
+      const avatar = document.getElementById('cp-user-avatar');
+      const nameEl = document.getElementById('cp-user-name');
+      if (user.name) {
+        avatar.textContent = getInitials(user.name);
+        avatar.style.background = avatarColor(user.name);
+        nameEl.textContent = user.name;
+      }
+
+      // Populate temple list
+      const list = document.getElementById('temple-select-list');
+      list.innerHTML = TEMPLES_LIST.map(t => `
+        <div class="temple-select-item" onclick="selectCheckinTemple(this, '${t}')">
+          <div class="ts-icon">🛕</div>
+          <span>${t}</span>
+        </div>
+      `).join('');
+
+      selectedFiles = [];
+      selectedPostCategory = '';
+      selectedCheckinTemple = '';
+      document.getElementById('cp-caption').value = '';
+      document.getElementById('cp-preview-grid').style.display = 'none';
+      document.getElementById('cp-preview-grid').innerHTML = '';
+      document.getElementById('cp-upload-area').style.display = '';
+      document.getElementById('cp-checkin-text').innerHTML = 'Select a temple to check in';
+      document.getElementById('cp-checkin').classList.remove('active');
+      document.querySelectorAll('.cp-option').forEach(o => o.classList.remove('selected'));
+      document.querySelectorAll('.temple-select-item').forEach(i => i.classList.remove('selected'));
+      document.getElementById('temple-select-list').style.display = 'none';
+
+      document.getElementById('create-post-overlay').classList.add('show');
+    }
+
+    function closeCreatePost() {
+      document.getElementById('create-post-overlay').classList.remove('show');
+    }
+
+    function selectCategory(el, cat) {
+      document.querySelectorAll('.cp-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedPostCategory = cat;
+    }
+
+    function toggleCheckinList() {
+      const list = document.getElementById('temple-select-list');
+      list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function selectCheckinTemple(el, temple) {
+      document.querySelectorAll('.temple-select-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedCheckinTemple = temple;
+      document.getElementById('cp-checkin-text').innerHTML = '<strong>📍 ' + temple + '</strong>';
+      document.getElementById('cp-checkin').classList.add('active');
+      document.getElementById('temple-select-list').style.display = 'none';
+    }
+
+    function handleFileSelect(input) {
+      const files = Array.from(input.files);
+      const maxImages = 5;
+
+      // Check video
+      const hasVideo = files.some(f => f.type.startsWith('video/'));
+      if (hasVideo && files.length > 1) {
+        showToast('You can upload 1 video or up to 5 images', 'error');
+        return;
+      }
+
+      // Check video length limit (client-side approximation)
+      if (hasVideo) {
+        const videoFile = files.find(f => f.type.startsWith('video/'));
+        if (videoFile && videoFile.size > 50 * 1024 * 1024) {
+          showToast('Video must be under 30 seconds', 'error');
+          return;
+        }
+      }
+
+      if (!hasVideo && files.length > maxImages) {
+        showToast(`Maximum ${maxImages} images allowed`, 'error');
+        return;
+      }
+
+      selectedFiles = files;
+      document.getElementById('cp-upload-area').style.display = 'none';
+
+      const previewGrid = document.getElementById('cp-preview-grid');
+      previewGrid.style.display = 'grid';
+      previewGrid.innerHTML = '';
+
+      files.forEach((file, i) => {
+        const div = document.createElement('div');
+        div.className = 'cp-preview-item';
+        const url = URL.createObjectURL(file);
+
+        if (file.type.startsWith('video/')) {
+          div.innerHTML = `<video src="${url}" muted></video><button class="cp-preview-remove" onclick="removePreview(${i})">✕</button>`;
+        } else {
+          div.innerHTML = `<img src="${url}" alt="Preview"><button class="cp-preview-remove" onclick="removePreview(${i})">✕</button>`;
+        }
+        previewGrid.appendChild(div);
+      });
+    }
+
+    function removePreview(index) {
+      selectedFiles.splice(index, 1);
+      if (selectedFiles.length === 0) {
+        document.getElementById('cp-upload-area').style.display = '';
+        document.getElementById('cp-preview-grid').style.display = 'none';
+      } else {
+        // Re-render
+        const input = document.getElementById('cp-file-input');
+        const dt = new DataTransfer();
+        selectedFiles.forEach(f => dt.items.add(f));
+        input.files = dt.files;
+        handleFileSelect(input);
+      }
+    }
+
+    function submitPost() {
+      if (!requireVerification('create posts')) return;
+
+      const caption = document.getElementById('cp-caption').value.trim();
+      if (!caption && selectedFiles.length === 0) {
+        showToast('Write something or add a photo', 'error');
+        return;
+      }
+
+      const user = getUser();
+      if (!user.loggedIn) {
+        showToast('Please login first', 'error');
+        return;
+      }
+
+      // Build media array
+      let media = [];
+      if (selectedFiles.length > 0) {
+        selectedFiles.forEach(file => {
+          const url = URL.createObjectURL(file);
+          media.push({
+            type: file.type.startsWith('video/') ? 'video' : 'image',
+            src: url,
+            placeholder: false
+          });
+        });
+      }
+
+      // If no files but has caption, use a placeholder based on category
+      if (media.length === 0 && caption) {
+        const catGradients = {
+          festival: { gradient: 'linear-gradient(135deg, #ff6f00, #e65100)', icon: '🎉' },
+          experience: { gradient: 'linear-gradient(135deg, #1565c0, #0d47a1)', icon: '🙏' },
+          annadhanam: { gradient: 'linear-gradient(135deg, #2e7d32, #1b5e20)', icon: '🍚' },
+          event: { gradient: 'linear-gradient(135deg, #6a1b9a, #4a148c)', icon: '📅' },
+          travel: { gradient: 'linear-gradient(135deg, #00838f, #006064)', icon: '📸' }
+        };
+        const g = catGradients[selectedPostCategory] || { gradient: 'linear-gradient(135deg, #e65100, #ff9800)', icon: '🛕' };
+        media.push({ type: 'image', placeholder: true, gradient: g.gradient, icon: g.icon });
+      }
+
+      const posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      const newPost = {
+        id: 'cp' + Date.now(),
+        userId: 'me',
+        userName: user.name || 'Devotee',
+        category: selectedPostCategory || 'experience',
+        caption: caption,
+        media: media,
+        temple: selectedCheckinTemple || '',
+        likes: 0,
+        commentCount: 0,
+        timestamp: new Date().toISOString(),
+        status: 'pending' // Requires Super Admin approval
+      };
+
+      posts.unshift(newPost);
+      localStorage.setItem(COMMUNITY_KEYS.POSTS, JSON.stringify(posts));
+
+      closeCreatePost();
+      renderCommunityPosts();
+      showToast('Post submitted! It will appear after Super Admin approval. 🙏', 'success');
+    }
+
+    // ===== Search =====
+    function openSearch() {
+      const q = prompt('Search posts by temple name or keyword:');
+      if (!q) return;
+      const posts = JSON.parse(localStorage.getItem(COMMUNITY_KEYS.POSTS) || '[]');
+      const results = posts.filter(p =>
+        p.caption.toLowerCase().includes(q.toLowerCase()) ||
+        (p.temple && p.temple.toLowerCase().includes(q.toLowerCase())) ||
+        p.userName.toLowerCase().includes(q.toLowerCase())
+      );
+      if (results.length === 0) {
+        showToast('No posts found for "' + q + '"', 'info');
+      } else {
+        showToast(results.length + ' posts found', 'success');
+        // Filter to show only results
+        const container = document.getElementById('community-posts');
+        // Temporarily show filtered results
+        currentCategory = 'all';
+        document.querySelectorAll('.community-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector('.community-tab').classList.add('active');
+        renderCommunityPosts();
+      }
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', function() {
+      seedCommunityPosts();
+      renderVerificationBanner();
+      renderCommunityPosts();
+    });
+
+    // Close overlays on background click
+    document.getElementById('create-post-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeCreatePost();
+    });
+    document.getElementById('comment-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeComments();
+    });
+    document.getElementById('post-menu-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closePostMenu();
+    });
+  </script>
+</body>
+</html>

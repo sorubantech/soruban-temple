@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Pooja - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .day-tabs {
+      display: flex;
+      gap: 0.35rem;
+      padding: 0.75rem 1.25rem;
+      overflow-x: auto;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 52px;
+      z-index: 99;
+    }
+    .day-tab {
+      padding: 0.5rem 0.85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: white;
+      color: var(--text-light);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s;
+    }
+    .day-tab.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .pooja-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .pooja-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    .pooja-card-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .pooja-card-header .price {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+    .pooja-card p {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      line-height: 1.5;
+      margin-bottom: 0.65rem;
+    }
+    .pooja-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.78rem;
+      color: var(--text-light);
+      margin-bottom: 0.75rem;
+    }
+    .pooja-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .book-btn-small {
+      padding: 0.45rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      transition: all 0.3s;
+    }
+    .book-btn-small:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(230,81,0,0.3);
+    }
+    .special-day-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 10px;
+      margin-bottom: 0.5rem;
+    }
+    .badge-shiva { background: #ede7f6; color: #4a148c; }
+    .badge-vishnu { background: #e3f2fd; color: #1565c0; }
+    .badge-devi { background: #fce4ec; color: #c62828; }
+    .badge-murugan { background: #fff3e0; color: #e65100; }
+    .badge-ganesh { background: #fff8e1; color: #f57f17; }
+    .badge-hanuman { background: #ffebee; color: #d84315; }
+    .weekly-section {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--accent);
+    }
+    .weekly-section h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+    .weekly-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(255,179,0,0.3);
+      font-size: 0.88rem;
+    }
+    .weekly-row:last-child { border: none; }
+    .weekly-row .day-name {
+      font-weight: 600;
+      min-width: 80px;
+    }
+    .weekly-row .pooja-name { color: var(--text-light); flex: 1; }
+    .weekly-row .book-link {
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>Daily Pooja Services</h2>
+    </div>
+
+    <!-- Day Tabs -->
+    <div class="day-tabs">
+      <button class="day-tab active" onclick="filterDay(this,'all')">All Days</button>
+      <button class="day-tab" onclick="filterDay(this,'daily')">Daily</button>
+      <button class="day-tab" onclick="filterDay(this,'mon')">Monday</button>
+      <button class="day-tab" onclick="filterDay(this,'tue')">Tuesday</button>
+      <button class="day-tab" onclick="filterDay(this,'wed')">Wednesday</button>
+      <button class="day-tab" onclick="filterDay(this,'thu')">Thursday</button>
+      <button class="day-tab" onclick="filterDay(this,'fri')">Friday</button>
+      <button class="day-tab" onclick="filterDay(this,'sat')">Saturday</button>
+      <button class="day-tab" onclick="filterDay(this,'sun')">Sunday</button>
+    </div>
+
+    <div class="section">
+      <!-- Special Pooja Calendar -->
+      <div class="weekly-section">
+        <h3>Special Pooja Calendar</h3>
+        <div class="weekly-row">
+          <span class="day-name">Monday</span>
+          <span class="pooja-name">Shiva Abhishekam</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+        <div class="weekly-row">
+          <span class="day-name">Tuesday</span>
+          <span class="pooja-name">Murugan Special Pooja</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+        <div class="weekly-row">
+          <span class="day-name">Wednesday</span>
+          <span class="pooja-name">Vittal Rukmini Pooja</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+        <div class="weekly-row">
+          <span class="day-name">Thursday</span>
+          <span class="pooja-name">Guru Pooja / Dakshinamurthy</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+        <div class="weekly-row">
+          <span class="day-name">Friday</span>
+          <span class="pooja-name">Lakshmi Pooja</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+        <div class="weekly-row">
+          <span class="day-name">Saturday</span>
+          <span class="pooja-name">Hanuman / Shani Pooja</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+        <div class="weekly-row">
+          <span class="day-name">Sunday</span>
+          <span class="pooja-name">Surya Namaskar / Navagraha</span>
+          <button class="book-link" onclick="navigateTo('book-pooja.html')">Book</button>
+        </div>
+      </div>
+
+      <!-- Daily Poojas -->
+      <div class="section-title">Daily Pooja Services</div>
+
+      <div class="pooja-card" data-day="daily">
+        <div class="pooja-card-header">
+          <h3>🌸 Archana</h3>
+          <span class="price">&#8377;50</span>
+        </div>
+        <p>Recitation of deity's 108 or 1008 names with flower offering. Available for all deities in the temple.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 8 PM</span>
+          <span>&#128197; Daily</span>
+          <span>&#9201; 10 min</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Archana', 50)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="daily">
+        <div class="pooja-card-header">
+          <h3>💧 Abhishekam</h3>
+          <span class="price">&#8377;200</span>
+        </div>
+        <p>Sacred bathing of the deity with milk, curd, honey, sandalwood paste, and holy water. Includes special mantras.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 12 PM</span>
+          <span>&#128197; Daily</span>
+          <span>&#9201; 30 min</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Abhishekam', 200)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="daily">
+        <div class="pooja-card-header">
+          <h3>🪔 Deeparadhanai</h3>
+          <span class="price">&#8377;30</span>
+        </div>
+        <p>Lighting of sacred oil lamp before the deity. A simple yet powerful offering symbolizing removal of darkness.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 9 PM</span>
+          <span>&#128197; Daily</span>
+          <span>&#9201; 5 min</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Deeparadhanai', 30)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="daily">
+        <div class="pooja-card-header">
+          <h3>🥥 Sahasranama Pooja</h3>
+          <span class="price">&#8377;500</span>
+        </div>
+        <p>Recitation of 1008 divine names of the Lord with offerings. Devotee receives prasadam and theertham.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 8 AM - 11 AM</span>
+          <span>&#128197; Daily</span>
+          <span>&#9201; 45 min</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Sahasranama Pooja', 500)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="daily">
+        <div class="pooja-card-header">
+          <h3>🌺 Alankaram Seva</h3>
+          <span class="price">&#8377;300</span>
+        </div>
+        <p>Sponsoring the deity's decoration with fresh flowers, garlands, and ornaments for the day.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 5 AM - 6 AM</span>
+          <span>&#128197; Daily</span>
+          <span>&#9201; 60 min</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Alankaram Seva', 300)">Book Now</button>
+      </div>
+
+      <!-- Monday Special -->
+      <div class="section-title" style="margin-top:0.5rem;">Monday Specials</div>
+
+      <div class="pooja-card" data-day="mon">
+        <span class="special-day-badge badge-shiva">&#128308; Monday Special</span>
+        <div class="pooja-card-header">
+          <h3>🔱 Shiva Abhishekam</h3>
+          <span class="price">&#8377;350</span>
+        </div>
+        <p>Special abhishekam to Lord Shiva with Rudra mantras. Includes Bilva Archana and Vibhuti prasadam.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 11 AM</span>
+          <span>&#128197; Every Monday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Shiva Abhishekam', 350)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="mon">
+        <span class="special-day-badge badge-shiva">&#128308; Monday Special</span>
+        <div class="pooja-card-header">
+          <h3>📿 Rudra Archana</h3>
+          <span class="price">&#8377;150</span>
+        </div>
+        <p>Special archana with Rudram recitation. Bilva leaves and sacred ash offering to Lord Shiva.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 5 PM - 8 PM</span>
+          <span>&#128197; Every Monday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Rudra Archana', 150)">Book Now</button>
+      </div>
+
+      <!-- Tuesday Special -->
+      <div class="section-title" style="margin-top:0.5rem;">Tuesday Specials</div>
+
+      <div class="pooja-card" data-day="tue">
+        <span class="special-day-badge badge-murugan">&#128992; Tuesday Special</span>
+        <div class="pooja-card-header">
+          <h3>🪶 Murugan Special Pooja</h3>
+          <span class="price">&#8377;250</span>
+        </div>
+        <p>Abhishekam and archana to Lord Murugan with Shanmukha Kavacham recitation. Panchamirtham prasadam.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 12 PM</span>
+          <span>&#128197; Every Tuesday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Murugan Special Pooja', 250)">Book Now</button>
+      </div>
+
+      <!-- Friday Special -->
+      <div class="section-title" style="margin-top:0.5rem;">Friday Specials</div>
+
+      <div class="pooja-card" data-day="fri">
+        <span class="special-day-badge badge-devi">&#128997; Friday Special</span>
+        <div class="pooja-card-header">
+          <h3>🙏 Lakshmi Pooja</h3>
+          <span class="price">&#8377;300</span>
+        </div>
+        <p>Special pooja to Goddess Lakshmi with Lakshmi Ashtothram, kumkum archana, and lotus flower offering.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 11 AM</span>
+          <span>&#128197; Every Friday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Lakshmi Pooja', 300)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="fri">
+        <span class="special-day-badge badge-devi">&#128997; Friday Special</span>
+        <div class="pooja-card-header">
+          <h3>🌺 Kumkum Archana</h3>
+          <span class="price">&#8377;100</span>
+        </div>
+        <p>Offering kumkum to the Goddess with chanting of Lalitha Sahasranamam. Special prasadam distribution.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 5 PM - 8 PM</span>
+          <span>&#128197; Every Friday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Kumkum Archana', 100)">Book Now</button>
+      </div>
+
+      <!-- Saturday Special -->
+      <div class="section-title" style="margin-top:0.5rem;">Saturday Specials</div>
+
+      <div class="pooja-card" data-day="sat">
+        <span class="special-day-badge badge-hanuman">&#129000; Saturday Special</span>
+        <div class="pooja-card-header">
+          <h3>🐒 Hanuman Pooja</h3>
+          <span class="price">&#8377;150</span>
+        </div>
+        <p>Hanuman Chalisa recitation, Sindoor offering, and Vada Mala archana. Receive blessed Sindoor and prasadam.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 8 PM</span>
+          <span>&#128197; Every Saturday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Hanuman Pooja', 150)">Book Now</button>
+      </div>
+
+      <div class="pooja-card" data-day="sat">
+        <span class="special-day-badge badge-hanuman">&#129000; Saturday Special</span>
+        <div class="pooja-card-header">
+          <h3>🪐 Shani Pooja</h3>
+          <span class="price">&#8377;200</span>
+        </div>
+        <p>Special pooja to Lord Shani for removing Shani Dosha. Til (sesame) oil abhishekam and offering.</p>
+        <div class="pooja-meta">
+          <span>&#128337; 6 AM - 12 PM</span>
+          <span>&#128197; Every Saturday</span>
+        </div>
+        <button class="book-btn-small" onclick="bookDailyPooja('Shani Pooja', 200)">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function filterDay(btn, day) {
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.pooja-card').forEach(card => {
+        if (day === 'all') {
+          card.style.display = '';
+        } else {
+          card.style.display = card.getAttribute('data-day') === day ? '' : 'none';
+        }
+      });
+      // Also toggle section titles
+      document.querySelectorAll('.section-title').forEach(st => {
+        if (day === 'all' || day === 'daily') { st.style.display = ''; return; }
+        const text = st.textContent.toLowerCase();
+        if (text.includes('daily') || text.includes('calendar')) { st.style.display = ''; return; }
+        const dayMap = { mon:'monday', tue:'tuesday', wed:'wednesday', thu:'thursday', fri:'friday', sat:'saturday', sun:'sunday' };
+        st.style.display = text.includes(dayMap[day] || '') ? '' : 'none';
+      });
+    }
+
+    function bookDailyPooja(name, price) {
+      showModal('🛕', 'Book ' + name + '?',
+        `${name} - ₹${price}. You will be redirected to complete your booking with date selection and payment.`,
+        'Continue', () => navigateTo('book-pooja.html'));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Accounts - Temple Digital Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+
+            <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="prasadam-orders.html" class="nav-link" data-page="prasadam-orders">
+                <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+                <span class="nav-label">Prasadam Orders</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link active" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Admin Accounts</h1>
+                    <div class="page-breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <span class="separator">&#x25B8;</span>
+                        <span>Admin Accounts</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <button class="header-action-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="header-divider"></div>
+                <div class="admin-avatar">
+                    <div class="avatar-placeholder" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                    <div>
+                        <div class="admin-avatar-name">Admin</div>
+                        <div class="admin-avatar-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+
+            <!-- Stats Row -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-user-shield"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Total Admins</div>
+                        <div class="stat-number" id="total-admins">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-crown"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Super Admins</div>
+                        <div class="stat-number" id="super-admin-count">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon yellow"><i class="fas fa-place-of-worship"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Temple Admins</div>
+                        <div class="stat-number" id="temple-admin-count">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="card" style="margin-bottom:24px;">
+                <div class="filter-bar">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-user-shield" style="color:var(--primary);font-size:1.125rem;"></i>
+                        <span style="font-weight:600;">Manage Admin Accounts</span>
+                    </div>
+                    <button class="btn btn-sm btn-primary" onclick="window.adminApp.showAddAdminForm()">
+                        <i class="fas fa-plus"></i> Create Temple Admin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Accounts Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>All Admin Accounts</h3>
+                </div>
+                <div class="card-body" style="overflow-x:auto;">
+                    <table class="data-table" id="admin-accounts-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Assigned Temple</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminAccountsTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align:center;padding:40px;color:#999;">
+                                    <div style="font-size:2rem;margin-bottom:8px;"><i class="fas fa-user-shield"></i></div>
+                                    Loading admin accounts...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modal Container -->
+<div id="modal-container"></div>
+
+<script src="js/admin.js"></script>
+
+</body>
+</html>

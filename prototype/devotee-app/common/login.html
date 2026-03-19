@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Soruban Temple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../../shared/design-system.css">
+  <link rel="stylesheet" href="../../shared/phone-frame.css">
+  <link rel="stylesheet" href="../../shared/components.css">
+  <link rel="stylesheet" href="../../shared/animations.css">
+  <style>
+    .login-screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+    }
+
+    .login-hero {
+      background: var(--gradient-hero);
+      padding: 70px var(--space-6) var(--space-8);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    }
+
+    .login-hero-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-xl);
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-4);
+      font-size: 2rem;
+      color: white;
+    }
+
+    .login-hero h2 {
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: white;
+      margin-bottom: var(--space-1);
+    }
+
+    .login-hero p {
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .login-body {
+      flex: 1;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .login-body h3 {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-1);
+    }
+
+    .login-body .login-sub {
+      font-size: var(--text-sm);
+      color: var(--text-light);
+      margin-bottom: var(--space-6);
+    }
+
+    /* Phone Input */
+    .phone-input-group {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--bg-card);
+      transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+      margin-bottom: var(--space-4);
+    }
+
+    .phone-input-group:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+    }
+
+    .phone-prefix {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-inset);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      white-space: nowrap;
+    }
+
+    .phone-prefix img {
+      width: 20px;
+      height: 14px;
+      border-radius: 2px;
+    }
+
+    .phone-input {
+      flex: 1;
+      border: none;
+      padding: var(--space-4);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text-primary);
+      background: transparent;
+      outline: none;
+      letter-spacing: 1px;
+    }
+
+    .phone-input::placeholder {
+      color: var(--text-muted);
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+
+    /* OTP Section */
+    .otp-section {
+      display: none;
+      margin-bottom: var(--space-4);
+    }
+
+    .otp-section.show { display: block; animation: fadeInUp var(--duration-slow) var(--ease-out); }
+
+    .otp-label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .otp-resend {
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: var(--text-xs);
+    }
+
+    .otp-boxes {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: center;
+      margin-bottom: var(--space-5);
+    }
+
+    .otp-box {
+      width: 48px;
+      height: 56px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--text-primary);
+      background: var(--bg-card);
+      outline: none;
+      transition: border-color var(--duration-fast) var(--ease-out);
+    }
+
+    .otp-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+    }
+
+    .otp-box.filled {
+      border-color: var(--sacred-green);
+      background: var(--sacred-green-bg);
+    }
+
+    /* Verify Animation */
+    .verify-success {
+      display: none;
+      text-align: center;
+      padding: var(--space-6);
+    }
+
+    .verify-success.show { display: block; animation: fadeInScale var(--duration-slow) var(--ease-spring); }
+
+    .verify-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--sacred-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-4);
+      color: white;
+      font-size: 2rem;
+    }
+
+    .verify-success h3 {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--sacred-green);
+      margin-bottom: var(--space-1);
+    }
+
+    .verify-success p {
+      font-size: var(--text-sm);
+      color: var(--text-light);
+    }
+
+    /* Terms */
+    .login-terms {
+      margin-top: auto;
+      text-align: center;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: var(--leading-relaxed);
+    }
+
+    .login-terms a {
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .login-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin: var(--space-5) 0;
+      color: var(--text-muted);
+      font-size: var(--text-xs);
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--divider);
+    }
+
+    .social-login {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: center;
+    }
+
+    .social-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--duration-fast) var(--ease-out);
+    }
+
+    .social-btn:hover { border-color: var(--primary-light); background: var(--primary-bg); }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+    <div class="phone-container">
+      <div class="login-screen">
+
+        <!-- Hero -->
+        <div class="login-hero">
+          <div class="login-hero-icon fade-in-scale">
+            <i class="fa-solid fa-place-of-worship"></i>
+          </div>
+          <h2 class="fade-in-up">Welcome, Devotee</h2>
+          <p class="fade-in-up" style="animation-delay:0.1s">வணக்கம்! Connect with your temple</p>
+        </div>
+
+        <!-- Body -->
+        <div class="login-body" id="login-body">
+
+          <h3 id="login-title">Enter your phone number</h3>
+          <p class="login-sub" id="login-sub">We'll send you a verification code</p>
+
+          <!-- Phone Input -->
+          <div class="phone-input-group" id="phone-group">
+            <div class="phone-prefix">
+              <span>🇮🇳</span>
+              <span>+91</span>
+            </div>
+            <input type="tel" class="phone-input" id="phone-input"
+              placeholder="98765 43210" maxlength="12"
+              oninput="formatPhone(this)" autocomplete="tel">
+          </div>
+
+          <button class="btn btn-primary btn-block btn-lg" id="send-otp-btn" onclick="sendOTP()">
+            <i class="fa-solid fa-paper-plane"></i>
+            Send OTP
+          </button>
+
+          <!-- OTP Section -->
+          <div class="otp-section" id="otp-section">
+            <div class="otp-label">
+              <span>Enter 6-digit OTP</span>
+              <span class="otp-resend" onclick="resendOTP()">Resend OTP</span>
+            </div>
+            <div class="otp-boxes" id="otp-boxes">
+              <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this, 0)" onkeydown="otpKeydown(event, 0)">
+              <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this, 1)" onkeydown="otpKeydown(event, 1)">
+              <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this, 2)" onkeydown="otpKeydown(event, 2)">
+              <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this, 3)" onkeydown="otpKeydown(event, 3)">
+              <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this, 4)" onkeydown="otpKeydown(event, 4)">
+              <input type="text" class="otp-box" maxlength="1" oninput="otpInput(this, 5)" onkeydown="otpKeydown(event, 5)">
+            </div>
+            <button class="btn btn-primary btn-block btn-lg" onclick="verifyOTP()">
+              <i class="fa-solid fa-check-circle"></i>
+              Verify & Continue
+            </button>
+          </div>
+
+          <!-- Verify Success -->
+          <div class="verify-success" id="verify-success">
+            <div class="verify-icon"><i class="fa-solid fa-check"></i></div>
+            <h3>Verified Successfully!</h3>
+            <p>Redirecting you...</p>
+          </div>
+
+          <div class="login-divider">or continue with</div>
+
+          <div class="social-login">
+            <button class="social-btn" onclick="socialLogin('google')"><i class="fa-brands fa-google"></i></button>
+            <button class="social-btn" onclick="socialLogin('apple')"><i class="fa-brands fa-apple"></i></button>
+            <button class="social-btn" onclick="socialLogin('facebook')"><i class="fa-brands fa-facebook-f"></i></button>
+          </div>
+
+          <div class="login-terms">
+            By continuing, you agree to our
+            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function formatPhone(input) {
+      let v = input.value.replace(/\D/g, '');
+      if (v.length > 10) v = v.slice(0, 10);
+      if (v.length > 5) v = v.slice(0, 5) + ' ' + v.slice(5);
+      input.value = v;
+    }
+
+    function sendOTP() {
+      const phone = document.getElementById('phone-input').value.replace(/\s/g, '');
+      if (phone.length < 10) {
+        alert('Please enter a valid 10-digit phone number');
+        return;
+      }
+
+      // Show OTP section
+      document.getElementById('phone-group').style.display = 'none';
+      document.getElementById('send-otp-btn').style.display = 'none';
+      document.getElementById('login-title').textContent = 'Verify OTP';
+      document.getElementById('login-sub').textContent = 'Code sent to +91 ' + document.getElementById('phone-input').value;
+      document.getElementById('otp-section').classList.add('show');
+
+      // Focus first OTP box
+      setTimeout(() => {
+        document.querySelector('.otp-box').focus();
+      }, 300);
+    }
+
+    function otpInput(el, idx) {
+      el.value = el.value.replace(/\D/g, '').slice(0, 1);
+      if (el.value) {
+        el.classList.add('filled');
+        // Move to next
+        const boxes = document.querySelectorAll('.otp-box');
+        if (idx < 5) boxes[idx + 1].focus();
+      } else {
+        el.classList.remove('filled');
+      }
+    }
+
+    function otpKeydown(e, idx) {
+      if (e.key === 'Backspace' && !e.target.value && idx > 0) {
+        const boxes = document.querySelectorAll('.otp-box');
+        boxes[idx - 1].focus();
+        boxes[idx - 1].value = '';
+        boxes[idx - 1].classList.remove('filled');
+      }
+    }
+
+    function verifyOTP() {
+      // Show success
+      document.getElementById('otp-section').style.display = 'none';
+      document.getElementById('login-title').style.display = 'none';
+      document.getElementById('login-sub').style.display = 'none';
+      document.getElementById('verify-success').classList.add('show');
+
+      // Navigate to type selection
+      setTimeout(() => {
+        window.location.href = 'type-selection.html';
+      }, 1500);
+    }
+
+    function resendOTP() {
+      alert('OTP resent successfully!');
+    }
+
+    function socialLogin(provider) {
+      // Skip to type selection
+      window.location.href = 'type-selection.html';
+    }
+
+    // Auto-fill OTP for demo (click the verify button area)
+    document.addEventListener('dblclick', () => {
+      const boxes = document.querySelectorAll('.otp-box');
+      const otp = '123456';
+      boxes.forEach((box, i) => {
+        box.value = otp[i];
+        box.classList.add('filled');
+      });
+    });
+  </script>
+</body>
+</html>

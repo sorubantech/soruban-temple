@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/clients/soruban/**)",
+      "WebSearch",
+      "Bash(node -c \"d:/clients/soruban/soruban-temple/prototype/devotee-app/d1-regular-devotee/app.js\")",
+      "Bash(node -c \"d:/clients/soruban/soruban-temple/prototype/devotee-app/d2-family-manager/app.js\")",
+      "Bash(node -c \"d:/clients/soruban/soruban-temple/prototype/devotee-app/d3-pilgrim/app.js\")",
+      "Bash(node -c \"d:/clients/soruban/soruban-temple/prototype/provider-app/p1-priest/app.js\")",
+      "Bash(node -c \"d:/clients/soruban/soruban-temple/prototype/temple-admin/app.js\")"
+    ]
+  }
+}

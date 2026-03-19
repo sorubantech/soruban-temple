@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temple Management - Admin Panel</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* ---------- Temples Page Specific Styles ---------- */
+        .action-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+        }
+        .action-bar .btn-add-temple {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition);
+            white-space: nowrap;
+        }
+        .action-bar .btn-add-temple:hover {
+            background: var(--primary-dark);
+        }
+        .action-bar .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .action-bar .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color var(--transition);
+        }
+        .action-bar .search-box input:focus {
+            border-color: var(--primary);
+        }
+        .action-bar .search-box .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .action-bar .filter-select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            background: #fff;
+            cursor: pointer;
+            min-width: 140px;
+        }
+        .action-bar .filter-select:focus {
+            border-color: var(--primary);
+        }
+
+        /* Temple Grid */
+        .temples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* Temple Card */
+        .temple-card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+        .temple-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+        }
+        .temple-card-image {
+            height: 180px;
+            background: linear-gradient(135deg, #f0e6d3 0%, #fce4b8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .temple-card-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .temple-card-image .temple-emoji {
+            font-size: 56px;
+        }
+        .temple-card-image .deity-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .deity-badge.shiva { background: #5c6bc0; }
+        .deity-badge.vishnu { background: #1e88e5; }
+        .deity-badge.devi { background: #e91e63; }
+        .deity-badge.ganesh { background: #ff7043; }
+        .deity-badge.murugan { background: #26a69a; }
+        .deity-badge.other { background: #78909c; }
+
+        .temple-card-body {
+            padding: 16px 20px 20px;
+        }
+        .temple-card-body h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        .temple-card-body .temple-location {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+        .temple-card-body .temple-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .temple-card-body .temple-rating .star {
+            color: #f9a825;
+            font-size: 14px;
+        }
+        .temple-card-body .temple-rating .star.empty {
+            color: #ddd;
+        }
+        .temple-card-body .temple-rating .rating-num {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+        .temple-card-body .temple-timings {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        .temple-card-actions {
+            display: flex;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+        .temple-card-actions .btn {
+            flex: 1;
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition), opacity var(--transition);
+            text-align: center;
+        }
+        .temple-card-actions .btn-edit {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+        .temple-card-actions .btn-edit:hover {
+            background: #bbdefb;
+        }
+        .temple-card-actions .btn-delete {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        .temple-card-actions .btn-delete:hover {
+            background: #ffcdd2;
+        }
+
+        /* Temple Modal Form */
+        .temple-form .form-group {
+            margin-bottom: 16px;
+        }
+        .temple-form .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+        }
+        .temple-form .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color var(--transition);
+            font-family: var(--font-family);
+        }
+        .temple-form .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.1);
+        }
+        .temple-form textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .temple-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .temple-form .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .temple-form .btn-save {
+            padding: 10px 28px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+        .temple-form .btn-save:hover {
+            background: var(--primary-dark);
+        }
+        .temple-form .btn-cancel {
+            padding: 10px 28px;
+            background: #f5f5f5;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+        .temple-form .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        .empty-state h3 {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .temples-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .action-bar .search-box {
+                min-width: auto;
+            }
+            .temple-form .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+
+            <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link active" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <div class="admin-main">
+
+        <!-- Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+</button>
+                <div>
+                    <h1 class="page-title">Temple Management</h1>
+                    <div class="page-breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <span class="separator">&#x25B8;</span>
+                        <span>Temples</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="Search..." class="header-search-input">
+                </div>
+                <button class="notification-btn" title="Notifications">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="header-avatar" title="Admin Profile">
+                    <span>A</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content-area">
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <button class="btn-add-temple" id="add-temple-btn" onclick="adminApp.showAddTempleForm()">
+                    <span><i class="fas fa-plus"></i></span> Add New Temple
+                </button>
+                <div class="search-box">
+                    <span class="search-icon"><i class="fas fa-search"></i></span>
+                    <input type="text" id="temple-search" placeholder="Search temples by name, location..." oninput="filterTempleCards()">
+                </div>
+                <select class="filter-select" id="deity-filter" onchange="filterTempleCards()">
+                    <option value="all">All Deity Types</option>
+                    <option value="shiva">Shiva</option>
+                    <option value="vishnu">Vishnu</option>
+                    <option value="devi">Devi</option>
+                    <option value="ganesh">Ganesh</option>
+                    <option value="murugan">Murugan</option>
+                </select>
+            </div>
+
+            <!-- Temples Grid -->
+            <div class="temples-grid" id="temples-grid">
+                <!-- Temple cards are rendered here by JS -->
+            </div>
+
+        </div>
+    </div><!-- /.admin-main -->
+
+</div><!-- /.admin-wrapper -->
+
+    <!-- ============================================================
+         TEMPLE MODAL (Add / Edit)
+         ============================================================ -->
+    <div class="admin-modal-overlay" id="temple-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9998; align-items:center; justify-content:center;">
+        <div class="admin-modal" style="background:#fff; border-radius:12px; padding:32px; max-width:560px; width:90%; max-height:85vh; overflow-y:auto; position:relative;">
+            <button class="modal-close-btn" onclick="closeTempleModal()" style="position:absolute; top:12px; right:16px; background:none; border:none; font-size:24px; cursor:pointer; color:#666;">&times;</button>
+            <h2 id="temple-modal-title" style="margin:0 0 24px; color:var(--text-primary);">Add New Temple</h2>
+            <form class="temple-form" id="temple-form" onsubmit="handleTempleFormSubmit(event)">
+                <input type="hidden" id="temple-edit-id" value="">
+
+                <div class="form-group">
+                    <label for="modal-temple-name">Temple Name *</label>
+                    <input type="text" id="modal-temple-name" class="form-control" placeholder="e.g., Meenakshi Amman Temple" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modal-temple-deity">Deity Type *</label>
+                        <select id="modal-temple-deity" class="form-control" required>
+                            <option value="">Select Deity</option>
+                            <option value="Shiva">Shiva</option>
+                            <option value="Vishnu">Vishnu</option>
+                            <option value="Devi">Devi</option>
+                            <option value="Ganesh">Ganesh</option>
+                            <option value="Murugan">Murugan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-temple-location">Location *</label>
+                        <input type="text" id="modal-temple-location" class="form-control" placeholder="e.g., Madurai, Tamil Nadu" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-temple-description">Description</label>
+                    <textarea id="modal-temple-description" class="form-control" rows="3" placeholder="Brief description of the temple..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="modal-temple-morning">Morning Timings</label>
+                        <input type="text" id="modal-temple-morning" class="form-control" placeholder="e.g., 6:00 AM - 12:00 PM">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-temple-evening">Evening Timings</label>
+                        <input type="text" id="modal-temple-evening" class="form-control" placeholder="e.g., 4:00 PM - 9:00 PM">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-temple-rating">Rating (1-5)</label>
+                    <input type="number" id="modal-temple-rating" class="form-control" min="1" max="5" step="0.1" value="4.5" placeholder="4.5">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeTempleModal()">Cancel</button>
+                    <button type="submit" class="btn-save" id="temple-form-submit-btn">Save Temple</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" style="position:fixed; top:20px; right:20px; z-index:10000;"></div>
+
+    <!-- Modal Container (used by adminApp.showModal) -->
+    <div id="modal-container"></div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        // =====================================================================
+        // Temple Page Logic
+        // =====================================================================
+
+        /**
+         * Render temple cards into the grid.
+         * Reads from localStorage via adminApp and renders card-based UI.
+         */
+        function renderTempleCards() {
+            var container = document.getElementById('temples-grid');
+            if (!container) return;
+
+            var temples = JSON.parse(localStorage.getItem('admin_temples') || '[]');
+            if (!Array.isArray(temples) || temples.length === 0) {
+                container.innerHTML =
+                    '<div class="empty-state" style="grid-column: 1/-1;">' +
+                    '<div class="empty-icon"><i class="fas fa-place-of-worship"></i></div>' +
+                    '<h3>No Temples Found</h3>' +
+                    '<p>Click "Add New Temple" to create your first temple.</p>' +
+                    '</div>';
+                return;
+            }
+
+            var searchTerm = (document.getElementById('temple-search').value || '').toLowerCase();
+            var deityFilter = (document.getElementById('deity-filter').value || 'all').toLowerCase();
+
+            var filtered = temples.filter(function(t) {
+                var matchSearch = !searchTerm ||
+                    (t.name || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                    (t.location || '').toLowerCase().indexOf(searchTerm) !== -1 ||
+                    (t.deity || '').toLowerCase().indexOf(searchTerm) !== -1;
+                var matchDeity = deityFilter === 'all' || (t.deity || '').toLowerCase() === deityFilter;
+                return matchSearch && matchDeity;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML =
+                    '<div class="empty-state" style="grid-column: 1/-1;">' +
+                    '<div class="empty-icon"><i class="fas fa-search"></i></div>' +
+                    '<h3>No Matching Temples</h3>' +
+                    '<p>Try adjusting your search or filter criteria.</p>' +
+                    '</div>';
+                return;
+            }
+
+            var html = '';
+            filtered.forEach(function(t) {
+                var deityClass = getDeityClass(t.deity);
+                var timingsText = t.timings || buildTimings(t.morningTimings, t.eveningTimings) || 'Not specified';
+                var rating = parseFloat(t.rating) || 0;
+                var starsHtml = renderStars(rating);
+
+                var hasImage = t.image && t.image !== '' && t.image.indexOf('/') !== -1;
+                var imageContent = hasImage
+                    ? '<img src="' + escapeAttr(t.image) + '" alt="' + escapeAttr(t.name) + '">'
+                    : '<span class="temple-emoji"><i class="fas fa-place-of-worship" style="font-size:3rem;color:#bf6c2c;"></i></span>';
+
+                html +=
+                    '<div class="temple-card" data-id="' + t.id + '" data-deity="' + escapeAttr(t.deity || '') + '">' +
+                        '<div class="temple-card-image">' +
+                            imageContent +
+                            '<span class="deity-badge ' + deityClass + '">' + escapeHtml(t.deity || 'Other') + '</span>' +
+                        '</div>' +
+                        '<div class="temple-card-body">' +
+                            '<h3>' + escapeHtml(t.name) + '</h3>' +
+                            '<div class="temple-location">' +
+                                '<span><i class="fas fa-location-dot"></i></span> ' + escapeHtml(t.location || 'Unknown') +
+                            '</div>' +
+                            '<div class="temple-rating">' +
+                                starsHtml +
+                                '<span class="rating-num">(' + rating.toFixed(1) + ')</span>' +
+                            '</div>' +
+                            '<div class="temple-timings">' +
+                                '<span><i class="fas fa-clock"></i></span> ' + escapeHtml(timingsText) +
+                            '</div>' +
+                            '<div class="temple-card-actions">' +
+                                '<button class="btn btn-edit" onclick="openEditTempleModal(\'' + t.id + '\');"><i class="fas fa-pen"></i> Edit</button>' +
+                                '<button class="btn btn-delete" onclick="adminApp.deleteTemple(\'' + t.id + '\')"><i class="fas fa-trash"></i> Delete</button>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>';
+            });
+
+            container.innerHTML = html;
+        }
+
+        /**
+         * Get the CSS class for a deity type badge.
+         */
+        function getDeityClass(deity) {
+            if (!deity) return 'other';
+            var d = deity.toLowerCase();
+            if (d === 'shiva') return 'shiva';
+            if (d === 'vishnu') return 'vishnu';
+            if (d === 'devi' || d === 'amman' || d === 'parvati' || d === 'lakshmi') return 'devi';
+            if (d === 'ganesh' || d === 'ganesha' || d === 'vinayagar') return 'ganesh';
+            if (d === 'murugan' || d === 'karthikeya' || d === 'subramanya') return 'murugan';
+            return 'other';
+        }
+
+        /**
+         * Render star rating HTML.
+         */
+        function renderStars(rating) {
+            var html = '';
+            for (var i = 1; i <= 5; i++) {
+                if (i <= Math.floor(rating)) {
+                    html += '<span class="star">&#x2605;</span>';
+                } else if (i - rating < 1 && i - rating > 0) {
+                    html += '<span class="star">&#x2605;</span>';
+                } else {
+                    html += '<span class="star empty">&#x2606;</span>';
+                }
+            }
+            return html;
+        }
+
+        /**
+         * Build timings string from morning and evening values.
+         */
+        function buildTimings(morning, evening) {
+            var parts = [];
+            if (morning) parts.push(morning);
+            if (evening) parts.push(evening);
+            return parts.join(' | ');
+        }
+
+        /**
+         * Escape HTML special characters.
+         */
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        /**
+         * Escape attribute value.
+         */
+        function escapeAttr(str) {
+            return escapeHtml(str);
+        }
+
+        /**
+         * Filter temple cards based on search and deity filter.
+         */
+        function filterTempleCards() {
+            renderTempleCards();
+        }
+
+        /**
+         * Open the Add Temple modal.
+         */
+        function openAddTempleModal() {
+            document.getElementById('temple-modal-title').textContent = 'Add New Temple';
+            document.getElementById('temple-form-submit-btn').textContent = 'Save Temple';
+            document.getElementById('temple-form').reset();
+            document.getElementById('temple-edit-id').value = '';
+            document.getElementById('modal-temple-rating').value = '4.5';
+            var modal = document.getElementById('temple-modal');
+            modal.style.display = 'flex';
+        }
+
+        /**
+         * Open the Edit Temple modal with pre-filled data.
+         */
+        function openEditTempleModal(id) {
+            var temples = JSON.parse(localStorage.getItem('admin_temples') || '[]');
+            var temple = temples.find(function(t) { return t.id === id; });
+            if (!temple) {
+                adminApp.showToast('Temple not found.', 'error');
+                return;
+            }
+
+            document.getElementById('temple-modal-title').textContent = 'Edit Temple';
+            document.getElementById('temple-form-submit-btn').textContent = 'Update Temple';
+            document.getElementById('temple-edit-id').value = id;
+            document.getElementById('modal-temple-name').value = temple.name || '';
+            document.getElementById('modal-temple-deity').value = temple.deity || '';
+            document.getElementById('modal-temple-location').value = temple.location || '';
+            document.getElementById('modal-temple-description').value = temple.description || '';
+            document.getElementById('modal-temple-rating').value = temple.rating || 4.5;
+
+            // Parse timings
+            var timings = temple.timings || '';
+            if (timings.indexOf('|') !== -1) {
+                var parts = timings.split('|');
+                document.getElementById('modal-temple-morning').value = parts[0].trim();
+                document.getElementById('modal-temple-evening').value = parts[1] ? parts[1].trim() : '';
+            } else {
+                document.getElementById('modal-temple-morning').value = timings;
+                document.getElementById('modal-temple-evening').value = '';
+            }
+
+            var modal = document.getElementById('temple-modal');
+            modal.style.display = 'flex';
+        }
+
+        /**
+         * Close the temple modal.
+         */
+        function closeTempleModal() {
+            document.getElementById('temple-modal').style.display = 'none';
+        }
+
+        /**
+         * Handle temple form submit (add or edit).
+         */
+        function handleTempleFormSubmit(e) {
+            e.preventDefault();
+            var editId = document.getElementById('temple-edit-id').value;
+
+            var morning = document.getElementById('modal-temple-morning').value.trim();
+            var evening = document.getElementById('modal-temple-evening').value.trim();
+            var timings = buildTimings(morning, evening);
+
+            var data = {
+                name: document.getElementById('modal-temple-name').value.trim(),
+                deity: document.getElementById('modal-temple-deity').value,
+                location: document.getElementById('modal-temple-location').value.trim(),
+                description: document.getElementById('modal-temple-description').value.trim(),
+                timings: timings,
+                morningTimings: morning,
+                eveningTimings: evening,
+                rating: parseFloat(document.getElementById('modal-temple-rating').value) || 4.5
+            };
+
+            if (editId) {
+                adminApp.editTemple(editId, data);
+            } else {
+                adminApp.addTemple(data);
+            }
+
+            closeTempleModal();
+            renderTempleCards();
+        }
+
+        // Override the add-temple-btn click to use our custom modal
+        document.getElementById('add-temple-btn').onclick = function() {
+            openAddTempleModal();
+        };
+
+        // Close modal on overlay click
+        document.getElementById('temple-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeTempleModal();
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeTempleModal();
+        });
+
+        // =====================================================================
+        // Initialize on page load
+        // =====================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication
+            if (typeof adminApp !== 'undefined' && adminApp.checkAuth) {
+                adminApp.checkAuth();
+            }
+
+            // Load temples into the grid
+            adminApp.loadTemples();
+            renderTempleCards();
+        });
+    </script>
+
+</body>
+</html>

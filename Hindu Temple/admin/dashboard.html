@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Temple Digital Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+            <a href="dashboard.html" class="nav-link active" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="prasadam-orders.html" class="nav-link" data-page="prasadam-orders">
+                <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+                <span class="nav-label">Prasadam Orders</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="admin-main">
+
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <div class="page-breadcrumb">
+                        <span>Dashboard</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="Search..." class="header-search-input">
+                </div>
+                <button class="notification-btn" title="Notifications">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="header-avatar" title="Admin Profile">
+                    <span>A</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="content-body">
+
+            <!-- Stat Cards -->
+            <div class="stats-grid">
+                <a href="bookings.html" class="stat-card stat-card-link" id="stat-bookings">
+                    <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">Total Bookings</span>
+                        <span class="stat-value" id="totalBookings">--</span>
+                        <span class="stat-trend trend-up">↑ <span class="trend-value">--</span></span>
+                    </div>
+                </a>
+                <a href="donations.html" class="stat-card stat-card-link" id="stat-donations">
+                    <div class="stat-icon"><i class="fas fa-indian-rupee-sign"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">Total Donations</span>
+                        <span class="stat-value" id="totalDonations">--</span>
+                        <span class="stat-trend trend-up">↑ <span class="trend-value">--</span></span>
+                    </div>
+                </a>
+                <a href="temples.html" class="stat-card stat-card-link" id="stat-temples">
+                    <div class="stat-icon"><i class="fas fa-place-of-worship"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">Active Temples</span>
+                        <span class="stat-value" id="activeTemples">--</span>
+                    </div>
+                </a>
+                <a href="users.html" class="stat-card stat-card-link" id="stat-users">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-details">
+                        <span class="stat-label">Total Users</span>
+                        <span class="stat-value" id="totalUsers">--</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Two-Column Layout: Recent Bookings & Donations -->
+            <div class="dashboard-grid">
+
+                <!-- Recent Bookings (wider left column) -->
+                <div class="card card-wide">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Bookings</h3>
+                        <a href="bookings.html" class="card-action">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="admin-table" id="recent-bookings-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Devotee</th>
+                                        <th>Service</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentBookings">
+                                    <!-- Populated by adminApp.renderRecentBookings() -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Donations (narrower right column) -->
+                <div class="card card-narrow">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Donations</h3>
+                        <a href="donations.html" class="card-action">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="admin-table" id="recent-donations-table">
+                                <thead>
+                                    <tr>
+                                        <th>Donor</th>
+                                        <th>Amount</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentDonations">
+                                    <!-- Populated by adminApp.renderRecentDonations() -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3 class="section-title">Quick Actions</h3>
+                <div class="actions-grid">
+                    <a href="events.html" class="action-card">
+                        <span class="action-icon"><i class="fas fa-calendar-plus"></i></span>
+                        <span class="action-label">Add New Event</span>
+                    </a>
+                    <a href="temples.html" class="action-card">
+                        <span class="action-icon"><i class="fas fa-place-of-worship"></i></span>
+                        <span class="action-label">Manage Temples</span>
+                    </a>
+                    <a href="reports.html" class="action-card">
+                        <span class="action-icon"><i class="fas fa-chart-line"></i></span>
+                        <span class="action-label">View Reports</span>
+                    </a>
+                    <a href="feed.html" class="action-card">
+                        <span class="action-icon"><i class="fas fa-newspaper"></i></span>
+                        <span class="action-label">Post Update</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- /.admin-main -->
+
+</div><!-- /.admin-wrapper -->
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Modal Container -->
+    <div class="modal-container" id="modal-container"></div>
+
+    <script src="js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            adminApp.loadDashboardStats();
+            adminApp.renderRecentBookings();
+            adminApp.renderRecentDonations();
+        });
+    </script>
+
+</body>
+</html>

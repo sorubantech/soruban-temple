@@ -1,0 +1,240 @@
+/* ============================================================
+   SORUBAN TEMPLE — Animations & Transitions
+   ============================================================ */
+
+@layer components {
+
+  /* ===== Screen Transitions ===== */
+  .screen-enter {
+    animation: screenEnter var(--duration-slow) var(--ease-out) forwards;
+  }
+
+  @keyframes screenEnter {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .screen-enter-up {
+    animation: screenEnterUp var(--duration-slow) var(--ease-out) forwards;
+  }
+
+  @keyframes screenEnterUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .screen-exit {
+    animation: screenExit var(--duration-normal) var(--ease-out) forwards;
+  }
+
+  @keyframes screenExit {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-20px); }
+  }
+
+  /* ===== Fade Variants ===== */
+  .fade-in {
+    animation: fadeIn var(--duration-normal) var(--ease-out) forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .fade-in-up {
+    animation: fadeInUp var(--duration-slow) var(--ease-out) forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in-scale {
+    animation: fadeInScale var(--duration-slow) var(--ease-spring) forwards;
+  }
+
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ===== Staggered Children ===== */
+  .stagger-children > * {
+    opacity: 0;
+    animation: fadeInUp var(--duration-slow) var(--ease-out) forwards;
+  }
+
+  .stagger-children > *:nth-child(1) { animation-delay: 50ms; }
+  .stagger-children > *:nth-child(2) { animation-delay: 100ms; }
+  .stagger-children > *:nth-child(3) { animation-delay: 150ms; }
+  .stagger-children > *:nth-child(4) { animation-delay: 200ms; }
+  .stagger-children > *:nth-child(5) { animation-delay: 250ms; }
+  .stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+  .stagger-children > *:nth-child(7) { animation-delay: 350ms; }
+  .stagger-children > *:nth-child(8) { animation-delay: 400ms; }
+  .stagger-children > *:nth-child(9) { animation-delay: 450ms; }
+  .stagger-children > *:nth-child(10) { animation-delay: 500ms; }
+  .stagger-children > *:nth-child(11) { animation-delay: 550ms; }
+  .stagger-children > *:nth-child(12) { animation-delay: 600ms; }
+
+  /* ===== Pulse / Glow ===== */
+  .pulse {
+    animation: pulse 2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .glow-pulse {
+    animation: glowPulse 2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.2); }
+    50% { box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.4), 0 0 60px rgba(var(--primary-rgb), 0.1); }
+  }
+
+  .gold-glow {
+    animation: goldGlow 2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes goldGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 179, 0, 0.2); }
+    50% { box-shadow: 0 0 30px rgba(255, 179, 0, 0.4), 0 0 60px rgba(255, 179, 0, 0.15); }
+  }
+
+  /* ===== Float ===== */
+  .float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* ===== Spin (for loaders) ===== */
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ===== Splash Screen Animations ===== */
+  .splash-enter {
+    animation: splashEnter 1.5s var(--ease-out) forwards;
+  }
+
+  @keyframes splashEnter {
+    0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+    50% { opacity: 1; transform: scale(1.05) rotate(2deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
+  }
+
+  .splash-text {
+    animation: splashText 1s var(--ease-out) 0.5s forwards;
+    opacity: 0;
+  }
+
+  @keyframes splashText {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== QR Code Celebration ===== */
+  .qr-celebrate {
+    animation: qrCelebrate 0.8s var(--ease-spring) forwards;
+  }
+
+  @keyframes qrCelebrate {
+    0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+    60% { transform: scale(1.1) rotate(3deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  /* ===== Live Indicator ===== */
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sacred-red);
+    display: inline-block;
+    animation: livePulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(198, 40, 40, 0.4); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(198, 40, 40, 0); }
+  }
+
+  /* ===== Ripple Effect ===== */
+  .ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.3) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .ripple:active::after {
+    opacity: 1;
+  }
+
+  /* ===== Counter Animation ===== */
+  .count-up {
+    animation: countPop 0.4s var(--ease-spring);
+  }
+
+  @keyframes countPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  /* ===== Slide In from Bottom (Modal, Sheet) ===== */
+  .slide-up {
+    animation: slideUp var(--duration-slow) var(--ease-spring) forwards;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  /* ===== Notification Bell Shake ===== */
+  .bell-shake {
+    animation: bellShake 0.5s var(--ease-spring);
+  }
+
+  @keyframes bellShake {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(15deg); }
+    50% { transform: rotate(-10deg); }
+    75% { transform: rotate(5deg); }
+  }
+
+  /* ===== Temple Diya Flame ===== */
+  .flame-flicker {
+    animation: flameFlicker 1.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes flameFlicker {
+    0% { text-shadow: 0 0 4px rgba(255, 179, 0, 0.6); transform: scale(1); }
+    33% { text-shadow: 0 0 8px rgba(255, 179, 0, 0.8); transform: scale(1.05) rotate(1deg); }
+    66% { text-shadow: 0 0 6px rgba(255, 179, 0, 0.7); transform: scale(0.98) rotate(-1deg); }
+    100% { text-shadow: 0 0 10px rgba(255, 179, 0, 0.9); transform: scale(1.02); }
+  }
+}

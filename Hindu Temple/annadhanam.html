@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Annadhanam - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .anna-hero {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: white;
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+    .anna-hero .hero-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .anna-hero h1 { font-size: 1.35rem; margin-bottom: 0.25rem; }
+    .anna-hero p { font-size: 0.85rem; opacity: 0.85; }
+    .progress-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .progress-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--success), #4caf50);
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+    .progress-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+    .progress-stats .raised {
+      font-weight: 700;
+      color: var(--success);
+    }
+    .progress-stats .goal { color: var(--text-light); }
+    .meals-count {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .meal-stat {
+      flex: 1;
+      background: #e8f5e9;
+      border-radius: 10px;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .meal-stat .ms-num {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--success);
+    }
+    .meal-stat .ms-label {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      margin-top: 0.15rem;
+    }
+    .sponsor-option {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .sponsor-option:hover, .sponsor-option.selected {
+      border-color: var(--success);
+      background: #e8f5e9;
+    }
+    .so-icon {
+      font-size: 2rem;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8f5e9;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .so-info h3 { font-size: 0.95rem; font-weight: 700; }
+    .so-info p { font-size: 0.78rem; color: var(--text-light); margin-top: 0.15rem; }
+    .so-price {
+      margin-left: auto;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--success);
+      white-space: nowrap;
+    }
+    .sponsor-list {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    .sponsor-list h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+    .sponsor-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 0.85rem;
+    }
+    .sponsor-item:last-child { border: none; }
+    .sponsor-item .s-name { font-weight: 500; }
+    .sponsor-item .s-amount { color: var(--success); font-weight: 600; }
+    .schedule-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    .schedule-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--primary);
+    }
+    .meal-time {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .meal-time:last-child { border: none; }
+    .meal-time .mt-name { font-weight: 600; font-size: 0.9rem; }
+    .meal-time .mt-time { color: var(--text-light); font-size: 0.82rem; }
+    .meal-time .mt-count {
+      font-size: 0.78rem;
+      color: var(--success);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>Annadhanam</h2>
+    </div>
+
+    <!-- Temple Banner -->
+    <div id="anna-temple-banner" style="display:none;"></div>
+
+    <!-- Hero -->
+    <div class="anna-hero">
+      <div class="hero-icon">🍚</div>
+      <h1 id="anna-hero-title">Annadhanam Seva</h1>
+      <p id="anna-hero-sub">Sponsor Free Food for Devotees</p>
+    </div>
+
+    <!-- Temple Selection (if no temple selected) -->
+    <div id="anna-temple-select-section" class="section" style="display:none;">
+      <div style="background:#fff3e0; border:1px solid #ffcc80; border-radius:var(--radius); padding:14px; display:flex; align-items:center; gap:10px; margin-bottom:0.5rem;">
+        <span style="font-size:1.3rem;">🛕</span>
+        <div style="flex:1;">
+          <div style="font-weight:700; font-size:0.88rem; color:#e65100;">Select a Temple</div>
+          <div style="font-size:0.75rem; color:#bf360c;">Choose which temple's Annadhanam you'd like to sponsor</div>
+        </div>
+      </div>
+      <select id="anna-temple-dropdown" onchange="onAnnaTempleChange()" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.9rem; background:var(--card-bg);">
+        <option value="">-- Choose a Temple --</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <!-- Today's Progress -->
+      <div class="progress-card">
+        <h3>Today's Annadhanam Fund</h3>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" style="width: 68%;"></div>
+        </div>
+        <div class="progress-stats">
+          <span class="raised">&#8377;6,800 raised</span>
+          <span class="goal">Goal: &#8377;10,000</span>
+        </div>
+        <div class="meals-count">
+          <div class="meal-stat">
+            <div class="ms-num">680</div>
+            <div class="ms-label">Meals Today</div>
+          </div>
+          <div class="meal-stat">
+            <div class="ms-num">23</div>
+            <div class="ms-label">Sponsors</div>
+          </div>
+          <div class="meal-stat">
+            <div class="ms-num">15.2K</div>
+            <div class="ms-label">Total Meals</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meal Schedule -->
+      <div class="schedule-card">
+        <h3>🍽️ Daily Meal Schedule</h3>
+        <div class="meal-time">
+          <span class="mt-name">Morning Breakfast</span>
+          <span class="mt-time">7:00 AM - 9:00 AM</span>
+          <span class="mt-count">200 meals</span>
+        </div>
+        <div class="meal-time">
+          <span class="mt-name">Lunch</span>
+          <span class="mt-time">12:00 PM - 2:00 PM</span>
+          <span class="mt-count">500 meals</span>
+        </div>
+        <div class="meal-time">
+          <span class="mt-name">Evening Snacks</span>
+          <span class="mt-time">4:00 PM - 5:00 PM</span>
+          <span class="mt-count">150 meals</span>
+        </div>
+        <div class="meal-time">
+          <span class="mt-name">Dinner</span>
+          <span class="mt-time">7:00 PM - 9:00 PM</span>
+          <span class="mt-count">350 meals</span>
+        </div>
+      </div>
+
+      <!-- Sponsor Options -->
+      <div class="section-title">Sponsor Meals</div>
+
+      <div class="sponsor-option" onclick="selectSponsor(this, 'Feed 1 Person', 10)">
+        <div class="so-icon">🍛</div>
+        <div class="so-info">
+          <h3>Feed 1 Person</h3>
+          <p>Sponsor one devotee's meal</p>
+        </div>
+        <span class="so-price">&#8377;10</span>
+      </div>
+
+      <div class="sponsor-option" onclick="selectSponsor(this, 'Feed 10 Persons', 100)">
+        <div class="so-icon">🍽️</div>
+        <div class="so-info">
+          <h3>Feed 10 Persons</h3>
+          <p>Sponsor meals for a small group</p>
+        </div>
+        <span class="so-price">&#8377;100</span>
+      </div>
+
+      <div class="sponsor-option" onclick="selectSponsor(this, 'Feed 50 Persons', 500)">
+        <div class="so-icon">🥘</div>
+        <div class="so-info">
+          <h3>Feed 50 Persons</h3>
+          <p>Sponsor meals for 50 devotees</p>
+        </div>
+        <span class="so-price">&#8377;500</span>
+      </div>
+
+      <div class="sponsor-option" onclick="selectSponsor(this, 'Feed 100 Persons', 1000)">
+        <div class="so-icon">🏺</div>
+        <div class="so-info">
+          <h3>Feed 100 Persons</h3>
+          <p>Sponsor a full meal session</p>
+        </div>
+        <span class="so-price">&#8377;1,000</span>
+      </div>
+
+      <div class="sponsor-option" onclick="selectSponsor(this, 'Full Day Sponsor', 5000)">
+        <div class="so-icon">🌟</div>
+        <div class="so-info">
+          <h3>Full Day Sponsor</h3>
+          <p>Sponsor all meals for one day</p>
+        </div>
+        <span class="so-price">&#8377;5,000</span>
+      </div>
+
+      <div class="sponsor-option" onclick="selectSponsor(this, 'Special Occasion Sponsor', 10000)">
+        <div class="so-icon">🎉</div>
+        <div class="so-info">
+          <h3>Special Occasion Sponsor</h3>
+          <p>Sponsor in memory / birthday / anniversary</p>
+        </div>
+        <span class="so-price">&#8377;10,000</span>
+      </div>
+
+      <!-- Custom Amount -->
+      <div class="form-group" style="margin-top:1rem;">
+        <label>Or Enter Custom Amount</label>
+        <input type="number" id="anna-custom" placeholder="Enter amount in ₹" min="10">
+      </div>
+
+      <!-- Sponsor Details -->
+      <div class="form-group">
+        <label>Your Name (for donation receipt)</label>
+        <input type="text" id="anna-name" placeholder="Enter your name">
+      </div>
+
+      <div class="form-group">
+        <label>Occasion (Optional)</label>
+        <input type="text" id="anna-occasion" placeholder="e.g., Birthday, Anniversary, In memory of...">
+      </div>
+
+      <div class="form-group">
+        <label>Select Date</label>
+        <input type="date" id="anna-date">
+      </div>
+
+      <button class="btn btn-success" onclick="handleAnnadhanam()" style="margin-top:0.5rem;">🙏 Sponsor Annadhanam</button>
+      <p class="text-center mt-1" style="font-size:0.8rem; color:var(--text-light);">
+        Tax-exempt under Section 80G
+      </p>
+
+      <!-- Recent Sponsors -->
+      <div class="sponsor-list">
+        <h3>🙏 Recent Sponsors</h3>
+        <div class="sponsor-item">
+          <span class="s-name">Rajesh Kumar</span>
+          <span class="s-amount">&#8377;1,000 - 100 meals</span>
+        </div>
+        <div class="sponsor-item">
+          <span class="s-name">Priya Sharma</span>
+          <span class="s-amount">&#8377;500 - 50 meals</span>
+        </div>
+        <div class="sponsor-item">
+          <span class="s-name">Anonymous</span>
+          <span class="s-amount">&#8377;5,000 - Full Day</span>
+        </div>
+        <div class="sponsor-item">
+          <span class="s-name">Venkat Raman</span>
+          <span class="s-amount">&#8377;100 - 10 meals</span>
+        </div>
+        <div class="sponsor-item">
+          <span class="s-name">Lakshmi Devi</span>
+          <span class="s-amount">&#8377;2,000 - In memory</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let selectedSponsorType = null;
+    let selectedSponsorAmount = 0;
+    let annaTemple = null;
+
+    // Temple-specific annadhanam data
+    var templeAnnadhanamData = {
+      'Meenakshi Amman Temple': { organizer: 'Meenakshi Temple Annadhanam Trust', contact: '+91 452 234 5678', capacity: 5000, dailyGoal: 25000, raised: 17200 },
+      'Brihadeeswarar Temple': { organizer: 'Brihadeeswarar Devasthanam Trust', contact: '+91 4362 274 476', capacity: 2000, dailyGoal: 12000, raised: 8400 },
+      'Tirumala Venkateswara Temple': { organizer: 'TTD Annadhanam Division', contact: '+91 877 227 7777', capacity: 50000, dailyGoal: 100000, raised: 72000 },
+      'Ramanathaswamy Temple': { organizer: 'Ramanathaswamy Temple Trust', contact: '+91 4573 221 223', capacity: 3000, dailyGoal: 15000, raised: 9800 },
+      'Palani Murugan Temple': { organizer: 'Palani Arulmigu Dhandayuthapani Trust', contact: '+91 4545 241 431', capacity: 4000, dailyGoal: 18000, raised: 12600 },
+      'Chidambaram Nataraja Temple': { organizer: 'Chidambaram Nataraja Temple Dikshitar Committee', contact: '+91 4144 220 336', capacity: 1500, dailyGoal: 8000, raised: 5200 },
+      'Kapaleeshwarar Temple': { organizer: 'HR&CE - Kapaleeshwarar Temple', contact: '+91 44 2464 1670', capacity: 1200, dailyGoal: 8000, raised: 4800 },
+      'Ranganathaswamy Temple': { organizer: 'Sri Ranganathaswamy Temple Trust', contact: '+91 431 243 2246', capacity: 6000, dailyGoal: 20000, raised: 14500 }
+    };
+
+    // Known temples for dropdown
+    var annaTempleList = [
+      'Meenakshi Amman Temple', 'Brihadeeswarar Temple', 'Chidambaram Nataraja Temple',
+      'Tirumala Venkateswara Temple', 'Arunachaleswarar Temple', 'Ekambareswarar Temple',
+      'Kapaleeshwarar Temple', 'Ramanathaswamy Temple', 'Kamakshi Amman Temple',
+      'Palani Murugan Temple', 'Ranganathaswamy Temple', 'Siddhivinayak Temple',
+      'Hanuman Garhi', 'Jambukeswarar Temple'
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for selected temple
+      try {
+        var selTemple = JSON.parse(localStorage.getItem('selected_temple'));
+        if (selTemple && selTemple.name) {
+          annaTemple = selTemple.name;
+          showTempleBanner(selTemple.name, selTemple.location || '');
+          updatePageForTemple(selTemple.name);
+        } else {
+          showAnnaTempleDropdown();
+        }
+      } catch(e) {
+        showAnnaTempleDropdown();
+      }
+
+      // Pre-fill name from profile
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user'));
+        if (user && user.name) document.getElementById('anna-name').value = user.name;
+      } catch(e) {}
+
+      // Set min date to today
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById('anna-date').value = today;
+      document.getElementById('anna-date').min = today;
+    });
+
+    function showTempleBanner(name, location) {
+      var banner = document.getElementById('anna-temple-banner');
+      banner.style.cssText = 'display:flex; align-items:center; gap:12px; padding:12px 20px; background:linear-gradient(135deg,#e8f5e9,#c8e6c9); border-bottom:1px solid #a5d6a7;';
+      banner.innerHTML =
+        '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#2e7d32,#1b5e20);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:white;flex-shrink:0;">🛕</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:0.88rem;font-weight:700;color:#1b5e20;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + name + '</div>' +
+          (location ? '<div style="font-size:0.72rem;color:#2e7d32;">📍 ' + location + '</div>' : '') +
+        '</div>' +
+        '<button type="button" onclick="changeAnnaTemple()" style="background:rgba(27,94,32,0.1);border:1px solid #2e7d32;color:#1b5e20;border-radius:8px;padding:5px 10px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;">Change</button>';
+      document.getElementById('anna-temple-select-section').style.display = 'none';
+    }
+
+    function updatePageForTemple(templeName) {
+      // Update hero title
+      document.getElementById('anna-hero-title').textContent = 'Annadhanam Seva';
+      document.getElementById('anna-hero-sub').textContent = templeName;
+
+      // Update progress with temple-specific data
+      var data = null;
+      for (var key in templeAnnadhanamData) {
+        if (templeName.indexOf(key.split(' ')[0]) !== -1 || key.indexOf(templeName.split(' ')[0]) !== -1) {
+          data = templeAnnadhanamData[key];
+          break;
+        }
+      }
+
+      if (data) {
+        var pct = Math.round((data.raised / data.dailyGoal) * 100);
+        var mealsToday = Math.floor(data.raised / 10);
+        var sponsors = Math.floor(mealsToday / 25) + 5;
+        document.querySelector('.progress-bar-fill').style.width = pct + '%';
+        document.querySelector('.raised').innerHTML = '&#8377;' + data.raised.toLocaleString() + ' raised';
+        document.querySelector('.goal').textContent = 'Goal: ₹' + data.dailyGoal.toLocaleString();
+
+        var mealStats = document.querySelectorAll('.meal-stat .ms-num');
+        if (mealStats[0]) mealStats[0].textContent = mealsToday.toLocaleString();
+        if (mealStats[1]) mealStats[1].textContent = sponsors;
+        if (mealStats[2]) mealStats[2].textContent = (data.capacity * 30 / 1000).toFixed(1) + 'K';
+
+        // Update meal counts based on capacity
+        var mealCounts = document.querySelectorAll('.mt-count');
+        if (mealCounts.length >= 4) {
+          var bk = Math.round(data.capacity * 0.15);
+          var lu = Math.round(data.capacity * 0.45);
+          var sn = Math.round(data.capacity * 0.1);
+          var dn = Math.round(data.capacity * 0.3);
+          mealCounts[0].textContent = bk + ' meals';
+          mealCounts[1].textContent = lu + ' meals';
+          mealCounts[2].textContent = sn + ' meals';
+          mealCounts[3].textContent = dn + ' meals';
+        }
+      }
+
+      // Add organizer card after schedule
+      renderOrganizerCard(templeName, data);
+    }
+
+    function renderOrganizerCard(templeName, data) {
+      var schedCard = document.querySelector('.schedule-card');
+      if (!schedCard) return;
+
+      // Remove existing organizer card if any
+      var existing = document.getElementById('organizer-card');
+      if (existing) existing.remove();
+
+      var orgName = data ? data.organizer : templeName + ' Trust';
+      var orgContact = data ? data.contact : 'Contact temple office';
+      var dailyCap = data ? data.capacity.toLocaleString() : '1,000';
+
+      var card = document.createElement('div');
+      card.id = 'organizer-card';
+      card.style.cssText = 'background:var(--card-bg); border-radius:var(--radius); padding:1.25rem; box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:1rem;';
+      card.innerHTML =
+        '<h3 style="font-size:0.95rem; font-weight:700; color:var(--primary); margin-bottom:0.75rem;">🏛️ Organized By</h3>' +
+        '<div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">' +
+          '<div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#2e7d32,#1b5e20);display:flex;align-items:center;justify-content:center;color:white;font-size:1.1rem;flex-shrink:0;">🛕</div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:0.9rem;font-weight:700;">' + orgName + '</div>' +
+            '<div style="font-size:0.75rem;color:var(--text-light);margin-top:2px;">' + templeName + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">' +
+          '<div style="background:#e8f5e9; border-radius:8px; padding:10px; text-align:center;">' +
+            '<div style="font-size:0.72rem; color:var(--text-light);">Daily Capacity</div>' +
+            '<div style="font-size:1rem; font-weight:700; color:#2e7d32;">' + dailyCap + '</div>' +
+            '<div style="font-size:0.7rem; color:var(--text-light);">meals/day</div>' +
+          '</div>' +
+          '<div style="background:#e3f2fd; border-radius:8px; padding:10px; text-align:center;">' +
+            '<div style="font-size:0.72rem; color:var(--text-light);">Contact</div>' +
+            '<div style="font-size:0.82rem; font-weight:600; color:#1565c0; margin-top:2px;">' + orgContact + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="margin-top:10px; padding:8px 12px; background:#fff3e0; border-radius:8px; font-size:0.75rem; color:#e65100; display:flex; align-items:center; gap:6px;">' +
+          '<span>ℹ️</span> All meals are prepared in the temple kitchen under hygienic conditions and served to all devotees free of charge.' +
+        '</div>';
+
+      schedCard.after(card);
+    }
+
+    function showAnnaTempleDropdown() {
+      document.getElementById('anna-temple-banner').style.display = 'none';
+      var section = document.getElementById('anna-temple-select-section');
+      section.style.display = 'block';
+      var sel = document.getElementById('anna-temple-dropdown');
+      sel.innerHTML = '<option value="">-- Choose a Temple --</option>';
+      for (var i = 0; i < annaTempleList.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = annaTempleList[i];
+        opt.textContent = annaTempleList[i];
+        sel.appendChild(opt);
+      }
+    }
+
+    function onAnnaTempleChange() {
+      var val = document.getElementById('anna-temple-dropdown').value;
+      if (val) {
+        annaTemple = val;
+        showTempleBanner(val, '');
+        updatePageForTemple(val);
+      }
+    }
+
+    function changeAnnaTemple() {
+      annaTemple = null;
+      showAnnaTempleDropdown();
+      // Remove organizer card
+      var existing = document.getElementById('organizer-card');
+      if (existing) existing.remove();
+      // Reset hero
+      document.getElementById('anna-hero-title').textContent = 'Annadhanam Seva';
+      document.getElementById('anna-hero-sub').textContent = 'Sponsor Free Food for Devotees';
+    }
+
+    function selectSponsor(el, type, amount) {
+      document.querySelectorAll('.sponsor-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedSponsorType = type;
+      selectedSponsorAmount = amount;
+      document.getElementById('anna-custom').value = amount;
+    }
+
+    function handleAnnadhanam() {
+      if (!annaTemple) {
+        showToast('Please select a temple first', 'error');
+        var sel = document.getElementById('anna-temple-dropdown');
+        if (sel) sel.focus();
+        return;
+      }
+
+      const amount = document.getElementById('anna-custom').value || selectedSponsorAmount;
+      if (!amount || amount < 10) {
+        showToast('Minimum donation is ₹10', 'error');
+        return;
+      }
+
+      const name = document.getElementById('anna-name').value || 'Anonymous';
+      const occasion = document.getElementById('anna-occasion').value;
+      const meals = Math.floor(amount / 10);
+
+      const donations = JSON.parse(localStorage.getItem('temple_donations') || '[]');
+      donations.push({
+        id: Date.now(),
+        amount: Number(amount),
+        type: 'Annadhanam',
+        temple: annaTemple,
+        occasion: occasion || 'General',
+        donorName: name,
+        meals,
+        date: new Date().toLocaleDateString()
+      });
+      localStorage.setItem('temple_donations', JSON.stringify(donations));
+
+      showModal('🙏', 'Thank You, ' + name + '!',
+        'Your Annadhanam sponsorship of ₹' + amount + ' will provide ' + meals + ' meals to devotees at ' + annaTemple + '. May the Lord bless you abundantly!',
+        'Done', () => navigateTo('home.html'));
+    }
+  </script>
+</body>
+</html>

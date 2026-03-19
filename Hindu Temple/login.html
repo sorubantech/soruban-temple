@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <div class="auth-container">
+      <div class="auth-header">
+        <div class="logo">🛕</div>
+        <h1 data-lang="app_name">Temple Digital</h1>
+        <p data-lang="welcome_devotee">Welcome, Devotee</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchAuthTab('login')" data-lang="login">Login</button>
+        <button class="auth-tab" onclick="switchAuthTab('register')" data-lang="register">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label data-lang="email_or_phone">Email or Phone</label>
+          <input type="text" id="login-email" data-lang-placeholder="enter_email_phone" placeholder="Enter email or phone number">
+        </div>
+        <div class="form-group">
+          <label data-lang="password">Password</label>
+          <input type="password" id="login-password" data-lang-placeholder="enter_password" placeholder="Enter password">
+        </div>
+        <button type="submit" class="btn btn-primary" data-lang="login">Login</button>
+        <div class="forgot-link">
+          <a href="#" onclick="showToast(t('password_reset'), 'info')" data-lang="forgot_password">Forgot Password?</a>
+        </div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label data-lang="full_name">Full Name</label>
+          <input type="text" id="reg-name" data-lang-placeholder="enter_full_name" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label data-lang="email">Email</label>
+          <input type="email" id="reg-email" data-lang-placeholder="enter_email" placeholder="Enter email address">
+        </div>
+        <div class="form-group">
+          <label data-lang="phone_number">Phone Number</label>
+          <input type="tel" id="reg-phone" data-lang-placeholder="enter_phone" placeholder="Enter phone number">
+        </div>
+        <div class="form-group">
+          <label data-lang="password">Password</label>
+          <input type="password" id="reg-password" data-lang-placeholder="create_password" placeholder="Create a password">
+        </div>
+        <button type="submit" class="btn btn-primary" data-lang="create_account">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

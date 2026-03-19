@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prasadam Orders - Admin Panel</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        .orders-table th, .orders-table td {
+            padding: 12px 10px;
+            border: 1px solid rgba(0,0,0,0.08);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .orders-table th {
+            background: rgba(0,0,0,0.04);
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .status-pending { background: #fff4e5; color: #b65f00; }
+        .status-ready { background: #e8f5e9; color: #2e7d32; }
+        .status-picked { background: #e3f2fd; color: #1565c0; }
+        .btn-sm { padding: 6px 10px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); cursor: pointer; font-size: 0.8rem; }
+        .btn-sm.primary { background: #1e88e5; color: white; border-color: #1976d2; }
+        .btn-sm.success { background: #2e7d32; color: white; border-color: #2e7d32; }
+        .btn-sm.warning { background: #f9a825; color: white; border-color: #f57f17; }
+    </style>
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+            <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="prasadam-orders.html" class="nav-link active" data-page="prasadam-orders">
+                <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+                <span class="nav-label">Prasadam Orders</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+
+        <!-- Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Prasadam Orders</h1>
+                    <div class="page-breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <span class="separator">&#x25B8;</span>
+                        <span>Prasadam Orders</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-search">
+                    <input type="text" placeholder="Search orders..." class="header-search-input" id="orderSearchInput">
+                </div>
+                <button class="notification-btn" title="Notifications">
+                    <span><i class="fas fa-bell"></i></span>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </button>
+                <div class="header-avatar" title="Admin Profile">
+                    <span>A</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="action-bar">
+                <div style="flex:1;">
+                    <strong>Total Orders:</strong> <span id="totalOrders">0</span>
+                </div>
+                <div>
+                    <button class="btn-sm primary" id="refreshOrdersBtn">Refresh</button>
+                </div>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="orders-table" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Temple</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Placed At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <tr><td colspan="7" style="text-align:center;color:#999;padding:24px;">No orders found.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="js/admin.js"></script>
+<script>
+    function formatDateTime(ts) {
+        try {
+            var d = new Date(ts);
+            return d.toLocaleString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        } catch (e) {
+            return ts;
+        }
+    }
+
+    function renderOrders() {
+        var orders = [];
+        try { orders = JSON.parse(localStorage.getItem('prasadam_orders') || '[]'); } catch (e) { orders = []; }
+
+        var tbody = document.getElementById('ordersTableBody');
+        var totalEl = document.getElementById('totalOrders');
+        totalEl.textContent = orders.length;
+
+        if (!orders.length) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:24px;">No orders found.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = orders.map(function (o) {
+            var statusClass = o.status === 'ready' ? 'status-ready' : o.status === 'picked' ? 'status-picked' : 'status-pending';
+            var statusLabel = o.status === 'ready' ? 'Ready for pickup' : o.status === 'picked' ? 'Picked up' : 'Pending';
+            var items = (o.items || []).map(function(i) { return i.name; }).join(', ');
+            var actionBtn = '';
+            if (o.status === 'pending') {
+                actionBtn = '<button class="btn-sm warning" onclick="markOrderReady(\'' + o.id + '\')">Mark Ready</button>';
+            } else if (o.status === 'ready') {
+                actionBtn = '<button class="btn-sm success" onclick="markOrderPicked(\'' + o.id + '\')">Mark Picked</button>';
+            }
+            return '<tr>' +
+                '<td>' + esc(o.id) + '</td>' +
+                '<td>' + esc(o.templeName || '') + '</td>' +
+                '<td>' + esc(items) + '</td>' +
+                '<td>₹' + (o.total || 0) + '</td>' +
+                '<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+                '<td>' + formatDateTime(o.createdAt) + '</td>' +
+                '<td>' + actionBtn + '</td>' +
+            '</tr>';
+        }).join('');
+    }
+
+    function updateOrderStatus(id, status) {
+        var orders = [];
+        try { orders = JSON.parse(localStorage.getItem('prasadam_orders') || '[]'); } catch (e) { orders = []; }
+        var found = false;
+        orders = orders.map(function (o) {
+            if (o.id === id) {
+                found = true;
+                return Object.assign({}, o, { status: status });
+            }
+            return o;
+        });
+        if (!found) return;
+        localStorage.setItem('prasadam_orders', JSON.stringify(orders));
+        renderOrders();
+    }
+
+    function markOrderReady(id) {
+        updateOrderStatus(id, 'ready');
+        showToast('Order marked ready for pickup', 'success');
+    }
+
+    function markOrderPicked(id) {
+        updateOrderStatus(id, 'picked');
+        showToast('Order marked as picked up', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Ensure auth check (redirect if not logged in)
+        if (window.adminApp && window.adminApp.checkAuth) window.adminApp.checkAuth();
+
+        renderOrders();
+        document.getElementById('refreshOrdersBtn').addEventListener('click', renderOrders);
+
+        // Bind notification & avatar
+        var notifBtn = document.querySelector('.notification-btn');
+        if (notifBtn) notifBtn.addEventListener('click', function () { window.location.href = 'notifications.html'; });
+        var avatar = document.querySelector('.header-avatar');
+        if (avatar) avatar.addEventListener('click', function () { window.location.href = 'settings.html'; });
+    });
+</script>
+</body>
+</html>

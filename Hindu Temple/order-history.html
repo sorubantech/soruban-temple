@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .orders-header {
+      padding: 1.25rem 1.25rem 0.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+    .orders-header h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; }
+    .orders-header p { font-size: 0.85rem; opacity: 0.9; margin-bottom: 0.75rem; }
+    .order-list { padding: 0 1.25rem 6rem; }
+    .order-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+    .order-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .order-meta { display: flex; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; color: var(--text-light); margin-bottom: 8px; }
+    .order-meta span { display: inline-flex; align-items: center; gap: 6px; }
+    .order-items { font-size: 0.85rem; margin-bottom: 10px; color: var(--text-secondary); }
+    .order-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    .status-pending { background: #fff4e5; color: #b65f00; }
+    .status-ready { background: #e8f5e9; color: #2e7d32; }
+    .status-picked { background: #e3f2fd; color: #1565c0; }
+    .btn-copy {
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .btn-copy:active { transform: translateY(1px); }
+    .empty-state { text-align: center; padding: 80px 20px; color: var(--text-light); }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>My Prasadam Orders</h2>
+    </div>
+
+    <div class="orders-header">
+      <p>Track your prasadam orders and show the Order ID at the temple counter when collecting.</p>
+    </div>
+
+    <div id="orders" class="order-list"></div>
+
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function formatDateTime(ts) {
+      try {
+        var d = new Date(ts);
+        return d.toLocaleString('en-IN', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      } catch (e) {
+        return ts;
+      }
+    }
+
+    function renderOrders() {
+      var orders = [];
+      try {
+        orders = JSON.parse(localStorage.getItem('prasadam_orders') || '[]');
+      } catch (e) { orders = []; }
+
+      var container = document.getElementById('orders');
+      if (!orders.length) {
+        container.innerHTML = '<div class="empty-state"><div style="font-size:3rem;">🛒</div><h3>No orders yet</h3><p>Place an order from the Prasadam shop and it will appear here.</p><a href="prasadam-shop.html" style="display:inline-block;margin-top:12px;padding:10px 18px;background:var(--primary);color:white;border-radius:12px;text-decoration:none;">Order Now</a></div>';
+        return;
+      }
+
+      container.innerHTML = orders.map(function (o) {
+        var statusClass = o.status === 'ready' ? 'status-ready' : o.status === 'picked' ? 'status-picked' : 'status-pending';
+        var statusLabel = o.status === 'ready' ? 'Ready for pickup' : o.status === 'picked' ? 'Picked up' : 'Pending';
+        var items = (o.items || []).map(function(i){ return i.name; }).join(', ');
+        return '<div class="order-card">' +
+          '<h3>Order ID: ' + esc(o.id) + '</h3>' +
+          '<div class="order-meta"><span>Temple: ' + esc(o.templeName || '—') + '</span><span>Date: ' + formatDateTime(o.createdAt) + '</span></div>' +
+          '<div class="order-items"><strong>Items:</strong> ' + esc(items || '—') + '</div>' +
+          '<div class="order-meta"><span>Total: ₹' + (o.total || 0) + '</span><span class="order-status ' + statusClass + '">' + statusLabel + '</span></div>' +
+          '<div style="margin-top:10px;"><button class="btn-copy" onclick="copyOrderId(\'' + esc(o.id) + '\')">Copy Order ID</button></div>' +
+        '</div>';
+      }).join('');
+    }
+
+    function copyOrderId(id) {
+      if (!navigator.clipboard) {
+        var tmp = document.createElement('textarea');
+        tmp.value = id;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        tmp.remove();
+      } else {
+        navigator.clipboard.writeText(id);
+      }
+      showToast('Order ID copied to clipboard', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      renderOrders();
+    });
+  </script>
+</body>
+</html>

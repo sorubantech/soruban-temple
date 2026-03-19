@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Astrologer App — Soruban Temple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../../shared/design-system.css">
+  <link rel="stylesheet" href="../../shared/phone-frame.css">
+  <link rel="stylesheet" href="../../shared/components.css">
+  <link rel="stylesheet" href="../../shared/animations.css">
+</head>
+<body>
+  <div class="demo-page">
+    <div class="phone-container">
+      <div class="app-shell">
+        <div class="status-bar"><span class="sb-time">9:41</span><span class="sb-icons"><i class="fa-solid fa-signal"></i><i class="fa-solid fa-wifi"></i><i class="fa-solid fa-battery-full"></i></span></div>
+        <div class="screen-content" id="screen-content"></div>
+        <nav class="bottom-nav" id="bottom-nav"></nav>
+      </div>
+    </div>
+  </div>
+  <script src="../../shared/nav-engine.js"></script>
+  <script>
+const ASTRO = { name: 'Murugavel', rating: 4.8, reviews: 120, rate: 500 };
+const screens = {
+  home: () => `
+    <div class="app-header-gradient" style="padding-top:0;background:linear-gradient(135deg,#4A148C,#7B1FA2)">
+      <div class="flex items-center justify-between">
+        <div>
+          <div style="font-size:var(--text-lg);font-weight:800;color:white"><i class="fa-solid fa-moon" style="margin-right:6px"></i> Astrologer</div>
+          <div style="font-size:var(--text-xs);color:rgba(255,255,255,0.8)">Jothidar ${ASTRO.name}</div>
+        </div>
+        <button class="header-icon-btn"><i class="fa-solid fa-bell"></i></button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="card mb-4"><div class="card-body"><div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="live-dot" style="width:12px;height:12px"></div><div><div style="font-size:var(--text-md);font-weight:700">Available for Consultations</div><div style="font-size:var(--text-xs);color:var(--text-light)">Video & chat sessions enabled</div></div></div><button class="toggle active" onclick="this.classList.toggle('active')"></button></div></div></div>
+
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="stat-card"><div class="stat-icon" style="background:var(--sacred-purple-bg);color:var(--sacred-purple)"><i class="fa-solid fa-video"></i></div><div class="stat-value">4</div><div class="stat-label">Today</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-indian-rupee-sign"></i></div><div class="stat-value">₹2K</div><div class="stat-label">Earned</div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-star"></i></div><div class="stat-value">${ASTRO.rating}</div><div class="stat-label">${ASTRO.reviews} reviews</div></div>
+      </div>
+
+      <div class="section-header"><span class="section-title">Next Consultation</span></div>
+      <div class="card" style="border-color:var(--sacred-purple);border-width:2px;margin-bottom:var(--space-4)">
+        <div class="card-body">
+          <div class="flex items-center justify-between mb-2">
+            <span class="badge badge-solid-live"><i class="fa-solid fa-clock"></i> In 15 min</span>
+            <span class="badge badge-purple"><i class="fa-solid fa-video"></i> Video</span>
+          </div>
+          <h4 style="font-size:var(--text-md);font-weight:700">Horoscope Matching</h4>
+          <div style="font-size:var(--text-sm);color:var(--text-secondary)"><i class="fa-solid fa-user"></i> Priya R — Marriage compatibility</div>
+          <div style="font-size:var(--text-sm);color:var(--text-secondary)"><i class="fa-regular fa-clock"></i> 10:00 AM — 30 min — ₹${ASTRO.rate}</div>
+          <button class="btn btn-sm mt-3" style="background:linear-gradient(135deg,#6A1B9A,#AB47BC);color:white" onclick="NavEngine.navigateTo('session')"><i class="fa-solid fa-video"></i> Start Session</button>
+        </div>
+      </div>
+
+      <div class="section-header"><span class="section-title">Today's Sessions</span></div>
+      ${['Jathakam Reading|Suresh B|9:00 AM|Completed', 'Navagraha Remedy|Lakshmi D|9:30 AM|Completed', 'Horoscope Matching|Priya R|10:00 AM|Next', 'Muhurtham|Karthik S|11:00 AM|Scheduled'].map(s => {
+        const [title,client,time,status] = s.split('|');
+        return `<div class="list-item" style="border:1px solid var(--border-light);border-radius:var(--radius-md);margin-bottom:var(--space-2)">
+          <div class="li-icon" style="background:var(--sacred-purple-bg);color:var(--sacred-purple)"><i class="fa-solid ${status==='Completed'?'fa-check-circle':'fa-clock'}"></i></div>
+          <div class="li-content"><div class="li-title">${title}</div><div class="li-subtitle">${client} — ${time}</div></div>
+          <span class="badge ${status==='Completed'?'badge-success':status==='Next'?'badge-danger':'badge-gold'}">${status}</span>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="height:var(--space-4)"></div>
+  `,
+
+  session: () => `
+    <div class="back-header"><button class="back-btn" onclick="NavEngine.goBack()"><i class="fa-solid fa-arrow-left"></i></button><span class="bh-title">Consultation Session</span></div>
+    <div class="section">
+      <div style="aspect-ratio:16/9;background:#1a1a2e;border-radius:var(--radius-xl);display:flex;align-items:center;justify-content:center;margin-bottom:var(--space-4);position:relative">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem"><i class="fa-solid fa-video"></i></div>
+        <div style="position:absolute;top:12px;left:12px"><span class="badge badge-solid-live"><span class="live-dot" style="width:6px;height:6px;margin-right:4px"></span> Live</span></div>
+        <div style="position:absolute;bottom:12px;right:12px;font-size:var(--text-sm);color:white;background:rgba(0,0,0,0.6);padding:2px 8px;border-radius:var(--radius-full)">12:34</div>
+      </div>
+      <div class="card mb-4"><div class="card-body">
+        <h4 style="font-size:var(--text-md);font-weight:700;margin-bottom:var(--space-2)">Client Info</h4>
+        <div style="font-size:var(--text-sm);margin-bottom:var(--space-1)"><strong>Name:</strong> Priya Rajendran</div>
+        <div style="font-size:var(--text-sm);margin-bottom:var(--space-1)"><strong>DOB:</strong> June 15, 1994 — 5:30 AM</div>
+        <div style="font-size:var(--text-sm);margin-bottom:var(--space-1)"><strong>Nakshatra:</strong> Rohini</div>
+        <div style="font-size:var(--text-sm)"><strong>Topic:</strong> Marriage horoscope matching</div>
+      </div></div>
+      <div class="form-group"><label class="form-label">Session Notes</label><textarea class="form-textarea" placeholder="Add consultation notes..."></textarea></div>
+      <div class="flex gap-2">
+        <button class="btn btn-danger flex-1" onclick="NavEngine.showToast('Session ended');NavEngine.goBack()"><i class="fa-solid fa-phone-slash"></i> End</button>
+        <button class="btn btn-outline flex-1" onclick="NavEngine.showToast('Remedy sent!')"><i class="fa-solid fa-place-of-worship"></i> Suggest Temple</button>
+      </div>
+    </div>
+  `,
+
+  tools: () => `
+    <div class="app-header"><span class="header-title">Astrology Tools</span></div>
+    <div class="section">
+      <div class="grid grid-cols-2 gap-3">
+        ${[
+          ['fa-sun','Jathakam','Birth chart generator','var(--primary-bg)','var(--primary)'],
+          ['fa-heart','Matching','10 porutham check','var(--sacred-red-bg)','var(--sacred-red)'],
+          ['fa-calendar-check','Muhurtham','Auspicious date finder','var(--sacred-green-bg)','var(--sacred-green)'],
+          ['fa-book-open','Panchang','Daily panchang lookup','var(--sacred-blue-bg)','var(--sacred-blue)'],
+          ['fa-place-of-worship','Navagraha','Temple suggestions','var(--accent-bg)','var(--accent-dark)'],
+          ['fa-calculator','Numerology','Name number analysis','var(--sacred-purple-bg)','var(--sacred-purple)'],
+        ].map(([icon,name,desc,bg,color]) => `
+          <div class="card card-clickable" onclick="NavEngine.showToast('${name} tool coming soon!')">
+            <div class="card-body text-center">
+              <i class="fa-solid ${icon}" style="font-size:1.8rem;color:${color};margin-bottom:var(--space-2)"></i>
+              <div style="font-size:var(--text-sm);font-weight:700">${name}</div>
+              <div style="font-size:var(--text-xs);color:var(--text-light)">${desc}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `,
+
+  earnings: () => `
+    <div class="app-header"><span class="header-title">Earnings</span></div>
+    <div class="section">
+      <div style="background:linear-gradient(135deg,#4A148C,#7B1FA2);border-radius:var(--radius-xl);padding:var(--space-5);color:white;margin-bottom:var(--space-4)">
+        <div style="font-size:var(--text-xs);opacity:0.8">This Month</div>
+        <div style="font-size:var(--text-3xl);font-weight:900;margin:var(--space-1) 0">₹45,000</div>
+        <div style="font-size:var(--text-sm);opacity:0.85">90 consultations completed</div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="stat-card"><div class="stat-value" style="color:var(--sacred-green)">₹2,000</div><div class="stat-label">Today (4 sessions)</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--sacred-blue)">₹12,000</div><div class="stat-label">This Week</div></div>
+      </div>
+      <button class="btn btn-block btn-lg" style="background:linear-gradient(135deg,#6A1B9A,#AB47BC);color:white" onclick="NavEngine.showToast('Withdrawal initiated!')"><i class="fa-solid fa-building-columns"></i> Withdraw to Bank</button>
+    </div>
+  `,
+
+  profile: () => `
+    <div style="background:linear-gradient(135deg,#4A148C,#7B1FA2);padding:66px var(--space-5) var(--space-6);text-align:center">
+      <div class="avatar avatar-xl" style="margin:0 auto var(--space-3);border:3px solid rgba(255,255,255,0.3);background:linear-gradient(135deg,#CE93D8,#AB47BC)">M</div>
+      <h3 style="color:white;font-size:var(--text-lg);font-weight:700">Jothidar ${ASTRO.name}</h3>
+      <p style="color:rgba(255,255,255,0.8);font-size:var(--text-sm)">Vedic Astrology — 30 years exp</p>
+      <div class="flex gap-2 justify-center mt-2"><span class="badge" style="background:rgba(255,255,255,0.15);color:white"><i class="fa-solid fa-star"></i> ${ASTRO.rating} (${ASTRO.reviews})</span><span class="badge" style="background:rgba(255,255,255,0.15);color:white">₹${ASTRO.rate}/session</span></div>
+    </div>
+    <div class="section">
+      <div style="background:var(--bg-card);border:1px solid var(--border-light);border-radius:var(--radius-lg);overflow:hidden">
+        <div class="list-item"><div class="li-icon" style="background:var(--sacred-purple-bg);color:var(--sacred-purple)"><i class="fa-solid fa-calendar-check"></i></div><div class="li-content"><div class="li-title">Availability</div><div class="li-subtitle">Manage consultation slots</div></div><div class="li-action"><i class="fa-solid fa-chevron-right"></i></div></div>
+        <div class="list-item"><div class="li-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-star"></i></div><div class="li-content"><div class="li-title">Reviews</div><div class="li-subtitle">${ASTRO.reviews} reviews</div></div><div class="li-action"><i class="fa-solid fa-chevron-right"></i></div></div>
+        <div class="list-item"><div class="li-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-users"></i></div><div class="li-content"><div class="li-title">Client History</div><div class="li-subtitle">245 clients served</div></div><div class="li-action"><i class="fa-solid fa-chevron-right"></i></div></div>
+        <div class="list-item" onclick="NavEngine.toggleTheme()"><div class="li-icon" style="background:var(--bg-inset);color:var(--text-secondary)"><i class="fa-solid fa-moon"></i></div><div class="li-content"><div class="li-title">Dark Mode</div></div><div class="li-action"><button class="toggle ${NavEngine.isDark()?'active':''}"></button></div></div>
+      </div>
+    </div>
+  `,
+};
+screens.session.navTab = 'home';
+NavEngine.init({ screens, startScreen: 'home', bottomNav: [
+  { screen: 'home', icon: 'fa-solid fa-house-chimney', label: 'Home' },
+  { screen: 'tools', icon: 'fa-solid fa-star', label: 'Tools' },
+  { screen: 'earnings', icon: 'fa-solid fa-indian-rupee-sign', label: 'Earnings' },
+  { screen: 'profile', icon: 'fa-solid fa-circle-user', label: 'Profile' },
+]});
+  </script>
+</body>
+</html>

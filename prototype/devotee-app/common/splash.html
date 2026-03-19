@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soruban Temple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../../shared/design-system.css">
+  <link rel="stylesheet" href="../../shared/phone-frame.css">
+  <link rel="stylesheet" href="../../shared/animations.css">
+  <style>
+    .splash-screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-hero);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* Decorative temple silhouette at bottom */
+    .splash-screen::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.15));
+    }
+
+    /* Decorative mandala pattern */
+    .splash-mandala {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border: 2px solid rgba(255,255,255,0.06);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .splash-mandala::before {
+      content: '';
+      position: absolute;
+      inset: 30px;
+      border: 1.5px solid rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+    .splash-mandala::after {
+      content: '';
+      position: absolute;
+      inset: 60px;
+      border: 1px solid rgba(255,255,255,0.03);
+      border-radius: 50%;
+    }
+
+    .splash-icon {
+      font-size: 4.5rem;
+      color: white;
+      margin-bottom: var(--space-6);
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 4px 20px rgba(0,0,0,0.2));
+    }
+
+    .splash-brand {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .splash-brand h1 {
+      font-size: var(--text-3xl);
+      font-weight: 900;
+      color: white;
+      letter-spacing: var(--tracking-tight);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin-bottom: var(--space-2);
+    }
+
+    .splash-brand .tagline {
+      font-size: var(--text-base);
+      color: rgba(255,255,255,0.85);
+      font-weight: 400;
+      letter-spacing: var(--tracking-wide);
+    }
+
+    .splash-brand .tagline-tamil {
+      font-family: var(--font-tamil);
+      font-size: var(--text-sm);
+      color: rgba(255,255,255,0.65);
+      margin-top: var(--space-1);
+    }
+
+    .splash-loader {
+      position: absolute;
+      bottom: 60px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .splash-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .splash-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      animation: dotPulse 1.2s ease-in-out infinite;
+    }
+
+    .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes dotPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    .splash-tap {
+      font-size: var(--text-xs);
+      color: rgba(255,255,255,0.5);
+      letter-spacing: var(--tracking-wide);
+    }
+
+    /* Diya flames at corners */
+    .splash-diya {
+      position: absolute;
+      z-index: 1;
+      font-size: 1.8rem;
+      opacity: 0.4;
+    }
+    .splash-diya.top-left { top: 80px; left: 30px; }
+    .splash-diya.top-right { top: 80px; right: 30px; }
+    .splash-diya.bot-left { bottom: 140px; left: 30px; }
+    .splash-diya.bot-right { bottom: 140px; right: 30px; }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+    <div class="phone-container">
+      <div class="splash-screen" onclick="goToLogin()">
+
+        <div class="splash-mandala"></div>
+
+        <div class="splash-diya top-left flame-flicker">🪔</div>
+        <div class="splash-diya top-right flame-flicker" style="animation-delay:0.5s">🪔</div>
+        <div class="splash-diya bot-left flame-flicker" style="animation-delay:0.3s">🪔</div>
+        <div class="splash-diya bot-right flame-flicker" style="animation-delay:0.7s">🪔</div>
+
+        <div class="splash-icon splash-enter">
+          <i class="fa-solid fa-place-of-worship"></i>
+        </div>
+
+        <div class="splash-brand">
+          <h1 class="splash-text">Soruban Temple</h1>
+          <p class="tagline splash-text" style="animation-delay:0.7s">Your Divine Connection</p>
+          <p class="tagline-tamil splash-text" style="animation-delay:0.9s">உங்கள் தெய்வீக இணைப்பு</p>
+        </div>
+
+        <div class="splash-loader splash-text" style="animation-delay:1.2s">
+          <div class="splash-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="splash-tap">Tap anywhere to continue</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function goToLogin() {
+      window.location.href = 'login.html';
+    }
+
+    // Auto-navigate after 3 seconds
+    setTimeout(() => {
+      window.location.href = 'login.html';
+    }, 4000);
+  </script>
+</body>
+</html>

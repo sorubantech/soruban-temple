@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kula Theivam - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .kt-hero {
+      background: linear-gradient(135deg, #4a148c, #7b1fa2, #ce93d8);
+      color: white;
+      padding: 2rem 1.25rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .kt-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+      animation: shimmer 8s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(10%,10%); } }
+    .kt-hero .hero-icon { font-size: 3rem; margin-bottom: 0.75rem; position: relative; }
+    .kt-hero h1 { font-size: 1.35rem; margin-bottom: 0.25rem; position: relative; }
+    .kt-hero p { font-size: 0.85rem; opacity: 0.85; position: relative; }
+
+    .kt-back { position: absolute; top: 1rem; left: 1rem; color: white; font-size: 1.2rem; z-index: 2; text-decoration: none; }
+
+    /* Temple Registration Banner */
+    .kt-temple-banner {
+      background: linear-gradient(135deg, #6a1b9a, #8e24aa);
+      color: white;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .kt-temple-banner i { font-size: 1.5rem; }
+    .kt-temple-banner .info { flex: 1; }
+    .kt-temple-banner .info h4 { font-size: 0.95rem; margin-bottom: 0.15rem; }
+    .kt-temple-banner .info p { font-size: 0.75rem; opacity: 0.8; }
+    .kt-temple-banner .change-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+
+    /* Register Kula Theivam Section */
+    .kt-register {
+      background: #f3e5f9;
+      border: 2px dashed #ce93d8;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin: 1rem;
+      text-align: center;
+    }
+    .kt-register i { font-size: 2rem; color: #7b1fa2; margin-bottom: 0.5rem; }
+    .kt-register h3 { font-size: 1rem; color: #4a148c; margin-bottom: 0.35rem; }
+    .kt-register p { font-size: 0.8rem; color: #6a1b9a; margin-bottom: 0.75rem; line-height: 1.4; }
+    .kt-register .btn-register {
+      background: linear-gradient(135deg, #7b1fa2, #4a148c);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Section titles */
+    .kt-section { padding: 0 1rem; margin-bottom: 1.25rem; }
+    .kt-section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #4a148c;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Feature Cards Grid */
+    .kt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    .kt-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #f0e6f6;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .kt-card:hover, .kt-card:active { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(106,27,154,0.15); border-color: #ce93d8; }
+    .kt-card .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto 0.6rem;
+    }
+    .kt-card h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.2rem; color: #333; }
+    .kt-card p { font-size: 0.7rem; color: #888; line-height: 1.3; }
+    .kt-card .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.6rem;
+      font-weight: 600;
+      margin-top: 0.4rem;
+    }
+    .badge-remote { background: #e8f5e9; color: #2e7d32; }
+    .badge-new { background: #fff3e0; color: #e65100; }
+    .badge-live { background: #fce4ec; color: #c62828; }
+
+    /* Remote Services Full-width cards */
+    .kt-remote-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      border: 1px solid #f0e6f6;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .kt-remote-card:hover { border-color: #ce93d8; }
+    .kt-remote-card .rc-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .kt-remote-card .rc-info { flex: 1; }
+    .kt-remote-card .rc-info h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .kt-remote-card .rc-info p { font-size: 0.75rem; color: #888; line-height: 1.3; }
+    .kt-remote-card .rc-arrow { color: #ccc; font-size: 0.85rem; }
+
+    /* Ritual Booking Modal */
+    .kt-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .kt-modal-overlay.show { display: flex; }
+    .kt-modal {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 480px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .kt-modal h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .kt-modal .modal-desc { font-size: 0.8rem; color: #888; margin-bottom: 1rem; line-height: 1.4; }
+    .kt-modal .form-group { margin-bottom: 0.85rem; }
+    .kt-modal label { display: block; font-size: 0.78rem; font-weight: 600; color: #555; margin-bottom: 0.3rem; }
+    .kt-modal input, .kt-modal select, .kt-modal textarea {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      background: #fafafa;
+      box-sizing: border-box;
+    }
+    .kt-modal input:focus, .kt-modal select:focus, .kt-modal textarea:focus { border-color: #7b1fa2; outline: none; background: white; }
+    .kt-modal .btn-book {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(135deg, #7b1fa2, #4a148c);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .kt-modal .btn-close-modal {
+      width: 100%;
+      padding: 0.6rem;
+      background: #f5f5f5;
+      color: #666;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .kt-modal .price-tag {
+      background: #f3e5f9;
+      color: #7b1fa2;
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-block;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Priest Consultation */
+    .priest-card {
+      background: linear-gradient(135deg, #fff8e1, #fff3e0);
+      border: 1px solid #ffe0b2;
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+    .priest-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff9800, #e65100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: white;
+      flex-shrink: 0;
+    }
+    .priest-info h4 { font-size: 0.9rem; font-weight: 700; color: #333; }
+    .priest-info p { font-size: 0.72rem; color: #888; }
+    .priest-actions { display: flex; gap: 0.5rem; margin-top: 0.4rem; }
+    .priest-actions button {
+      padding: 0.3rem 0.7rem;
+      border-radius: 15px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-call { background: #e8f5e9; color: #2e7d32; }
+    .btn-video { background: #e3f2fd; color: #1565c0; }
+
+    /* Family Records */
+    .family-tree-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #f0e6f6;
+      padding: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .tree-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .tree-item:last-child { border: none; }
+    .tree-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .tree-item h5 { font-size: 0.82rem; font-weight: 600; color: #333; }
+    .tree-item p { font-size: 0.7rem; color: #999; }
+
+    /* Prasadam Delivery */
+    .delivery-steps {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.75rem 0;
+      position: relative;
+    }
+    .delivery-steps::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: #e0e0e0;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .step-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #f3e5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      margin: 0 auto 0.3rem;
+    }
+    .step span { font-size: 0.65rem; color: #666; font-weight: 600; }
+
+    /* Festival Alert Card */
+    .festival-alert {
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .festival-alert .fa-icon { font-size: 2rem; }
+    .festival-alert h4 { font-size: 0.88rem; font-weight: 700; color: #880e4f; }
+    .festival-alert p { font-size: 0.72rem; color: #ad1457; line-height: 1.3; }
+    .festival-alert .days-left {
+      background: #880e4f;
+      color: white;
+      padding: 0.3rem 0.6rem;
+      border-radius: 15px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-top: 0.3rem;
+      display: inline-block;
+    }
+
+    .has-bottom-nav { padding-bottom: 70px; }
+  </style>
+</head>
+<body class="has-bottom-nav">
+  <div class="app">
+
+    <!-- Hero -->
+    <div class="kt-hero">
+      <a href="home.html" class="kt-back"><i class="fas fa-arrow-left"></i></a>
+      <div class="hero-icon">🏛️</div>
+      <h1>Kula Theivam</h1>
+      <p>Connect with your Family Deity Temple from anywhere</p>
+    </div>
+
+    <!-- Temple Banner (shown when temple is registered) -->
+    <div id="kt-temple-banner" class="kt-temple-banner" style="display:none;">
+      <i class="fas fa-gopuram"></i>
+      <div class="info">
+        <h4 id="kt-temple-name">-</h4>
+        <p id="kt-temple-location">-</p>
+      </div>
+      <button class="change-btn" onclick="changeKulaTemple()"><i class="fas fa-sync-alt"></i> Change</button>
+    </div>
+
+    <!-- Register Section (shown when no temple registered) -->
+    <div id="kt-register-section" class="kt-register">
+      <i class="fas fa-gopuram"></i>
+      <h3>Register Your Kula Theivam</h3>
+      <p>Link your family deity temple to access personalized rituals, remote poojas, prasadam delivery, and more</p>
+      <button class="btn-register" onclick="openRegisterModal()">
+        <i class="fas fa-plus-circle"></i> Register Temple
+      </button>
+    </div>
+
+    <!-- Upcoming Festival Alert -->
+    <div class="kt-section" id="festival-section" style="display:none; margin-top:1rem;">
+      <div class="festival-alert">
+        <div class="fa-icon">🎆</div>
+        <div>
+          <h4 id="festival-name">Annual Temple Festival</h4>
+          <p id="festival-desc">Aadi Thiruvizha - 10-day grand celebration with special poojas</p>
+          <span class="days-left" id="festival-days">In 18 days</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Remote Pooja Services (for distant devotees) -->
+    <div class="kt-section" id="remote-section" style="display:none; margin-top:1rem;">
+      <div class="kt-section-title"><i class="fas fa-satellite-dish" style="color:#7b1fa2;"></i> Remote Seva (For Distant Devotees)</div>
+
+      <div class="kt-remote-card" onclick="openRitualBooking('remote_archana')">
+        <div class="rc-icon" style="background:#f3e5f9;">🙏</div>
+        <div class="rc-info">
+          <h4>Remote Archana <span class="badge badge-remote">Remote</span></h4>
+          <p>Book archana in your name. Priest performs at temple, video clip sent to you</p>
+        </div>
+        <i class="fas fa-chevron-right rc-arrow"></i>
+      </div>
+
+      <div class="kt-remote-card" onclick="openRitualBooking('remote_abhishekam')">
+        <div class="rc-icon" style="background:#e8eaf6;">💧</div>
+        <div class="rc-info">
+          <h4>Remote Abhishekam <span class="badge badge-remote">Remote</span></h4>
+          <p>Sacred bathing ritual performed on your behalf. Live video link shared</p>
+        </div>
+        <i class="fas fa-chevron-right rc-arrow"></i>
+      </div>
+
+      <div class="kt-remote-card" onclick="openRitualBooking('remote_homam')">
+        <div class="rc-icon" style="background:#fff3e0;">🔥</div>
+        <div class="rc-info">
+          <h4>Remote Homam <span class="badge badge-remote">Remote</span></h4>
+          <p>Fire ritual performed at temple. Live stream and sacred ash posted to you</p>
+        </div>
+        <i class="fas fa-chevron-right rc-arrow"></i>
+      </div>
+
+      <div class="kt-remote-card" onclick="openRitualBooking('remote_pongal')">
+        <div class="rc-icon" style="background:#e8f5e9;">🍲</div>
+        <div class="rc-info">
+          <h4>Pongal Padayal (Food Offering) <span class="badge badge-remote">Remote</span></h4>
+          <p>Traditional Pongal prepared & offered to deity. Photos shared with you</p>
+        </div>
+        <i class="fas fa-chevron-right rc-arrow"></i>
+      </div>
+
+      <div class="kt-remote-card" onclick="openRitualBooking('remote_vahanam')">
+        <div class="rc-icon" style="background:#fce4ec;">🐂</div>
+        <div class="rc-info">
+          <h4>Vahanam Pooja <span class="badge badge-new">Special</span></h4>
+          <p>Deity procession pooja on special vahanam days. Book for festivals</p>
+        </div>
+        <i class="fas fa-chevron-right rc-arrow"></i>
+      </div>
+    </div>
+
+    <!-- Kula Theivam Rituals -->
+    <div class="kt-section" id="rituals-section" style="display:none;">
+      <div class="kt-section-title"><i class="fas fa-om" style="color:#7b1fa2;"></i> Common Kula Theivam Rituals</div>
+      <div class="kt-grid">
+        <div class="kt-card" onclick="openRitualBooking('thanigai_pooja')">
+          <div class="card-icon" style="background:#f3e5f9;">🪔</div>
+          <h4>Thanigai Pooja</h4>
+          <p>Special family prayer performed exclusively for your family lineage</p>
+          <span class="badge badge-new">Popular</span>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('pattini_pooja')">
+          <div class="card-icon" style="background:#fce4ec;">💑</div>
+          <h4>Pattini Pooja</h4>
+          <p>First temple visit after marriage for newlyweds' blessings</p>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('kudam_offering')">
+          <div class="card-icon" style="background:#e8f5e9;">🏺</div>
+          <h4>Kudam (Pot Offering)</h4>
+          <p>Sacred pot offering with milk, flowers & turmeric water</p>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('padi_offering')">
+          <div class="card-icon" style="background:#fff3e0;">🌾</div>
+          <h4>Padi (Paddy Offering)</h4>
+          <p>Traditional paddy & grain offering to the deity</p>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('veshti_saree')">
+          <div class="card-icon" style="background:#e3f2fd;">👘</div>
+          <h4>Veshti / Saree Offering</h4>
+          <p>New cloth offering to the deity as a devotional act</p>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('abishekam')">
+          <div class="card-icon" style="background:#e0f7fa;">💧</div>
+          <h4>Special Abhishekam</h4>
+          <p>Sacred bathing with milk, honey, sandalwood & holy water</p>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('ear_piercing')">
+          <div class="card-icon" style="background:#fce4ec;">👶</div>
+          <h4>Kadhani (Ear Piercing)</h4>
+          <p>Traditional ear piercing ceremony for children at the temple</p>
+        </div>
+        <div class="kt-card" onclick="openRitualBooking('annual_pooja')">
+          <div class="card-icon" style="background:#f3e5f9;">📅</div>
+          <h4>Annual Family Pooja</h4>
+          <p>Yearly family remembrance & thanksgiving pooja to Kula Theivam</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prasadam Delivery -->
+    <div class="kt-section" id="prasadam-section" style="display:none;">
+      <div class="kt-section-title"><i class="fas fa-truck" style="color:#7b1fa2;"></i> Prasadam Delivery</div>
+
+      <div style="background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f0e6f6;">
+        <p style="font-size:0.82rem;color:#555;text-align:center;margin-bottom:0.75rem;">Get sacred prasadam delivered to your doorstep</p>
+        <div class="delivery-steps">
+          <div class="step">
+            <div class="step-icon">📋</div>
+            <span>Book<br>Online</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">🙏</div>
+            <span>Pooja<br>Performed</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">📦</div>
+            <span>Packed<br>Sacred</span>
+          </div>
+          <div class="step">
+            <div class="step-icon">🚚</div>
+            <span>Delivered<br>Home</span>
+          </div>
+        </div>
+
+        <div style="margin-top:0.75rem;">
+          <div class="kt-remote-card" style="margin:0 0 0.5rem 0;border:1px solid #e8f5e9;" onclick="openPrasadamOrder('vibhuthi_kumkum')">
+            <div class="rc-icon" style="background:#fff3e0;">🔴</div>
+            <div class="rc-info">
+              <h4>Vibhuthi & Kumkum Pack</h4>
+              <p>Sacred ash & vermillion from your Kula Theivam temple</p>
+            </div>
+            <span style="color:#2e7d32;font-weight:700;font-size:0.8rem;">₹149</span>
+          </div>
+          <div class="kt-remote-card" style="margin:0 0 0.5rem 0;border:1px solid #e8f5e9;" onclick="openPrasadamOrder('sacred_thread')">
+            <div class="rc-icon" style="background:#fce4ec;">🧵</div>
+            <div class="rc-info">
+              <h4>Blessed Sacred Thread</h4>
+              <p>Temple-blessed thread (Kaapu / Raksha) for protection</p>
+            </div>
+            <span style="color:#2e7d32;font-weight:700;font-size:0.8rem;">₹99</span>
+          </div>
+          <div class="kt-remote-card" style="margin:0 0 0.5rem 0;border:1px solid #e8f5e9;" onclick="openPrasadamOrder('prasadam_box')">
+            <div class="rc-icon" style="background:#e8f5e9;">🍬</div>
+            <div class="rc-info">
+              <h4>Prasadam Box</h4>
+              <p>Temple sweets & prasadam items blessed by deity</p>
+            </div>
+            <span style="color:#2e7d32;font-weight:700;font-size:0.8rem;">₹299</span>
+          </div>
+          <div class="kt-remote-card" style="margin:0 0 0 0;border:1px solid #e8f5e9;" onclick="openPrasadamOrder('pooja_kit')">
+            <div class="rc-icon" style="background:#e8eaf6;">🎁</div>
+            <div class="rc-info">
+              <h4>Complete Pooja Kit</h4>
+              <p>Vibhuthi, kumkum, thread, flowers, turmeric & prasadam</p>
+            </div>
+            <span style="color:#2e7d32;font-weight:700;font-size:0.8rem;">₹499</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Priest Consultation -->
+    <div class="kt-section" id="priest-section" style="display:none;">
+      <div class="kt-section-title"><i class="fas fa-phone-alt" style="color:#7b1fa2;"></i> Priest Consultation</div>
+
+      <div class="priest-card">
+        <div class="priest-avatar">🙏</div>
+        <div class="priest-info">
+          <h4 id="priest-name">Temple Priest</h4>
+          <p id="priest-speciality">Kula Theivam rituals, Muhurtham, Dosha Parikaram</p>
+          <div class="priest-actions">
+            <button class="btn-call" onclick="bookConsultation('phone')"><i class="fas fa-phone"></i> Phone</button>
+            <button class="btn-video" onclick="bookConsultation('video')"><i class="fas fa-video"></i> Video</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f0e6f6;">
+        <h4 style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;">Consult for:</h4>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+          <span style="background:#f3e5f9;color:#7b1fa2;padding:0.3rem 0.7rem;border-radius:15px;font-size:0.72rem;font-weight:600;">Muhurtham Dates</span>
+          <span style="background:#fff3e0;color:#e65100;padding:0.3rem 0.7rem;border-radius:15px;font-size:0.72rem;font-weight:600;">Dosha Parikaram</span>
+          <span style="background:#e8f5e9;color:#2e7d32;padding:0.3rem 0.7rem;border-radius:15px;font-size:0.72rem;font-weight:600;">Family Rituals</span>
+          <span style="background:#e3f2fd;color:#1565c0;padding:0.3rem 0.7rem;border-radius:15px;font-size:0.72rem;font-weight:600;">Navagraha Dosha</span>
+          <span style="background:#fce4ec;color:#c62828;padding:0.3rem 0.7rem;border-radius:15px;font-size:0.72rem;font-weight:600;">Kala Sarpa Dosha</span>
+          <span style="background:#e0f7fa;color:#00695c;padding:0.3rem 0.7rem;border-radius:15px;font-size:0.72rem;font-weight:600;">Yearly Predictions</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Family Records -->
+    <div class="kt-section" id="family-section" style="display:none;">
+      <div class="kt-section-title"><i class="fas fa-users" style="color:#7b1fa2;"></i> Kula Records (Family History)</div>
+
+      <div class="family-tree-card">
+        <div class="tree-item">
+          <div class="tree-icon" style="background:#f3e5f9;">🏛️</div>
+          <div>
+            <h5 id="record-temple">-</h5>
+            <p>Kula Theivam Temple</p>
+          </div>
+        </div>
+        <div class="tree-item">
+          <div class="tree-icon" style="background:#fff3e0;">🔱</div>
+          <div>
+            <h5 id="record-deity">-</h5>
+            <p>Family Deity</p>
+          </div>
+        </div>
+        <div class="tree-item">
+          <div class="tree-icon" style="background:#e8f5e9;">📜</div>
+          <div>
+            <h5 id="record-gothram">-</h5>
+            <p>Gothram</p>
+          </div>
+        </div>
+        <div class="tree-item">
+          <div class="tree-icon" style="background:#e3f2fd;">🏠</div>
+          <div>
+            <h5 id="record-village">-</h5>
+            <p>Ancestral Village</p>
+          </div>
+        </div>
+        <div class="tree-item">
+          <div class="tree-icon" style="background:#fce4ec;">📖</div>
+          <div>
+            <h5 id="record-history">No family notes yet</h5>
+            <p>Family History Notes</p>
+          </div>
+        </div>
+        <button onclick="openEditRecords()" style="width:100%;padding:0.6rem;background:#f3e5f9;color:#7b1fa2;border:none;border-radius:10px;font-size:0.82rem;font-weight:600;cursor:pointer;margin-top:0.5rem;">
+          <i class="fas fa-edit"></i> Edit Family Records
+        </button>
+      </div>
+    </div>
+
+    <!-- Temple Maintenance Fund -->
+    <div class="kt-section" id="fund-section" style="display:none;">
+      <div class="kt-section-title"><i class="fas fa-hand-holding-heart" style="color:#7b1fa2;"></i> Temple Maintenance Fund</div>
+      <div style="background:white;border-radius:12px;padding:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:1px solid #f0e6f6;">
+        <p style="font-size:0.82rem;color:#555;margin-bottom:0.75rem;line-height:1.4;">Support your Kula Theivam temple's upkeep, renovation, and daily operations even from afar.</p>
+        <div style="background:#f3e5f9;border-radius:10px;padding:0.75rem;margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:#4a148c;font-weight:600;margin-bottom:0.4rem;">
+            <span>Renovation Fund</span>
+            <span id="fund-progress-text">₹3,20,000 / ₹5,00,000</span>
+          </div>
+          <div style="background:#e1bee7;border-radius:6px;height:8px;overflow:hidden;">
+            <div id="fund-progress-bar" style="width:64%;height:100%;background:linear-gradient(90deg,#7b1fa2,#ce93d8);border-radius:6px;"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
+          <button class="fund-amt" onclick="selectFundAmount(500)" style="padding:0.5rem;border:1.5px solid #e0e0e0;border-radius:8px;background:white;font-size:0.8rem;font-weight:600;cursor:pointer;">₹500</button>
+          <button class="fund-amt" onclick="selectFundAmount(1000)" style="padding:0.5rem;border:1.5px solid #e0e0e0;border-radius:8px;background:white;font-size:0.8rem;font-weight:600;cursor:pointer;">₹1,000</button>
+          <button class="fund-amt" onclick="selectFundAmount(2500)" style="padding:0.5rem;border:1.5px solid #e0e0e0;border-radius:8px;background:white;font-size:0.8rem;font-weight:600;cursor:pointer;">₹2,500</button>
+          <button class="fund-amt" onclick="selectFundAmount(5000)" style="padding:0.5rem;border:1.5px solid #e0e0e0;border-radius:8px;background:white;font-size:0.8rem;font-weight:600;cursor:pointer;">₹5,000</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+          <input type="number" id="fund-custom-amount" placeholder="Custom amount" style="flex:1;padding:0.5rem 0.75rem;border:1.5px solid #e0e0e0;border-radius:8px;font-size:0.85rem;">
+          <button onclick="donateFund()" style="padding:0.5rem 1.25rem;background:linear-gradient(135deg,#7b1fa2,#4a148c);color:white;border:none;border-radius:8px;font-size:0.85rem;font-weight:700;cursor:pointer;">Donate</button>
+        </div>
+        <p style="font-size:0.68rem;color:#999;text-align:center;"><i class="fas fa-lock"></i> Secure payment via Razorpay. Tax exemption under 80G available.</p>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span>Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span>Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span>Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span>Profile</span></a>
+    </nav>
+  </div>
+
+  <!-- Register Temple Modal -->
+  <div class="kt-modal-overlay" id="register-modal">
+    <div class="kt-modal">
+      <h3>🏛️ Register Your Kula Theivam</h3>
+      <p class="modal-desc">Enter your family deity temple details to unlock personalized services</p>
+
+      <div class="form-group">
+        <label>Temple Name *</label>
+        <input type="text" id="reg-temple-name" placeholder="e.g., Sri Kaliamman Temple">
+      </div>
+      <div class="form-group">
+        <label>Temple Location / Village *</label>
+        <input type="text" id="reg-temple-location" placeholder="e.g., Kulithalai, Karur District">
+      </div>
+      <div class="form-group">
+        <label>Main Deity *</label>
+        <select id="reg-deity">
+          <option value="">Select Deity</option>
+          <option value="Amman / Devi">Amman / Devi</option>
+          <option value="Shiva">Shiva</option>
+          <option value="Vishnu / Perumal">Vishnu / Perumal</option>
+          <option value="Murugan">Murugan</option>
+          <option value="Ganesh / Vinayagar">Ganesh / Vinayagar</option>
+          <option value="Hanuman / Anjaneya">Hanuman / Anjaneya</option>
+          <option value="Ayyanar">Ayyanar</option>
+          <option value="Karuppasamy">Karuppasamy</option>
+          <option value="Muneeswaran">Muneeswaran</option>
+          <option value="Maadha (Mariamman)">Maadha (Mariamman)</option>
+          <option value="Naga Theivam">Naga Theivam (Serpent God)</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Family Gothram</label>
+        <input type="text" id="reg-gothram" placeholder="e.g., Kashyapa, Bharadwaja">
+      </div>
+      <div class="form-group">
+        <label>Ancestral Village / Ooru</label>
+        <input type="text" id="reg-village" placeholder="Your family's native village">
+      </div>
+      <div class="form-group">
+        <label>Family History Notes (Optional)</label>
+        <textarea id="reg-history" rows="2" placeholder="Any family traditions or temple customs..."></textarea>
+      </div>
+
+      <button class="btn-book" onclick="registerKulaTemple()"><i class="fas fa-check-circle"></i> Register Temple</button>
+      <button class="btn-close-modal" onclick="closeModal('register-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Ritual Booking Modal -->
+  <div class="kt-modal-overlay" id="ritual-modal">
+    <div class="kt-modal">
+      <h3 id="ritual-title">-</h3>
+      <p class="modal-desc" id="ritual-desc">-</p>
+      <div class="price-tag" id="ritual-price">-</div>
+
+      <div class="form-group">
+        <label>Devotee Name *</label>
+        <input type="text" id="ritual-name" placeholder="Enter your name">
+      </div>
+      <div class="form-group">
+        <label>Star / Nakshatram</label>
+        <select id="ritual-star">
+          <option value="">Select Star</option>
+          <option>Ashwini</option><option>Bharani</option><option>Krithigai</option>
+          <option>Rohini</option><option>Mrigasheersham</option><option>Thiruvathirai</option>
+          <option>Punarpoosam</option><option>Poosam</option><option>Ayilyam</option>
+          <option>Magam</option><option>Pooram</option><option>Uthiram</option>
+          <option>Hastham</option><option>Chithirai</option><option>Swathi</option>
+          <option>Vishakam</option><option>Anusham</option><option>Kettai</option>
+          <option>Moolam</option><option>Pooradam</option><option>Uthradam</option>
+          <option>Thiruvonam</option><option>Avittam</option><option>Sadhayam</option>
+          <option>Poorattathi</option><option>Uthirattathi</option><option>Revathi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Preferred Date *</label>
+        <input type="date" id="ritual-date">
+      </div>
+      <div class="form-group" id="ritual-video-group" style="display:none;">
+        <label><input type="checkbox" id="ritual-video-req" checked> Send video/photo of the ritual</label>
+      </div>
+      <div class="form-group" id="ritual-prasadam-group" style="display:none;">
+        <label><input type="checkbox" id="ritual-prasadam-req"> Deliver prasadam by courier (+₹150)</label>
+      </div>
+      <div class="form-group">
+        <label>Special Instructions</label>
+        <textarea id="ritual-notes" rows="2" placeholder="Any specific requests..."></textarea>
+      </div>
+
+      <button class="btn-book" id="ritual-book-btn" onclick="confirmRitualBooking()">
+        <i class="fas fa-check-circle"></i> Book Now
+      </button>
+      <button class="btn-close-modal" onclick="closeModal('ritual-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Prasadam Order Modal -->
+  <div class="kt-modal-overlay" id="prasadam-modal">
+    <div class="kt-modal">
+      <h3 id="prasadam-title">-</h3>
+      <p class="modal-desc" id="prasadam-desc">-</p>
+      <div class="price-tag" id="prasadam-price">-</div>
+
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" id="prasadam-name" placeholder="Enter name">
+      </div>
+      <div class="form-group">
+        <label>Phone Number *</label>
+        <input type="tel" id="prasadam-phone" placeholder="Enter phone number">
+      </div>
+      <div class="form-group">
+        <label>Delivery Address *</label>
+        <textarea id="prasadam-address" rows="3" placeholder="Full address with PIN code"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <select id="prasadam-qty">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+
+      <button class="btn-book" onclick="confirmPrasadamOrder()"><i class="fas fa-truck"></i> Order Now</button>
+      <button class="btn-close-modal" onclick="closeModal('prasadam-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Consultation Booking Modal -->
+  <div class="kt-modal-overlay" id="consult-modal">
+    <div class="kt-modal">
+      <h3 id="consult-title">Book Priest Consultation</h3>
+      <p class="modal-desc">Get guidance from your Kula Theivam temple priest</p>
+
+      <div class="form-group">
+        <label>Your Name *</label>
+        <input type="text" id="consult-name" placeholder="Enter name">
+      </div>
+      <div class="form-group">
+        <label>Consultation Topic *</label>
+        <select id="consult-topic">
+          <option value="">Select Topic</option>
+          <option value="Muhurtham">Muhurtham / Auspicious Date</option>
+          <option value="Dosha Parikaram">Dosha Parikaram</option>
+          <option value="Family Ritual">Family Ritual Guidance</option>
+          <option value="Navagraha">Navagraha Dosha</option>
+          <option value="Kala Sarpa">Kala Sarpa Dosha</option>
+          <option value="Yearly Predictions">Yearly Predictions</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Preferred Date & Time *</label>
+        <input type="datetime-local" id="consult-datetime">
+      </div>
+      <div class="form-group">
+        <label>Brief Description</label>
+        <textarea id="consult-desc-input" rows="2" placeholder="Describe your query..."></textarea>
+      </div>
+      <div class="price-tag" id="consult-price">₹300 for 15 min</div>
+
+      <button class="btn-book" onclick="confirmConsultation()"><i class="fas fa-check-circle"></i> Book Consultation</button>
+      <button class="btn-close-modal" onclick="closeModal('consult-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Edit Family Records Modal -->
+  <div class="kt-modal-overlay" id="edit-records-modal">
+    <div class="kt-modal">
+      <h3>Edit Family Records</h3>
+      <p class="modal-desc">Update your Kula Theivam details and family history</p>
+
+      <div class="form-group">
+        <label>Temple Name</label>
+        <input type="text" id="edit-temple-name" placeholder="Temple name">
+      </div>
+      <div class="form-group">
+        <label>Temple Location</label>
+        <input type="text" id="edit-temple-location" placeholder="Location">
+      </div>
+      <div class="form-group">
+        <label>Main Deity</label>
+        <input type="text" id="edit-deity" placeholder="Deity name">
+      </div>
+      <div class="form-group">
+        <label>Gothram</label>
+        <input type="text" id="edit-gothram" placeholder="Family gothram">
+      </div>
+      <div class="form-group">
+        <label>Ancestral Village</label>
+        <input type="text" id="edit-village" placeholder="Native village">
+      </div>
+      <div class="form-group">
+        <label>Family History Notes</label>
+        <textarea id="edit-history" rows="3" placeholder="Family traditions, customs..."></textarea>
+      </div>
+
+      <button class="btn-book" onclick="saveRecords()"><i class="fas fa-save"></i> Save Records</button>
+      <button class="btn-close-modal" onclick="closeModal('edit-records-modal')">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-icon">🙏</div>
+      <h3>Success</h3>
+      <p>Your request has been submitted</p>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.remove('show')">OK</button>
+    </div>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    var KT_STORAGE_KEY = 'kula_theivam_data';
+    var KT_BOOKINGS_KEY = 'kula_theivam_bookings';
+    var KT_ORDERS_KEY = 'kula_theivam_orders';
+
+    // Ritual data
+    var ritualData = {
+      thanigai_pooja: { name: 'Thanigai Pooja', desc: 'Special family-exclusive pooja performed by the temple priest in the name of your family lineage. Includes archana, abhishekam, and prasadam.', price: 1500, isRemote: false },
+      pattini_pooja: { name: 'Pattini Pooja', desc: 'First temple visit blessing for newly married couples. Includes special archana, garland, and kumkum.', price: 2000, isRemote: false },
+      kudam_offering: { name: 'Kudam (Pot Offering)', desc: 'Sacred pot offering filled with milk, flowers, and turmeric water, carried to the deity in procession.', price: 800, isRemote: false },
+      padi_offering: { name: 'Padi (Paddy Offering)', desc: 'Traditional grain offering to the deity. Paddy, rice, and pulses offered with prayers for harvest blessings.', price: 500, isRemote: false },
+      veshti_saree: { name: 'Veshti / Saree Offering', desc: 'New cloth offering to adorn the deity. Select veshti for male deities or saree for female deities.', price: 1200, isRemote: false },
+      abishekam: { name: 'Special Abhishekam', desc: 'Sacred bathing ritual with milk, honey, curd, sandalwood paste, and holy water.', price: 2500, isRemote: false },
+      ear_piercing: { name: 'Kadhani (Ear Piercing)', desc: 'Traditional ear-piercing ceremony for children performed at the temple with blessings.', price: 1000, isRemote: false },
+      annual_pooja: { name: 'Annual Family Pooja', desc: 'Yearly thanksgiving and remembrance pooja for your entire family, performed by head priest.', price: 3000, isRemote: false },
+      remote_archana: { name: 'Remote Archana', desc: 'Archana performed at the temple in your name. Video clip of the ritual will be sent via WhatsApp within 24 hours.', price: 250, isRemote: true },
+      remote_abhishekam: { name: 'Remote Abhishekam', desc: 'Full abhishekam performed on your behalf. Live video link shared 15 min before. Vibhuthi posted to your address.', price: 1500, isRemote: true },
+      remote_homam: { name: 'Remote Homam', desc: 'Sacred fire ritual performed at temple premises. Live stream provided. Sacred ash and prasadam couriered to you.', price: 3500, isRemote: true },
+      remote_pongal: { name: 'Pongal Padayal', desc: 'Traditional Pongal cooked and offered to the deity. Photos and video shared. Prasadam not deliverable.', price: 600, isRemote: true },
+      remote_vahanam: { name: 'Vahanam Pooja', desc: 'Special pooja during deity procession on Rishabha/Nandi/Simha vahanam days. Archana in your name during procession.', price: 1000, isRemote: true }
+    };
+
+    var prasadamData = {
+      vibhuthi_kumkum: { name: 'Vibhuthi & Kumkum Pack', desc: 'Sacred ash (vibhuthi) and vermillion (kumkum) blessed at your Kula Theivam temple.', price: 149 },
+      sacred_thread: { name: 'Blessed Sacred Thread', desc: 'Temple-blessed protection thread (Kaapu / Raksha). Tied during special pooja before shipping.', price: 99 },
+      prasadam_box: { name: 'Prasadam Box', desc: 'Assorted temple sweets and prasadam items including laddu, sundal, and sacred items.', price: 299 },
+      pooja_kit: { name: 'Complete Pooja Kit', desc: 'Full kit with vibhuthi, kumkum, sacred thread, dried flowers, turmeric, and prasadam box.', price: 499 }
+    };
+
+    var currentRitualKey = '';
+    var currentPrasadamKey = '';
+    var selectedFundAmount = 0;
+
+    // Temple-specific festival data
+    var templeFestivals = {
+      'Amman / Devi': { name: 'Aadi Thiruvizha', desc: 'Grand 10-day Aadi festival with special abhishekam, alankaram, and procession', daysFromNow: 18 },
+      'Shiva': { name: 'Maha Shivaratri Vizha', desc: 'All-night Shiva worship with 4 kaala poojas and Lingothbhava ceremony', daysFromNow: 45 },
+      'Vishnu / Perumal': { name: 'Vaikunta Ekadasi', desc: 'Sacred Vaikunta Dwara opens. Special darshan and Thousand Pot Abhishekam', daysFromNow: 62 },
+      'Murugan': { name: 'Skanda Sashti Vizha', desc: '6-day festival celebrating Lord Murugan\'s victory. Kavadi and special processions', daysFromNow: 30 },
+      'Ganesh / Vinayagar': { name: 'Vinayagar Chaturthi', desc: 'Grand celebration with 1008 modaka offering, special abhishekam and alankaram', daysFromNow: 55 },
+      'Ayyanar': { name: 'Ayyanar Kovil Thiruvizha', desc: 'Annual village festival with folk arts, terracotta horse offering, and community feast', daysFromNow: 22 },
+      'Karuppasamy': { name: 'Karuppasamy Thiruvizha', desc: 'Annual temple festival with special rituals, animal offerings, and community gathering', daysFromNow: 35 },
+      'Maadha (Mariamman)': { name: 'Mariamman Thiruvizha', desc: 'Fire-walking festival with special pongal padayal and theemithi ceremony', daysFromNow: 25 }
+    };
+
+    // Temple priest data
+    var templePriests = {
+      'Amman / Devi': { name: 'Sri Venkatesh Gurukkal', speciality: 'Amman rituals, Rahu-Ketu Dosha, Kumkum Archana' },
+      'Shiva': { name: 'Sri Sivasubramanya Gurukkal', speciality: 'Shiva poojas, Rudra Abhishekam, Dosha Parikaram' },
+      'Vishnu / Perumal': { name: 'Sri Ranganatha Bhattachar', speciality: 'Vishnu Sahasranamam, Sathumurai, Thirumanjanam' },
+      'Murugan': { name: 'Sri Dandayuthapani Gurukkal', speciality: 'Murugan poojas, Kavadi rituals, Skanda Sashti' },
+      'Ganesh / Vinayagar': { name: 'Sri Ganesha Sharma', speciality: 'Ganapathi Homam, Modaka offering, Sankatahara Chaturthi' },
+      'Ayyanar': { name: 'Sri Muthukumar Poosari', speciality: 'Village deity rituals, Folk traditions, Festival ceremonies' },
+      'Karuppasamy': { name: 'Sri Veerapandian Poosari', speciality: 'Guardian deity rituals, Protection poojas, Festival rites' }
+    };
+
+    // Initialize
+    function initPage() {
+      var data = getKTData();
+      if (data && data.templeName) {
+        showRegisteredView(data);
+      } else {
+        showRegisterView();
+      }
+    }
+
+    function getKTData() {
+      try { return JSON.parse(localStorage.getItem(KT_STORAGE_KEY)); } catch(e) { return null; }
+    }
+
+    function showRegisterView() {
+      document.getElementById('kt-register-section').style.display = '';
+      document.getElementById('kt-temple-banner').style.display = 'none';
+      ['remote-section','rituals-section','prasadam-section','priest-section','family-section','fund-section','festival-section'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
+    }
+
+    function showRegisteredView(data) {
+      document.getElementById('kt-register-section').style.display = 'none';
+      document.getElementById('kt-temple-banner').style.display = 'flex';
+      document.getElementById('kt-temple-name').textContent = data.templeName;
+      document.getElementById('kt-temple-location').textContent = data.location;
+
+      // Show all sections
+      ['remote-section','rituals-section','prasadam-section','priest-section','family-section','fund-section'].forEach(function(id) {
+        document.getElementById(id).style.display = '';
+      });
+
+      // Update family records
+      document.getElementById('record-temple').textContent = data.templeName;
+      document.getElementById('record-deity').textContent = data.deity || '-';
+      document.getElementById('record-gothram').textContent = data.gothram || 'Not specified';
+      document.getElementById('record-village').textContent = data.village || 'Not specified';
+      document.getElementById('record-history').textContent = data.history || 'No family notes yet';
+
+      // Show festival alert
+      var festival = templeFestivals[data.deity] || templeFestivals['Amman / Devi'];
+      if (festival) {
+        document.getElementById('festival-section').style.display = '';
+        document.getElementById('festival-name').textContent = festival.name;
+        document.getElementById('festival-desc').textContent = festival.desc;
+        document.getElementById('festival-days').textContent = 'In ' + festival.daysFromNow + ' days';
+      }
+
+      // Update priest info
+      var priest = templePriests[data.deity] || { name: 'Temple Head Priest', speciality: 'All rituals and consultations' };
+      document.getElementById('priest-name').textContent = priest.name;
+      document.getElementById('priest-speciality').textContent = priest.speciality;
+    }
+
+    // Register Kula Theivam
+    function openRegisterModal() {
+      document.getElementById('register-modal').classList.add('show');
+    }
+
+    function registerKulaTemple() {
+      var name = document.getElementById('reg-temple-name').value.trim();
+      var location = document.getElementById('reg-temple-location').value.trim();
+      var deity = document.getElementById('reg-deity').value;
+
+      if (!name || !location || !deity) {
+        showToast('Please fill temple name, location, and deity', 'error');
+        return;
+      }
+
+      var data = {
+        templeName: name,
+        location: location,
+        deity: deity,
+        gothram: document.getElementById('reg-gothram').value.trim(),
+        village: document.getElementById('reg-village').value.trim(),
+        history: document.getElementById('reg-history').value.trim(),
+        registeredDate: new Date().toISOString()
+      };
+
+      localStorage.setItem(KT_STORAGE_KEY, JSON.stringify(data));
+      closeModal('register-modal');
+      showRegisteredView(data);
+      showToast('Kula Theivam registered successfully!', 'success');
+    }
+
+    function changeKulaTemple() {
+      var data = getKTData() || {};
+      document.getElementById('reg-temple-name').value = data.templeName || '';
+      document.getElementById('reg-temple-location').value = data.location || '';
+      document.getElementById('reg-deity').value = data.deity || '';
+      document.getElementById('reg-gothram').value = data.gothram || '';
+      document.getElementById('reg-village').value = data.village || '';
+      document.getElementById('reg-history').value = data.history || '';
+      document.getElementById('register-modal').classList.add('show');
+    }
+
+    // Ritual Booking
+    function openRitualBooking(key) {
+      var data = getKTData();
+      if (!data) { showToast('Please register your Kula Theivam first', 'error'); return; }
+
+      var ritual = ritualData[key];
+      if (!ritual) return;
+
+      currentRitualKey = key;
+      document.getElementById('ritual-title').textContent = ritual.name;
+      document.getElementById('ritual-desc').textContent = ritual.desc;
+      document.getElementById('ritual-price').textContent = '₹' + ritual.price.toLocaleString();
+
+      // Pre-fill user name
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user') || '{}');
+        document.getElementById('ritual-name').value = user.name || '';
+      } catch(e) {}
+
+      // Set min date to today
+      document.getElementById('ritual-date').min = new Date().toISOString().split('T')[0];
+
+      // Show remote options for remote services
+      document.getElementById('ritual-video-group').style.display = ritual.isRemote ? '' : 'none';
+      document.getElementById('ritual-prasadam-group').style.display = ritual.isRemote ? '' : 'none';
+
+      document.getElementById('ritual-modal').classList.add('show');
+    }
+
+    function confirmRitualBooking() {
+      var name = document.getElementById('ritual-name').value.trim();
+      var date = document.getElementById('ritual-date').value;
+      var ritual = ritualData[currentRitualKey];
+
+      if (!name || !date) {
+        showToast('Please fill name and date', 'error');
+        return;
+      }
+
+      var ktData = getKTData();
+      var wantsPrasadam = ritual.isRemote && document.getElementById('ritual-prasadam-req').checked;
+      var totalPrice = ritual.price + (wantsPrasadam ? 150 : 0);
+
+      var booking = {
+        id: 'KT-' + Date.now(),
+        type: 'kula_theivam_ritual',
+        ritualKey: currentRitualKey,
+        ritualName: ritual.name,
+        temple: ktData.templeName,
+        devotee: name,
+        star: document.getElementById('ritual-star').value,
+        date: date,
+        isRemote: ritual.isRemote,
+        videoRequested: ritual.isRemote ? document.getElementById('ritual-video-req').checked : false,
+        prasadamDelivery: wantsPrasadam,
+        notes: document.getElementById('ritual-notes').value.trim(),
+        price: totalPrice,
+        status: 'Confirmed',
+        bookedAt: new Date().toISOString()
+      };
+
+      // Save to kula theivam bookings
+      var bookings = JSON.parse(localStorage.getItem(KT_BOOKINGS_KEY) || '[]');
+      bookings.push(booking);
+      localStorage.setItem(KT_BOOKINGS_KEY, JSON.stringify(bookings));
+
+      // Also save to temple_bookings for admin visibility
+      var allBookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+      allBookings.push(booking);
+      localStorage.setItem('temple_bookings', JSON.stringify(allBookings));
+
+      closeModal('ritual-modal');
+
+      var msg = ritual.name + ' has been booked for ' + name + ' on ' + date + '.';
+      if (ritual.isRemote) msg += ' Video/photos will be shared via WhatsApp.';
+      msg += ' Payment: ₹' + totalPrice.toLocaleString();
+
+      showModal('🙏', 'Booking Confirmed!', msg, 'OK', null);
+    }
+
+    // Prasadam Order
+    function openPrasadamOrder(key) {
+      var data = getKTData();
+      if (!data) { showToast('Please register your Kula Theivam first', 'error'); return; }
+
+      var item = prasadamData[key];
+      if (!item) return;
+
+      currentPrasadamKey = key;
+      document.getElementById('prasadam-title').textContent = item.name;
+      document.getElementById('prasadam-desc').textContent = item.desc;
+      document.getElementById('prasadam-price').textContent = '₹' + item.price;
+
+      // Pre-fill user info
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user') || '{}');
+        document.getElementById('prasadam-name').value = user.name || '';
+        document.getElementById('prasadam-phone').value = user.phone || '';
+      } catch(e) {}
+
+      document.getElementById('prasadam-modal').classList.add('show');
+    }
+
+    function confirmPrasadamOrder() {
+      var name = document.getElementById('prasadam-name').value.trim();
+      var phone = document.getElementById('prasadam-phone').value.trim();
+      var address = document.getElementById('prasadam-address').value.trim();
+      var qty = parseInt(document.getElementById('prasadam-qty').value) || 1;
+      var item = prasadamData[currentPrasadamKey];
+
+      if (!name || !phone || !address) {
+        showToast('Please fill all required fields', 'error');
+        return;
+      }
+
+      var ktData = getKTData();
+      var total = item.price * qty;
+
+      var order = {
+        id: 'PRS-' + Date.now(),
+        type: 'prasadam_delivery',
+        itemKey: currentPrasadamKey,
+        itemName: item.name,
+        temple: ktData.templeName,
+        customerName: name,
+        phone: phone,
+        address: address,
+        quantity: qty,
+        price: total,
+        status: 'Processing',
+        orderedAt: new Date().toISOString()
+      };
+
+      var orders = JSON.parse(localStorage.getItem(KT_ORDERS_KEY) || '[]');
+      orders.push(order);
+      localStorage.setItem(KT_ORDERS_KEY, JSON.stringify(orders));
+
+      closeModal('prasadam-modal');
+      showModal('📦', 'Order Placed!',
+        item.name + ' x' + qty + ' ordered for ₹' + total.toLocaleString() + '. Will be delivered to ' + name + ' within 5-7 working days.',
+        'OK', null);
+    }
+
+    // Priest Consultation
+    function bookConsultation(mode) {
+      document.getElementById('consult-title').textContent = 'Book ' + (mode === 'video' ? 'Video' : 'Phone') + ' Consultation';
+      document.getElementById('consult-price').textContent = mode === 'video' ? '₹500 for 20 min' : '₹300 for 15 min';
+
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user') || '{}');
+        document.getElementById('consult-name').value = user.name || '';
+      } catch(e) {}
+
+      document.getElementById('consult-datetime').min = new Date().toISOString().slice(0, 16);
+      document.getElementById('consult-modal').classList.add('show');
+    }
+
+    function confirmConsultation() {
+      var name = document.getElementById('consult-name').value.trim();
+      var topic = document.getElementById('consult-topic').value;
+      var datetime = document.getElementById('consult-datetime').value;
+
+      if (!name || !topic || !datetime) {
+        showToast('Please fill all required fields', 'error');
+        return;
+      }
+
+      var ktData = getKTData();
+      var booking = {
+        id: 'CON-' + Date.now(),
+        type: 'priest_consultation',
+        temple: ktData.templeName,
+        devotee: name,
+        topic: topic,
+        datetime: datetime,
+        description: document.getElementById('consult-desc-input').value.trim(),
+        status: 'Scheduled',
+        bookedAt: new Date().toISOString()
+      };
+
+      var bookings = JSON.parse(localStorage.getItem(KT_BOOKINGS_KEY) || '[]');
+      bookings.push(booking);
+      localStorage.setItem(KT_BOOKINGS_KEY, JSON.stringify(bookings));
+
+      closeModal('consult-modal');
+      showModal('📞', 'Consultation Booked!',
+        'Your ' + topic + ' consultation is scheduled for ' + new Date(datetime).toLocaleDateString() + '. The priest will contact you.',
+        'OK', null);
+    }
+
+    // Temple Maintenance Fund
+    function selectFundAmount(amount) {
+      selectedFundAmount = amount;
+      document.getElementById('fund-custom-amount').value = amount;
+      document.querySelectorAll('.fund-amt').forEach(function(btn) {
+        btn.style.borderColor = '#e0e0e0';
+        btn.style.background = 'white';
+        btn.style.color = '#333';
+      });
+      event.target.style.borderColor = '#7b1fa2';
+      event.target.style.background = '#f3e5f9';
+      event.target.style.color = '#7b1fa2';
+    }
+
+    function donateFund() {
+      var amount = parseInt(document.getElementById('fund-custom-amount').value) || selectedFundAmount;
+      if (!amount || amount <= 0) {
+        showToast('Please select or enter a donation amount', 'error');
+        return;
+      }
+
+      var ktData = getKTData();
+      if (!ktData) { showToast('Please register your Kula Theivam first', 'error'); return; }
+
+      var user = {};
+      try { user = JSON.parse(localStorage.getItem('temple_user') || '{}'); } catch(e) {}
+
+      var donation = {
+        id: Date.now(),
+        amount: amount,
+        type: 'Temple Maintenance',
+        date: new Date().toLocaleDateString(),
+        donorName: user.name || 'Devotee',
+        donorEmail: user.email || '',
+        temple: ktData.templeName
+      };
+
+      var donations = JSON.parse(localStorage.getItem('temple_donations') || '[]');
+      donations.push(donation);
+      localStorage.setItem('temple_donations', JSON.stringify(donations));
+
+      showModal('🙏', 'Thank You!',
+        'Your donation of ₹' + amount.toLocaleString() + ' to ' + ktData.templeName + ' maintenance fund has been received. May your Kula Theivam bless your family!',
+        'OK', null);
+    }
+
+    // Edit Family Records
+    function openEditRecords() {
+      var data = getKTData() || {};
+      document.getElementById('edit-temple-name').value = data.templeName || '';
+      document.getElementById('edit-temple-location').value = data.location || '';
+      document.getElementById('edit-deity').value = data.deity || '';
+      document.getElementById('edit-gothram').value = data.gothram || '';
+      document.getElementById('edit-village').value = data.village || '';
+      document.getElementById('edit-history').value = data.history || '';
+      document.getElementById('edit-records-modal').classList.add('show');
+    }
+
+    function saveRecords() {
+      var data = getKTData() || {};
+      data.templeName = document.getElementById('edit-temple-name').value.trim() || data.templeName;
+      data.location = document.getElementById('edit-temple-location').value.trim() || data.location;
+      data.deity = document.getElementById('edit-deity').value.trim() || data.deity;
+      data.gothram = document.getElementById('edit-gothram').value.trim();
+      data.village = document.getElementById('edit-village').value.trim();
+      data.history = document.getElementById('edit-history').value.trim();
+
+      localStorage.setItem(KT_STORAGE_KEY, JSON.stringify(data));
+      closeModal('edit-records-modal');
+      showRegisteredView(data);
+      showToast('Family records updated!', 'success');
+    }
+
+    // Modal helpers
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('show');
+    }
+
+    // Close modal on overlay click
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('kt-modal-overlay')) {
+        e.target.classList.remove('show');
+      }
+    });
+
+    // Init on load
+    document.addEventListener('DOMContentLoaded', initPage);
+  </script>
+</body>
+</html>

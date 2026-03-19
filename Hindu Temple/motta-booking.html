@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motta Booking - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .motta-hero {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+    .motta-hero .hero-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+    }
+    .motta-hero h1 {
+      font-size: 1.35rem;
+      margin-bottom: 0.25rem;
+    }
+    .motta-hero p {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+    .motta-info-box {
+      background: #fff3e0;
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .motta-info-box strong {
+      color: var(--primary);
+    }
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .slot-btn {
+      padding: 0.6rem 0.5rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: white;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .slot-btn:hover, .slot-btn.selected {
+      border-color: var(--primary);
+      background: #fff3e0;
+      color: var(--primary);
+    }
+    .slot-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .slot-btn .slot-avail {
+      font-size: 0.65rem;
+      color: var(--text-light);
+      display: block;
+      margin-top: 0.15rem;
+    }
+    .slot-btn.selected .slot-avail { color: var(--primary); }
+    .member-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .member-card .member-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .member-card .member-header h4 {
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+    .remove-member {
+      background: none;
+      border: none;
+      color: var(--danger);
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .add-member-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      background: none;
+      color: var(--primary);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: all 0.3s;
+    }
+    .add-member-btn:hover {
+      border-color: var(--primary);
+      background: #fff3e0;
+    }
+    .price-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      font-size: 0.9rem;
+    }
+    .price-info.total {
+      border-top: 2px solid var(--border);
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+      padding-top: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">←</button>
+      <h2>Motta Booking</h2>
+    </div>
+
+    <!-- Hero -->
+    <div class="motta-hero">
+      <div class="hero-icon">✂️</div>
+      <h1>Tonsure (Motta) Seva</h1>
+      <p>Book your hair offering seva online</p>
+    </div>
+
+    <form class="section" onsubmit="handleMottaBooking(event)">
+      <!-- Info -->
+      <div class="motta-info-box">
+        <strong>About Motta Seva:</strong> Tonsure is a sacred tradition where devotees offer their hair to the deity as a sign of devotion and surrender. This seva is available for all age groups including infants, children, and adults.
+      </div>
+
+      <!-- Seva Type -->
+      <div class="section-title">Select Seva Type</div>
+      <div class="pooja-list" style="margin-bottom:1.25rem;">
+        <div class="pooja-option" onclick="selectMottaType(this, 'Full Tonsure', 200)">
+          <span class="pooja-name">✂️ Full Tonsure (Complete)</span>
+          <span class="pooja-price">₹200</span>
+        </div>
+        <div class="pooja-option" onclick="selectMottaType(this, 'Partial Tonsure', 150)">
+          <span class="pooja-name">✂️ Partial Tonsure</span>
+          <span class="pooja-price">₹150</span>
+        </div>
+        <div class="pooja-option" onclick="selectMottaType(this, 'Baby First Tonsure', 300)">
+          <span class="pooja-name">👶 Baby First Tonsure (Mundan)</span>
+          <span class="pooja-price">₹300</span>
+        </div>
+        <div class="pooja-option" onclick="selectMottaType(this, 'VIP Tonsure', 500)">
+          <span class="pooja-name">⭐ VIP Tonsure (Priority)</span>
+          <span class="pooja-price">₹500</span>
+        </div>
+      </div>
+
+      <!-- Date Selection -->
+      <div class="form-group">
+        <label>Select Date</label>
+        <input type="date" id="motta-date" required>
+      </div>
+
+      <!-- Time Slot -->
+      <div class="section-title">Select Time Slot</div>
+      <div class="slot-grid">
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '6:00 AM')">
+          6:00 AM
+          <span class="slot-avail">45 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '7:00 AM')">
+          7:00 AM
+          <span class="slot-avail">32 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '8:00 AM')">
+          8:00 AM
+          <span class="slot-avail">28 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '9:00 AM')">
+          9:00 AM
+          <span class="slot-avail">15 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '10:00 AM')">
+          10:00 AM
+          <span class="slot-avail">20 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '11:00 AM')">
+          11:00 AM
+          <span class="slot-avail">38 slots</span>
+        </button>
+        <button type="button" class="slot-btn disabled">
+          12:00 PM
+          <span class="slot-avail">Break</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '2:00 PM')">
+          2:00 PM
+          <span class="slot-avail">40 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '3:00 PM')">
+          3:00 PM
+          <span class="slot-avail">35 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '4:00 PM')">
+          4:00 PM
+          <span class="slot-avail">22 slots</span>
+        </button>
+        <button type="button" class="slot-btn" onclick="selectSlot(this, '5:00 PM')">
+          5:00 PM
+          <span class="slot-avail">18 slots</span>
+        </button>
+        <button type="button" class="slot-btn disabled">
+          6:00 PM
+          <span class="slot-avail">Full</span>
+        </button>
+      </div>
+
+      <!-- Members -->
+      <div class="section-title">Devotee Details</div>
+      <div id="members-list">
+        <div class="member-card">
+          <div class="member-header">
+            <h4>Person 1</h4>
+          </div>
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" placeholder="Enter full name" required class="member-name">
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" placeholder="Enter age" min="0" max="120" required class="member-age">
+          </div>
+          <div class="form-group">
+            <label>Gender</label>
+            <select required class="member-gender">
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Child (Boy)</option>
+              <option>Child (Girl)</option>
+              <option>Infant</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="add-member-btn" onclick="addMember()">+ Add Another Person</button>
+
+      <!-- Booking Summary -->
+      <div class="booking-summary" id="motta-summary" style="display:none;">
+        <h3>Booking Summary</h3>
+        <div class="price-info">
+          <span>Seva Type</span>
+          <span id="ms-type">-</span>
+        </div>
+        <div class="price-info">
+          <span>Time Slot</span>
+          <span id="ms-slot">-</span>
+        </div>
+        <div class="price-info">
+          <span>No. of Persons</span>
+          <span id="ms-persons">1</span>
+        </div>
+        <div class="price-info">
+          <span>Price per Person</span>
+          <span id="ms-price">-</span>
+        </div>
+        <div class="price-info total">
+          <span>Total Amount</span>
+          <span id="ms-total">-</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="margin-top:0.5rem;">Confirm & Pay</button>
+      <p class="text-center mt-1" style="font-size:0.8rem; color:var(--text-light);">
+        Secure payment via Razorpay
+      </p>
+    </form>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let mottaType = null;
+    let mottaSlot = '';
+    let memberCount = 1;
+
+    function selectMottaType(el, name, price) {
+      document.querySelectorAll('.pooja-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+      mottaType = { name, price };
+      updateMottaSummary();
+    }
+
+    function selectSlot(el, time) {
+      document.querySelectorAll('.slot-btn').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      mottaSlot = time;
+      updateMottaSummary();
+    }
+
+    function addMember() {
+      memberCount++;
+      const container = document.getElementById('members-list');
+      const card = document.createElement('div');
+      card.className = 'member-card';
+      card.innerHTML = `
+        <div class="member-header">
+          <h4>Person ${memberCount}</h4>
+          <button type="button" class="remove-member" onclick="removeMember(this)">Remove</button>
+        </div>
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" placeholder="Enter full name" required class="member-name">
+        </div>
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" placeholder="Enter age" min="0" max="120" required class="member-age">
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select required class="member-gender">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Child (Boy)</option>
+            <option>Child (Girl)</option>
+            <option>Infant</option>
+          </select>
+        </div>
+      `;
+      container.appendChild(card);
+      updateMottaSummary();
+    }
+
+    function removeMember(btn) {
+      btn.closest('.member-card').remove();
+      memberCount = document.querySelectorAll('.member-card').length;
+      // Re-label
+      document.querySelectorAll('.member-card').forEach((card, i) => {
+        card.querySelector('h4').textContent = 'Person ' + (i + 1);
+      });
+      updateMottaSummary();
+    }
+
+    function updateMottaSummary() {
+      const summary = document.getElementById('motta-summary');
+      if (!mottaType) { summary.style.display = 'none'; return; }
+      summary.style.display = 'block';
+      const persons = document.querySelectorAll('.member-card').length;
+      document.getElementById('ms-type').textContent = mottaType.name;
+      document.getElementById('ms-slot').textContent = mottaSlot || 'Not selected';
+      document.getElementById('ms-persons').textContent = persons;
+      document.getElementById('ms-price').textContent = '₹' + mottaType.price;
+      document.getElementById('ms-total').textContent = '₹' + (mottaType.price * persons);
+    }
+
+    function handleMottaBooking(e) {
+      e.preventDefault();
+      const date = document.getElementById('motta-date').value;
+      if (!mottaType) { showToast('Please select seva type', 'error'); return; }
+      if (!date) { showToast('Please select a date', 'error'); return; }
+      if (!mottaSlot) { showToast('Please select a time slot', 'error'); return; }
+
+      const persons = document.querySelectorAll('.member-card').length;
+      const total = mottaType.price * persons;
+
+      // Save booking
+      const bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+      bookings.push({
+        id: Date.now(),
+        type: 'Motta',
+        pooja: mottaType.name,
+        price: total,
+        date, slot: mottaSlot,
+        persons,
+        status: 'Confirmed'
+      });
+      localStorage.setItem('temple_bookings', JSON.stringify(bookings));
+
+      showModal('✅', 'Motta Booking Confirmed!',
+        `${mottaType.name} booked for ${persons} person(s) on ${date} at ${mottaSlot}. Total: ₹${total}. Please arrive 15 minutes early.`,
+        'Done', () => navigateTo('home.html'));
+    }
+  </script>
+</body>
+</html>

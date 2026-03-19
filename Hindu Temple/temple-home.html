@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple Home - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Temple Hero Banner */
+    .temple-hero-banner {
+      position: relative;
+      height: 220px;
+      overflow: hidden;
+      background: #1a0f0a;
+    }
+    .temple-hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .temple-hero-banner .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 40%, rgba(0,0,0,0.8));
+    }
+    .temple-hero-banner .hero-back {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.4);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 5;
+      border: none;
+      backdrop-filter: blur(4px);
+    }
+    .temple-hero-banner .hero-info {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      color: white;
+      z-index: 3;
+    }
+    .temple-hero-banner .hero-info h1 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+    .temple-hero-banner .hero-info .hero-sub {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.82rem;
+      opacity: 0.9;
+    }
+    .hero-rating {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(255,255,255,0.2);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      backdrop-filter: blur(4px);
+    }
+    .hero-follow-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 5;
+      border: 2px solid white;
+      backdrop-filter: blur(4px);
+      transition: all 0.3s;
+    }
+    .hero-follow-btn.not-following {
+      background: rgba(255,255,255,0.15);
+      color: white;
+    }
+    .hero-follow-btn.following {
+      background: white;
+      color: var(--primary);
+      border-color: white;
+    }
+
+    /* Quick Info Bar */
+    .quick-info-bar {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0;
+    }
+    .quick-info-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      border-right: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .quick-info-item:last-child { border-right: none; }
+    .quick-info-item:hover { background: #fff8f0; }
+    .quick-info-item .qi-icon { font-size: 1.3rem; margin-bottom: 2px; }
+    .quick-info-item .qi-label { font-size: 0.7rem; font-weight: 600; color: var(--text-light); }
+
+    /* Section Styling */
+    .section { padding: 1rem 1.25rem; }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .section-title .see-all {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Services Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .service-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .service-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    .service-card .svc-icon {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .service-card .svc-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* Festival Cards */
+    .festival-list { display: flex; flex-direction: column; gap: 10px; }
+    .fest-card {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      gap: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .fest-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--primary);
+    }
+    .fest-date {
+      min-width: 52px;
+      text-align: center;
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border-radius: 10px;
+      padding: 8px 6px;
+    }
+    .fest-date .fd-day { font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); }
+    .fest-date .fd-month { font-size: 0.7rem; font-weight: 600; color: var(--primary); text-transform: uppercase; }
+    .fest-info h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 2px; }
+    .fest-info p { font-size: 0.78rem; color: var(--text-light); margin: 0; }
+
+    /* Updates / News */
+    .update-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+    .update-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .update-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .update-tag.announcement { background: #e3f2fd; color: #1565c0; }
+    .update-tag.update { background: #e8f5e9; color: #2e7d32; }
+    .update-tag.alert { background: #fce4ec; color: #c62828; }
+    .update-card h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
+    .update-card p { font-size: 0.8rem; color: var(--text-light); margin: 0; line-height: 1.4; }
+
+    /* Temple Info Row */
+    .temple-info-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      background: white;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .temple-info-row .tir-icon {
+      font-size: 1.1rem;
+      width: 36px;
+      height: 36px;
+      background: #fff3e0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .temple-info-row .tir-content { flex: 1; }
+    .temple-info-row .tir-label { font-size: 0.72rem; color: var(--text-light); font-weight: 500; }
+    .temple-info-row .tir-value { font-size: 0.88rem; font-weight: 600; }
+
+    /* View Details Button */
+    .view-details-btn {
+      display: block;
+      width: calc(100% - 2.5rem);
+      margin: 0 1.25rem 1rem;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      text-align: center;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .view-details-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* Like, Share, Review Action Bar */
+    .temple-actions {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      margin: 0.5rem 0;
+    }
+    .temple-action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 10px;
+      transition: all 0.2s;
+      color: var(--text-light);
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+    .temple-action-btn:hover { background: #f5f5f5; }
+    .temple-action-btn .ta-icon { font-size: 1.4rem; transition: transform 0.3s; }
+    .temple-action-btn.liked .ta-icon { color: #e53935; transform: scale(1.2); }
+    .temple-action-btn.liked { color: #e53935; }
+
+    /* Reviews Section */
+    .reviews-section { padding: 1rem 1.25rem; }
+    .review-summary {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .review-big-score {
+      text-align: center;
+      min-width: 70px;
+    }
+    .review-big-score .rbs-num { font-size: 2.2rem; font-weight: 800; color: var(--primary); }
+    .review-big-score .rbs-stars { font-size: 0.75rem; color: #ffa000; }
+    .review-big-score .rbs-count { font-size: 0.7rem; color: var(--text-light); margin-top: 2px; }
+    .review-bars { flex: 1; }
+    .review-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 3px;
+      font-size: 0.7rem;
+      color: var(--text-light);
+    }
+    .review-bar-row span:first-child { width: 12px; text-align: right; }
+    .review-bar-track {
+      flex: 1;
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .review-bar-fill {
+      height: 100%;
+      background: #ffa000;
+      border-radius: 3px;
+    }
+    .review-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+    .review-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .review-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff9800, #e65100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .review-author { font-size: 0.85rem; font-weight: 700; }
+    .review-date { font-size: 0.7rem; color: var(--text-light); }
+    .review-stars { font-size: 0.75rem; color: #ffa000; }
+    .review-text { font-size: 0.82rem; color: var(--text); line-height: 1.5; margin-top: 4px; }
+    .write-review-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border: 2px dashed var(--primary);
+      border-radius: 12px;
+      background: #fff8f0;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .write-review-btn:hover { background: #fff3e0; }
+
+    /* Review Modal */
+    .review-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .review-modal-overlay.show { display: flex; }
+    .review-modal {
+      background: white;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 32px;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .review-modal h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .star-rating-input {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .star-rating-input .star-btn {
+      font-size: 2rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #e0e0e0;
+      transition: all 0.2s;
+    }
+    .star-rating-input .star-btn.active { color: #ffa000; transform: scale(1.1); }
+    .review-textarea {
+      width: 100%;
+      min-height: 100px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 0.9rem;
+      resize: vertical;
+      font-family: inherit;
+      margin-bottom: 12px;
+    }
+    .review-textarea:focus { outline: none; border-color: var(--primary); }
+    .review-submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* App Footer */
+    .app-footer {
+      background: linear-gradient(135deg, #3e2723, #4e342e);
+      color: white;
+      text-align: center;
+      padding: 1.75rem 1.25rem 1.25rem;
+    }
+    .footer-brand { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .app-footer > p { font-size: 0.78rem; opacity: 0.7; margin-bottom: 1rem; }
+    .footer-links { display: flex; justify-content: center; gap: 1.25rem; margin-bottom: 1rem; }
+    .footer-links a { color: rgba(255,255,255,0.8); font-size: 0.8rem; font-weight: 500; text-decoration: none; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-size: 0.7rem; opacity: 0.5; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.85rem; }
+
+    /* Daily Rituals Timeline */
+    .rituals-timeline {
+      position: relative;
+      padding-left: 0;
+    }
+    .ritual-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      position: relative;
+    }
+    .ritual-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 56px;
+      top: 32px;
+      bottom: -8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--primary), #ffe0b2);
+    }
+    .ritual-time {
+      min-width: 52px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      text-align: right;
+    }
+    .ritual-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid #fff3e0;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .ritual-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      flex: 1;
+      transition: all 0.2s;
+    }
+    .ritual-info:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .ritual-icon { font-size: 1rem; }
+    .ritual-name { font-size: 0.82rem; font-weight: 600; }
+
+    /* How to Reach / Travel */
+    .travel-card {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: all 0.2s;
+    }
+    .travel-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .travel-icon {
+      font-size: 1.4rem;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #fff3e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .travel-content { flex: 1; }
+    .travel-title { font-size: 0.85rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 2px; }
+    .travel-sub { font-size: 0.72rem; font-weight: 600; color: var(--primary); margin-bottom: 3px; }
+    .travel-text { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
+    .travel-bus-routes {
+      background: #f9f5f0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .bus-route-item {
+      font-size: 0.78rem;
+      color: var(--text);
+      padding: 4px 0;
+      line-height: 1.4;
+    }
+    .travel-tip-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .travel-tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .maps-btn {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      background: linear-gradient(135deg, #1a73e8, #1565c0);
+      color: white;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 4px;
+      transition: opacity 0.3s;
+    }
+    .maps-btn:hover { opacity: 0.9; }
+
+    /* No temple selected state */
+    .no-temple {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    .no-temple .nt-icon { font-size: 4rem; margin-bottom: 16px; }
+    .no-temple h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .no-temple p { font-size: 0.9rem; color: var(--text-light); margin-bottom: 24px; }
+    .no-temple a {
+      display: inline-block;
+      padding: 12px 32px;
+      background: var(--primary);
+      color: white;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav" id="app-root">
+    <!-- Content rendered by JS -->
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function() {
+      var temple = null;
+      try { temple = JSON.parse(localStorage.getItem('selected_temple')); } catch(e) {}
+
+      var root = document.getElementById('app-root');
+
+      if (!temple) {
+        root.innerHTML =
+          '<div class="no-temple">' +
+            '<div class="nt-icon">🛕</div>' +
+            '<h2>No Temple Selected</h2>' +
+            '<p>Please select a temple from the list to view its details and services.</p>' +
+            '<a href="temple-list.html">Browse Temples</a>' +
+          '</div>' +
+          buildBottomNav('');
+        return;
+      }
+
+      document.title = temple.name + ' - Temple Digital';
+
+      var html = '';
+
+      var followingList = JSON.parse(localStorage.getItem('temple_following') || '[]');
+      var isFollowing = followingList.indexOf(temple.id || '') !== -1;
+
+      // 1. Hero Banner
+      html +=
+        '<div class="temple-hero-banner">' +
+          '<img src="' + esc(temple.image) + '" alt="' + esc(temple.name) + '">' +
+          '<div class="hero-overlay"></div>' +
+          '<button class="hero-back" onclick="window.location.href=\'temple-list.html\'">&larr;</button>' +
+          '<button class="hero-follow-btn ' + (isFollowing ? 'following' : 'not-following') + '" id="follow-btn" onclick="toggleFollowTemple()">' + (isFollowing ? '✓ Following' : '+ Follow') + '</button>' +
+          '<div class="hero-info">' +
+            '<h1>' + esc(temple.name) + '</h1>' +
+            '<div class="hero-sub">' +
+              '<span>📍 ' + esc(temple.location) + '</span>' +
+              '<span class="hero-rating">⭐ ' + esc(temple.rating) + ' (' + esc(temple.reviews) + ')</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+
+      // 2. Quick Info Bar
+      html +=
+        '<div class="quick-info-bar">' +
+          '<div class="quick-info-item" onclick="document.getElementById(\'timings-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<div class="qi-icon">🕐</div><div class="qi-label">Timings</div>' +
+          '</div>' +
+          '<div class="quick-info-item" onclick="document.getElementById(\'services-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<div class="qi-icon">🪔</div><div class="qi-label">Services</div>' +
+          '</div>' +
+          '<div class="quick-info-item" onclick="document.getElementById(\'rituals-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<div class="qi-icon">📿</div><div class="qi-label">Rituals</div>' +
+          '</div>' +
+          '<div class="quick-info-item" onclick="document.getElementById(\'festivals-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<div class="qi-icon">📅</div><div class="qi-label">Festivals</div>' +
+          '</div>' +
+        '</div>';
+
+      // Travel quick-link (shown if travel data exists)
+      if (temple.travel) {
+        html +=
+          '<div style="padding:6px 1.25rem 0;">' +
+            '<div onclick="document.getElementById(\'travel-section\').scrollIntoView({behavior:\'smooth\'})" style="display:flex; align-items:center; gap:8px; padding:10px 14px; background:linear-gradient(135deg,#e3f2fd,#bbdefb); border-radius:10px; cursor:pointer; transition:all 0.2s;">' +
+              '<span style="font-size:1.1rem;">🗺️</span>' +
+              '<div style="flex:1;"><span style="font-size:0.82rem; font-weight:700; color:#1565C0;">How to Reach ' + esc(temple.name.split(' ')[0]) + '</span></div>' +
+              '<span style="font-size:0.8rem; color:#1976D2;">View &rarr;</span>' +
+            '</div>' +
+          '</div>';
+      }
+
+      // 3. Deity & Timings
+      html += '<div id="timings-section">';
+      html +=
+        '<div class="temple-info-row">' +
+          '<div class="tir-icon">🙏</div>' +
+          '<div class="tir-content"><div class="tir-label">Main Deity</div><div class="tir-value">' + esc(temple.deity) + '</div></div>' +
+        '</div>' +
+        '<div class="temple-info-row">' +
+          '<div class="tir-icon">🌅</div>' +
+          '<div class="tir-content"><div class="tir-label">Morning Darshan</div><div class="tir-value">' + esc(temple.timings.morning) + '</div></div>' +
+        '</div>' +
+        '<div class="temple-info-row">' +
+          '<div class="tir-icon">🌙</div>' +
+          '<div class="tir-content"><div class="tir-label">Evening Darshan</div><div class="tir-value">' + esc(temple.timings.evening) + '</div></div>' +
+        '</div>';
+      html += '</div>';
+
+      // 4. Quick Services
+      html += '<div class="section" id="services-section">';
+      html += '<div class="section-title">Services <span class="see-all" onclick="toggleServices()">See All</span></div>';
+      html += '<div class="services-grid" id="services-grid">';
+
+      // ===== CATEGORY-BASED DEFAULT SERVICES =====
+      var categoryServices = {
+        shiva: [
+          { icon: '🪔', name: 'Rudra Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🍃', name: 'Bilva Archana', href: 'book-pooja.html', bg: '#e8f5e9' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Rudra Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Lingabhishekam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '✂️', name: 'Motta Booking', href: 'motta-booking.html', bg: '#fbe9e7', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        vishnu: [
+          { icon: '🌅', name: 'Suprabhatam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🌺', name: 'Thomala Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#e3f2fd' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🪔', name: 'Sahasranama Archana', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🔥', name: 'Sudarshana Homam', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '👑', name: 'Kalyanotsavam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        devi: [
+          { icon: '🌺', name: 'Kumkum Archana', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🪔', name: 'Lalitha Sahasranama', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#f3e5f5' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Chandi Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '💐', name: 'Pushpanjali', href: 'book-pooja.html', bg: '#fce4ec', extra: true },
+          { icon: '🪷', name: 'Varalakshmi Pooja', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        ganesh: [
+          { icon: '🍬', name: 'Modak Offering', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🪔', name: 'Ganapathi Homam', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#e8f5e9' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '📿', name: 'Sankatahara Chaturthi', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🌺', name: 'Pathra Pooja', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🥥', name: 'Coconut Archana', href: 'book-pooja.html', bg: '#e0f2f1', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        murugan: [
+          { icon: '🗡️', name: 'Vel Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🪔', name: 'Kavadi Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#e3f2fd' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Skanda Sashti Pooja', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Panchamirtham Archana', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🦚', name: 'Mayil Vahanam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        hanuman: [
+          { icon: '🪔', name: 'Hanuman Chalisa', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🌺', name: 'Vada Mala Archana', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#fbe9e7' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Hanuman Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🛡️', name: 'Sanjeevi Pooja', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '📿', name: 'Sundara Kandam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        local: [
+          { icon: '🪔', name: 'Daily Pooja', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🛕', name: 'Special Pooja', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🏛️', name: 'Kula Theivam', href: 'kula-theivam.html', bg: '#f3e5f9' },
+          { icon: '🔥', name: 'Homam Seva', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '✂️', name: 'Motta Booking', href: 'motta-booking.html', bg: '#fbe9e7', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '🕐', name: 'Nalla Neram', href: 'nalla-neram.html', bg: '#e8eaf6', extra: true },
+          { icon: '🔮', name: 'Rasi Palan', href: 'rasi-palan.html', bg: '#fce4ec', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ]
+      };
+
+      // ===== TEMPLE-SPECIFIC SERVICE OVERRIDES for famous temples =====
+      var templeSpecificServices = {
+        // --- MURUGAN TEMPLES (Aaru Padai Veedu & others) ---
+        tiruchendur: [
+          { icon: '🗡️', name: 'Vel Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🪔', name: 'Kavadi Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🌊', name: 'Shanmuga Archana', href: 'book-pooja.html', bg: '#e0f7fa' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Skanda Sashti Pooja', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Soorasamharam Seva', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '🦚', name: 'Mayil Vahanam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍯', name: 'Panchamirtham', href: 'prasadam-shop.html', bg: '#fff8e1', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+        thiruchendur_local: [
+          { icon: '🗡️', name: 'Vel Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🪔', name: 'Kavadi Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🌊', name: 'Shanmuga Archana', href: 'book-pooja.html', bg: '#e0f7fa' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Skanda Sashti Pooja', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Soorasamharam Seva', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '🦚', name: 'Mayil Vahanam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍯', name: 'Panchamirtham', href: 'prasadam-shop.html', bg: '#fff8e1', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+        palani: [
+          { icon: '🗡️', name: 'Vel Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🪔', name: 'Kavadi Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🍯', name: 'Panchamirtham Abhishekam', href: 'book-pooja.html', bg: '#fff8e1' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Skanda Sashti Pooja', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '🚡', name: 'Winch / Rope Car', href: '#', bg: '#e3f2fd', extra: true },
+          { icon: '📿', name: 'Girivalam', href: '#', bg: '#e8f5e9', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '✂️', name: 'Motta Booking', href: 'motta-booking.html', bg: '#fbe9e7', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        thirupparankundram: [
+          { icon: '🗡️', name: 'Vel Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '💍', name: 'Vivaha Parikaram', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '👑', name: 'Kalyanam Seva', href: 'book-pooja.html', bg: '#f3e5f5' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🪔', name: 'Kavadi Seva', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🔥', name: 'Skanda Sashti Pooja', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '📿', name: 'Subramanya Archana', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        siruvapuri: [
+          { icon: '🗡️', name: 'Vel Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '💍', name: 'Vivaha Parikaram', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '👶', name: 'Child Blessing Pooja', href: 'book-pooja.html', bg: '#e0f7fa' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🪔', name: 'Kavadi Seva', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🔥', name: 'Skanda Sashti Pooja', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '📿', name: 'Bala Murugan Archana', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+
+        // --- TIRUMALA VENKATESWARA (Special TTD services) ---
+        tirumala: [
+          { icon: '🌅', name: 'Suprabhatam Seva', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🌺', name: 'Thomala Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '👑', name: 'Kalyanotsavam', href: 'book-pooja.html', bg: '#f3e5f5' },
+          { icon: '💰', name: 'Donate / Hundi', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🎫', name: 'Sarvadarshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '⚡', name: 'VIP Break Darshan', href: 'darshan-token.html', bg: '#fff8e1', extra: true },
+          { icon: '🪔', name: 'Archana Seva', href: 'book-pooja.html', bg: '#fff3e0', extra: true },
+          { icon: '🔥', name: 'Sudarshana Homam', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '✂️', name: 'Motta Seva', href: 'motta-booking.html', bg: '#fbe9e7', extra: true },
+          { icon: '🍲', name: 'Laddu Prasadam', href: 'prasadam-shop.html', bg: '#fff8e1', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+
+        // --- ARUNACHALESWARAR (Girivalam special) ---
+        arunachaleswarar: [
+          { icon: '🪔', name: 'Rudra Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🍃', name: 'Bilva Archana', href: 'book-pooja.html', bg: '#e8f5e9' },
+          { icon: '🏔️', name: 'Girivalam Seva', href: '#', bg: '#e0f7fa' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Rudra Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🕯️', name: 'Karthigai Deepam', href: 'book-pooja.html', bg: '#fff3e0', extra: true },
+          { icon: '📿', name: 'Lingabhishekam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+
+        // --- RAMANATHASWAMY (22 Theerthams special) ---
+        ramanathaswamy: [
+          { icon: '🪔', name: 'Rudra Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🍃', name: 'Bilva Archana', href: 'book-pooja.html', bg: '#e8f5e9' },
+          { icon: '💧', name: '22 Theertham Bath', href: '#', bg: '#e0f7fa' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Rudra Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Lingabhishekam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🌉', name: 'Sethu Karai Visit', href: '#', bg: '#e3f2fd', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+
+        // --- CHIDAMBARAM NATARAJA ---
+        chidambaram: [
+          { icon: '💃', name: 'Nataraja Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🍃', name: 'Bilva Archana', href: 'book-pooja.html', bg: '#e8f5e9' },
+          { icon: '🛕', name: 'Chit Sabha Darshan', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Rudra Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🎭', name: 'Natyanjali Seva', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '📿', name: 'Panchakshara Pooja', href: 'book-pooja.html', bg: '#e8eaf6', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+
+        // --- MEENAKSHI AMMAN ---
+        meenakshi: [
+          { icon: '🌺', name: 'Kumkum Archana', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🪔', name: 'Lalitha Sahasranama', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '👑', name: 'Meenakshi Kalyanam', href: 'book-pooja.html', bg: '#f3e5f5' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Chandi Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '💐', name: 'Pushpanjali', href: 'book-pooja.html', bg: '#fce4ec', extra: true },
+          { icon: '🐘', name: 'Golden Lotus Tank', href: '#', bg: '#e0f7fa', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+
+        // --- RANGANATHASWAMY (Srirangam) ---
+        ranganatha: [
+          { icon: '🌅', name: 'Suprabhatam Seva', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🌺', name: 'Thomala Seva', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '📿', name: 'Sahasranama Archana', href: 'book-pooja.html', bg: '#e3f2fd' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '👑', name: 'Kalyanotsavam', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🔥', name: 'Sudarshana Homam', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '🚪', name: 'Vaikunta Vaasal', href: '#', bg: '#e0f7fa', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+
+        // --- SPECIAL LOCAL TEMPLES ---
+        thirunallar: [
+          { icon: '🪐', name: 'Shani Dosha Pooja', href: 'book-pooja.html', bg: '#e8eaf6' },
+          { icon: '💧', name: 'Nala Theertham Bath', href: '#', bg: '#e0f7fa' },
+          { icon: '🛕', name: 'Navagraha Archana', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Shani Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Til / Sesame Pooja', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '🪔', name: 'Shani Pradosham', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+        suryanar: [
+          { icon: '☀️', name: 'Surya Namaskaram', href: 'book-pooja.html', bg: '#fff8e1' },
+          { icon: '🪐', name: 'Navagraha Pooja', href: 'book-pooja.html', bg: '#e8eaf6' },
+          { icon: '🛕', name: 'Graha Shanti Homam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Dosha Parikaram', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '📿', name: 'Planet-wise Archana', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🪔', name: 'Rahu-Ketu Pooja', href: 'book-pooja.html', bg: '#fce4ec', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+        vaitheeswaran: [
+          { icon: '💊', name: 'Healing Pooja', href: 'book-pooja.html', bg: '#e8f5e9' },
+          { icon: '🪔', name: 'Rudra Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🔮', name: 'Nadi Jyothisham', href: '#', bg: '#e8eaf6' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Mrityunjaya Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Dosha Parikaram', href: 'book-pooja.html', bg: '#fbe9e7', extra: true },
+          { icon: '🍃', name: 'Bilva Archana', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+        eachanari: [
+          { icon: '🍬', name: 'Modak Offering', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🪔', name: 'Ganapathi Homam', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🚗', name: 'Vahanam Pooja', href: 'book-pooja.html', bg: '#e3f2fd' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '📿', name: 'Sankatahara Chaturthi', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🥥', name: 'Coconut Archana', href: 'book-pooja.html', bg: '#e0f2f1', extra: true },
+          { icon: '🌿', name: 'Arugampul Archana', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ],
+        samayapuram: [
+          { icon: '🌺', name: 'Kumkum Archana', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🪔', name: 'Amman Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🙇', name: 'Angapradakshinam', href: '#', bg: '#fbe9e7' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Chandi Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🍋', name: 'Lemon Garland Seva', href: 'book-pooja.html', bg: '#f1f8e9', extra: true },
+          { icon: '📿', name: 'Dosha Parikaram', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        samayapuram_local: [
+          { icon: '🌺', name: 'Kumkum Archana', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '🪔', name: 'Amman Abhishekam', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🙇', name: 'Angapradakshinam', href: '#', bg: '#fbe9e7' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '🔥', name: 'Chandi Homam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '🍋', name: 'Lemon Garland Seva', href: 'book-pooja.html', bg: '#f1f8e9', extra: true },
+          { icon: '📿', name: 'Dosha Parikaram', href: 'book-pooja.html', bg: '#f3e5f5', extra: true },
+          { icon: '🎫', name: 'Darshan Token', href: 'darshan-token.html', bg: '#e3f2fd', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true },
+          { icon: '📺', name: 'Live Darshan', href: 'live-darshan.html', bg: '#e0f7fa', extra: true }
+        ],
+        srivilliputhur: [
+          { icon: '🌅', name: 'Suprabhatam Seva', href: 'book-pooja.html', bg: '#fff3e0' },
+          { icon: '🌺', name: 'Andal Archana', href: 'book-pooja.html', bg: '#fce4ec' },
+          { icon: '💍', name: 'Vivaha Parikaram', href: 'book-pooja.html', bg: '#f3e5f5' },
+          { icon: '💰', name: 'Donate', href: 'donation.html', bg: '#e8f5e9' },
+          { icon: '👑', name: 'Kalyanotsavam', href: 'book-pooja.html', bg: '#fff8e1', extra: true },
+          { icon: '📿', name: 'Thiruppavai Parayanam', href: 'book-pooja.html', bg: '#e8f5e9', extra: true },
+          { icon: '🍚', name: 'Annadhanam', href: 'donation.html', bg: '#e0f2f1', extra: true },
+          { icon: '🛒', name: 'Prasadam Shop', href: 'prasadam-shop.html', bg: '#f1f8e9', extra: true }
+        ]
+      };
+
+      // ===== TEMPLE-SPECIFIC DAILY RITUALS OVERRIDES =====
+      var templeSpecificRituals = {
+        // Tiruchendur - seaside Murugan temple rituals
+        tiruchendur: [
+          { time: '4:30 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:00 AM', name: 'Tirupalliyezhuchi (Awakening)', icon: '🌅' },
+          { time: '5:30 AM', name: 'Vel Abhishekam', icon: '🗡️' },
+          { time: '6:30 AM', name: 'Kalasanthi Pooja', icon: '🪔' },
+          { time: '7:30 AM', name: 'Shanmuga Archana', icon: '📿' },
+          { time: '8:30 AM', name: 'Kavadi Seva & Offering', icon: '🎊' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '11:00 AM', name: 'Panchamirtham Distribution', icon: '🍯' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon Close)', icon: '🚪' },
+          { time: '4:00 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '5:30 PM', name: 'Soorasamharam Story Parayanam', icon: '📖' },
+          { time: '6:30 PM', name: 'Deeparadhana (Seaside)', icon: '🔥' },
+          { time: '8:30 PM', name: 'Arthajama Pooja', icon: '🌙' },
+          { time: '9:30 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        thiruchendur_local: [
+          { time: '4:30 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:00 AM', name: 'Tirupalliyezhuchi (Awakening)', icon: '🌅' },
+          { time: '5:30 AM', name: 'Vel Abhishekam', icon: '🗡️' },
+          { time: '6:30 AM', name: 'Kalasanthi Pooja', icon: '🪔' },
+          { time: '7:30 AM', name: 'Shanmuga Archana', icon: '📿' },
+          { time: '8:30 AM', name: 'Kavadi Seva & Offering', icon: '🎊' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '11:00 AM', name: 'Panchamirtham Distribution', icon: '🍯' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon Close)', icon: '🚪' },
+          { time: '4:00 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '5:30 PM', name: 'Soorasamharam Story Parayanam', icon: '📖' },
+          { time: '6:30 PM', name: 'Deeparadhana (Seaside)', icon: '🔥' },
+          { time: '8:30 PM', name: 'Arthajama Pooja', icon: '🌙' },
+          { time: '9:30 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        // Palani - hilltop Murugan temple
+        palani: [
+          { time: '4:30 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:00 AM', name: 'Panchamirtham Abhishekam', icon: '🍯' },
+          { time: '6:00 AM', name: 'Vel Pooja & Alankaram', icon: '🗡️' },
+          { time: '7:00 AM', name: 'Kalasanthi Pooja', icon: '🪔' },
+          { time: '8:30 AM', name: 'Kavadi Seva', icon: '🎊' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Noon Naivedyam & Close', icon: '🚪' },
+          { time: '4:00 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deeparadhana', icon: '🔥' },
+          { time: '8:00 PM', name: 'Arthajama Pooja', icon: '🌙' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        // Tirumala - special TTD schedule
+        tirumala: [
+          { time: '2:30 AM', name: 'Suprabhatam Seva', icon: '🌅' },
+          { time: '3:30 AM', name: 'Thomala Seva (Garland)', icon: '🌺' },
+          { time: '4:30 AM', name: 'Archana & Abhishekam', icon: '🪔' },
+          { time: '6:00 AM', name: 'Kalyanotsavam Seva', icon: '👑' },
+          { time: '7:30 AM', name: 'Dolotsavam (Swing Fest)', icon: '🎪' },
+          { time: '9:00 AM', name: 'Sarvadarshan Begins', icon: '🎫' },
+          { time: '11:00 AM', name: 'Naivedyam (Offering)', icon: '🍱' },
+          { time: '12:00 PM', name: 'Raja Bhogam', icon: '🛕' },
+          { time: '4:00 PM', name: 'Sahasranama Archana', icon: '📿' },
+          { time: '6:00 PM', name: 'Sandhya Deepam', icon: '🔥' },
+          { time: '8:00 PM', name: 'Ekantha Seva', icon: '🌙' },
+          { time: '9:00 PM', name: 'Pavithrotsavam (Closing)', icon: '🙏' }
+        ],
+        // Arunachaleswarar - Girivalam special
+        arunachaleswarar: [
+          { time: '5:00 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:30 AM', name: 'Agni Linga Abhishekam', icon: '🔥' },
+          { time: '6:30 AM', name: 'Kalasanthi Pooja', icon: '🪔' },
+          { time: '8:00 AM', name: 'Bilva Archana & Rudram', icon: '🍃' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon)', icon: '🚪' },
+          { time: '4:00 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '5:30 PM', name: 'Girivalam Seva (Full Moon)', icon: '🏔️' },
+          { time: '6:30 PM', name: 'Karthigai Deeparadhana', icon: '🕯️' },
+          { time: '8:00 PM', name: 'Arthajama Pooja', icon: '🌙' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        // Chidambaram Nataraja
+        chidambaram: [
+          { time: '5:00 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:30 AM', name: 'Nataraja Abhishekam', icon: '💃' },
+          { time: '6:30 AM', name: 'Kalasanthi Pooja', icon: '🪔' },
+          { time: '7:30 AM', name: 'Chit Sabha Pooja', icon: '✨' },
+          { time: '8:30 AM', name: 'Panchakshara Archana', icon: '📿' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon)', icon: '🚪' },
+          { time: '4:00 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Natya Deeparadhana', icon: '🔥' },
+          { time: '8:00 PM', name: 'Arthajama Pooja', icon: '🌙' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        // Meenakshi Amman
+        meenakshi: [
+          { time: '5:00 AM', name: 'Thirupalliyezhuchi (Opening)', icon: '🔔' },
+          { time: '5:30 AM', name: 'Meenakshi Abhishekam', icon: '🪔' },
+          { time: '6:30 AM', name: 'Kumkum Archana', icon: '🌺' },
+          { time: '7:30 AM', name: 'Sundareshwar Abhishekam', icon: '📿' },
+          { time: '9:00 AM', name: 'Kalyanam (Daily Wedding)', icon: '👑' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon)', icon: '🚪' },
+          { time: '4:30 PM', name: 'Sayangala Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deepa Aradhana', icon: '🔥' },
+          { time: '7:30 PM', name: 'Pushpanjali', icon: '💐' },
+          { time: '8:30 PM', name: 'Palliarai (Night Ceremony)', icon: '🌙' },
+          { time: '9:30 PM', name: 'Temple Closing', icon: '🙏' }
+        ],
+        // Thirunallar Saniswaran
+        thirunallar: [
+          { time: '6:00 AM', name: 'Temple Opening', icon: '🔔' },
+          { time: '6:30 AM', name: 'Shani Abhishekam', icon: '🪐' },
+          { time: '7:30 AM', name: 'Til (Sesame) Oil Archana', icon: '🪔' },
+          { time: '8:30 AM', name: 'Nala Theertham Bath', icon: '💧' },
+          { time: '10:00 AM', name: 'Navagraha Archana', icon: '📿' },
+          { time: '12:00 PM', name: 'Noon Close', icon: '🚪' },
+          { time: '4:00 PM', name: 'Evening Pooja', icon: '🪔' },
+          { time: '5:30 PM', name: 'Shani Dosha Parikaram', icon: '🪐' },
+          { time: '6:30 PM', name: 'Deepa Aradhana', icon: '🔥' },
+          { time: '8:30 PM', name: 'Closing Pooja', icon: '🙏' }
+        ],
+        // Suryanar Kovil - Navagraha
+        suryanar: [
+          { time: '6:00 AM', name: 'Surya Namaskaram (Opening)', icon: '☀️' },
+          { time: '6:30 AM', name: 'Surya Abhishekam', icon: '🪔' },
+          { time: '7:30 AM', name: 'Navagraha Archana (All 9)', icon: '🪐' },
+          { time: '9:00 AM', name: 'Planet-wise Special Pooja', icon: '📿' },
+          { time: '10:30 AM', name: 'Graha Shanti Homam', icon: '🔥' },
+          { time: '12:00 PM', name: 'Noon Close', icon: '🚪' },
+          { time: '4:00 PM', name: 'Evening Navagraha Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deepa Aradhana', icon: '🔥' },
+          { time: '8:00 PM', name: 'Closing Pooja', icon: '🙏' }
+        ],
+        // Vaitheeswaran Koil - Healing temple
+        vaitheeswaran: [
+          { time: '6:00 AM', name: 'Temple Opening', icon: '🔔' },
+          { time: '6:30 AM', name: 'Healing Abhishekam', icon: '💊' },
+          { time: '7:30 AM', name: 'Bilva Archana & Rudram', icon: '🍃' },
+          { time: '9:00 AM', name: 'Nadi Jyothisham Reading', icon: '🔮' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Noon Close', icon: '🚪' },
+          { time: '4:00 PM', name: 'Mrityunjaya Pooja', icon: '📿' },
+          { time: '6:00 PM', name: 'Deepa Aradhana', icon: '🔥' },
+          { time: '8:00 PM', name: 'Closing Pooja', icon: '🙏' }
+        ]
+      };
+
+      // ===== CATEGORY-BASED DEFAULT RITUALS =====
+      var categoryRituals = {
+        shiva: [
+          { time: '5:00 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:30 AM', name: 'Siva Puja & Abhishekam', icon: '🪔' },
+          { time: '6:30 AM', name: 'Kalasanthi Pooja', icon: '📿' },
+          { time: '8:00 AM', name: 'Bilva Archana', icon: '🍃' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon Close)', icon: '🚪' },
+          { time: '4:00 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deeparadhana', icon: '🔥' },
+          { time: '8:00 PM', name: 'Arthajama Pooja', icon: '🌙' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        vishnu: [
+          { time: '3:30 AM', name: 'Suprabhatam Seva', icon: '🌅' },
+          { time: '4:30 AM', name: 'Thomala Seva (Garland)', icon: '🌺' },
+          { time: '6:00 AM', name: 'Archana & Abhishekam', icon: '🪔' },
+          { time: '7:30 AM', name: 'Sahasranama Seva', icon: '📿' },
+          { time: '9:00 AM', name: 'Naivedyam (Offering)', icon: '🍱' },
+          { time: '12:00 PM', name: 'Raja Bhogam (Noon)', icon: '🛕' },
+          { time: '4:00 PM', name: 'Aparahna Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Sandhya Deepam', icon: '🔥' },
+          { time: '7:00 PM', name: 'Sarvadarshan Seva', icon: '🎫' },
+          { time: '9:00 PM', name: 'Ekantha Seva (Closing)', icon: '🙏' }
+        ],
+        devi: [
+          { time: '5:30 AM', name: 'Kaala Pooja (Opening)', icon: '🔔' },
+          { time: '6:00 AM', name: 'Abhishekam to Amman', icon: '🪔' },
+          { time: '7:00 AM', name: 'Kumkum Archana', icon: '🌺' },
+          { time: '8:30 AM', name: 'Alankaram & Naivedyam', icon: '👑' },
+          { time: '10:00 AM', name: 'Lalitha Sahasranama', icon: '📿' },
+          { time: '12:00 PM', name: 'Uchikala Pooja (Noon)', icon: '🛕' },
+          { time: '4:30 PM', name: 'Sayangala Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deepa Aradhana', icon: '🔥' },
+          { time: '7:30 PM', name: 'Pushpanjali', icon: '💐' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        ganesh: [
+          { time: '5:30 AM', name: 'Kaala Pooja (Opening)', icon: '🔔' },
+          { time: '6:00 AM', name: 'Abhishekam to Vinayagar', icon: '🪔' },
+          { time: '7:00 AM', name: 'Arugampul Archana', icon: '🌿' },
+          { time: '8:00 AM', name: 'Modak Naivedyam', icon: '🍬' },
+          { time: '10:00 AM', name: 'Ganapathi Sahasranama', icon: '📿' },
+          { time: '12:00 PM', name: 'Uchikala Pooja (Noon)', icon: '🛕' },
+          { time: '4:30 PM', name: 'Sayangala Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deepa Aradhana', icon: '🔥' },
+          { time: '7:30 PM', name: 'Sankatahara Archana', icon: '📿' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        murugan: [
+          { time: '5:00 AM', name: 'Thiruvanandal (Opening)', icon: '🔔' },
+          { time: '5:30 AM', name: 'Vel Abhishekam', icon: '🗡️' },
+          { time: '6:30 AM', name: 'Kalasanthi Pooja', icon: '🪔' },
+          { time: '8:00 AM', name: 'Panchamirtham Archana', icon: '📿' },
+          { time: '9:00 AM', name: 'Kavadi Seva', icon: '🎊' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Uchchi Pattam (Noon)', icon: '🚪' },
+          { time: '4:30 PM', name: 'Sayaratchai Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deeparadhana', icon: '🔥' },
+          { time: '7:00 PM', name: 'Soorasamharam Story', icon: '📖' },
+          { time: '9:00 PM', name: 'Arthajama Pooja (Closing)', icon: '🙏' }
+        ],
+        hanuman: [
+          { time: '5:30 AM', name: 'Kaala Pooja (Opening)', icon: '🔔' },
+          { time: '6:00 AM', name: 'Abhishekam & Alankaram', icon: '🪔' },
+          { time: '7:00 AM', name: 'Vada Mala Seva', icon: '🌺' },
+          { time: '8:00 AM', name: 'Hanuman Chalisa Parayanam', icon: '📿' },
+          { time: '9:00 AM', name: 'Sundara Kandam Path', icon: '📖' },
+          { time: '10:30 AM', name: 'Naivedyam', icon: '🍱' },
+          { time: '12:00 PM', name: 'Noon Pooja', icon: '🛕' },
+          { time: '4:30 PM', name: 'Sayangala Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Sanjeevi Pooja & Deepam', icon: '🔥' },
+          { time: '9:00 PM', name: 'Palliyarai (Closing)', icon: '🙏' }
+        ],
+        local: [
+          { time: '6:00 AM', name: 'Kaala Pooja (Opening)', icon: '🔔' },
+          { time: '6:30 AM', name: 'Abhishekam', icon: '🪔' },
+          { time: '8:00 AM', name: 'Archana', icon: '📿' },
+          { time: '10:00 AM', name: 'Uchikala Pooja', icon: '🛕' },
+          { time: '12:00 PM', name: 'Noon Close', icon: '🚪' },
+          { time: '4:30 PM', name: 'Evening Pooja', icon: '🪔' },
+          { time: '6:00 PM', name: 'Deeparadhana', icon: '🔥' },
+          { time: '8:30 PM', name: 'Closing Pooja', icon: '🙏' }
+        ]
+      };
+
+      // ===== RESOLVE: temple-specific first, then category fallback =====
+      var cat = temple.category || 'local';
+      var tid = temple.id || '';
+
+      // For local temples, detect deity type from temple name/deity for better category matching
+      var effectiveCat = cat;
+      if (cat === 'local') {
+        var deityLower = (temple.deity || '').toLowerCase();
+        var nameLower = (temple.name || '').toLowerCase();
+        if (deityLower.indexOf('murugan') > -1 || nameLower.indexOf('murugan') > -1) effectiveCat = 'murugan';
+        else if (deityLower.indexOf('shiva') > -1 || deityLower.indexOf('eswarar') > -1 || nameLower.indexOf('eswarar') > -1) effectiveCat = 'shiva';
+        else if (deityLower.indexOf('vishnu') > -1 || deityLower.indexOf('perumal') > -1 || deityLower.indexOf('ranganath') > -1 || deityLower.indexOf('andal') > -1) effectiveCat = 'vishnu';
+        else if (deityLower.indexOf('amman') > -1 || deityLower.indexOf('devi') > -1 || deityLower.indexOf('lakshmi') > -1 || deityLower.indexOf('mariamman') > -1) effectiveCat = 'devi';
+        else if (deityLower.indexOf('ganesh') > -1 || deityLower.indexOf('vinayag') > -1) effectiveCat = 'ganesh';
+        else if (deityLower.indexOf('hanuman') > -1 || deityLower.indexOf('anjane') > -1) effectiveCat = 'hanuman';
+      }
+
+      var serviceItems = templeSpecificServices[tid] || categoryServices[effectiveCat] || categoryServices[cat] || categoryServices['local'];
+
+      // Darshan Token only for famous high-crowd temples
+      var darshanTokenTemples = [
+        'tirumala', 'meenakshi', 'ranganatha', 'arunachaleswarar', 'ramanathaswamy',
+        'chidambaram', 'brihadeeswarar', 'palani', 'tiruchendur', 'thiruchendur_local',
+        'samayapuram', 'samayapuram_local', 'siddhivinayak', 'varadaraja',
+        'thirupparankundram', 'kamakshi', 'mookambika', 'ekambareswarar'
+      ];
+      var hasDarshanToken = darshanTokenTemples.indexOf(tid) > -1;
+
+      serviceItems = serviceItems.filter(function(s) {
+        if (s.name === 'Darshan Token' || s.name === 'Sarvadarshan Token') {
+          return hasDarshanToken;
+        }
+        return true;
+      });
+
+      serviceItems.forEach(function(s) {
+        html +=
+          '<a href="' + s.href + '" class="service-card' + (s.extra ? ' extra-service' : '') + '"' + (s.extra ? ' style="display:none"' : '') + '>' +
+            '<div class="svc-icon" style="background:' + s.bg + '">' + s.icon + '</div>' +
+            '<div class="svc-name">' + s.name + '</div>' +
+          '</a>';
+      });
+
+      html += '</div></div>';
+
+      // 4b. Daily Rituals Schedule
+      var rituals = templeSpecificRituals[tid] || categoryRituals[effectiveCat] || categoryRituals[cat] || categoryRituals['local'];
+      html += '<div class="section" id="rituals-section">';
+      var ritualTitle = 'Daily Rituals Schedule';
+      var deityNames = { shiva: 'Shiva', vishnu: 'Vishnu', devi: 'Amman', ganesh: 'Vinayagar', murugan: 'Murugan', hanuman: 'Hanuman' };
+      if (deityNames[effectiveCat]) ritualTitle = deityNames[effectiveCat] + ' Temple - Daily Rituals';
+      html += '<div class="section-title">' + ritualTitle + '</div>';
+      html += '<div class="rituals-timeline">';
+      rituals.forEach(function(r) {
+        html +=
+          '<div class="ritual-item">' +
+            '<div class="ritual-time">' + r.time + '</div>' +
+            '<div class="ritual-dot"></div>' +
+            '<div class="ritual-info">' +
+              '<span class="ritual-icon">' + r.icon + '</span>' +
+              '<span class="ritual-name">' + r.name + '</span>' +
+            '</div>' +
+          '</div>';
+      });
+      html += '</div></div>';
+
+      // 4c. How to Reach / Travel Directions
+      if (temple.travel) {
+        var tv = temple.travel;
+        html += '<div class="section" id="travel-section">';
+        html += '<div class="section-title">How to Reach</div>';
+
+        // Transport cards
+        var transportModes = [];
+        if (tv.byTrain) transportModes.push({ icon: '🚂', title: 'By Train', text: tv.byTrain, sub: tv.nearestRailway ? 'Nearest Station: ' + tv.nearestRailway : '' });
+        if (tv.busRoutes && tv.busRoutes.length) transportModes.push({ icon: '🚌', title: 'By Bus', text: tv.busRoutes.join('. '), sub: '' });
+        if (tv.byRoad) transportModes.push({ icon: '🚗', title: 'By Road', text: tv.byRoad, sub: '' });
+        if (tv.nearestAirport) transportModes.push({ icon: '✈️', title: 'By Air', text: 'Nearest Airport: ' + tv.nearestAirport, sub: '' });
+
+        transportModes.forEach(function(tm) {
+          html +=
+            '<div class="travel-card">' +
+              '<div class="travel-icon">' + tm.icon + '</div>' +
+              '<div class="travel-content">' +
+                '<div class="travel-title">' + tm.title + '</div>' +
+                (tm.sub ? '<div class="travel-sub">' + esc(tm.sub) + '</div>' : '') +
+                '<div class="travel-text">' + esc(tm.text) + '</div>' +
+              '</div>' +
+            '</div>';
+        });
+
+        // Bus routes as detailed list
+        if (tv.busRoutes && tv.busRoutes.length > 0) {
+          html +=
+            '<div class="travel-bus-routes">' +
+              '<div style="font-weight:700; font-size:0.82rem; margin-bottom:8px; color:var(--primary-dark);">🛣️ Bus Routes & Directions</div>';
+          tv.busRoutes.forEach(function(route) {
+            html += '<div class="bus-route-item">• ' + esc(route) + '</div>';
+          });
+          html += '</div>';
+        }
+
+        // Parking info
+        if (tv.parking) {
+          html +=
+            '<div class="travel-tip-box">' +
+              '<span class="travel-tip-icon">🅿️</span>' +
+              '<div><strong>Parking:</strong> ' + esc(tv.parking) + '</div>' +
+            '</div>';
+        }
+
+        // Travel tips
+        if (tv.tips) {
+          html +=
+            '<div class="travel-tip-box" style="background:#e8f5e9; border-color:#a5d6a7;">' +
+              '<span class="travel-tip-icon">💡</span>' +
+              '<div><strong>Travel Tip:</strong> ' + esc(tv.tips) + '</div>' +
+            '</div>';
+        }
+
+        // Google Maps link
+        html +=
+          '<a href="https://www.google.com/maps/search/' + encodeURIComponent(temple.name + ' ' + temple.location) + '" target="_blank" class="maps-btn">' +
+            '📍 Open in Google Maps' +
+          '</a>';
+
+        html += '</div>';
+      }
+
+      // 5. Upcoming Festivals
+      html += '<div class="section" id="festivals-section">';
+      html += '<div class="section-title">Upcoming Festivals</div>';
+      html += '<div class="festival-list">';
+
+      if (temple.festivals && temple.festivals.length > 0) {
+        temple.festivals.forEach(function(f) {
+          var parts = f.date.split(' ');
+          html +=
+            '<div class="fest-card">' +
+              '<div class="fest-date">' +
+                '<div class="fd-day">' + esc(parts[0]) + '</div>' +
+                '<div class="fd-month">' + esc(parts[1] || '') + '</div>' +
+              '</div>' +
+              '<div class="fest-info">' +
+                '<h4>' + esc(f.name) + '</h4>' +
+                '<p>' + esc(f.desc) + '</p>' +
+              '</div>' +
+            '</div>';
+        });
+      }
+      html += '</div></div>';
+
+      // 6. Latest Updates
+      html += '<div class="section">';
+      html += '<div class="section-title">Latest Updates</div>';
+      html +=
+        '<div class="update-card">' +
+          '<span class="update-tag announcement">Announcement</span>' +
+          '<h4>Online Booking Now Available</h4>' +
+          '<p>Book special pooja, darshan tokens, and homam services online through ' + esc(temple.name) + ' digital platform.</p>' +
+        '</div>' +
+        '<div class="update-card">' +
+          '<span class="update-tag update">Update</span>' +
+          '<h4>Temple Timings Revised</h4>' +
+          '<p>Morning darshan now starts at ' + esc(temple.timings.morning.split(' - ')[0]) + '. Evening darshan is available till ' + esc(temple.timings.evening.split(' - ')[1]) + '.</p>' +
+        '</div>' +
+        '<div class="update-card">' +
+          '<span class="update-tag alert">Important</span>' +
+          '<h4>Dress Code Advisory</h4>' +
+          '<p>Devotees are requested to follow the temple dress code. Traditional attire is preferred for all darshan and pooja services.</p>' +
+        '</div>';
+      html += '</div>';
+
+      // 7. View Full Details Button
+      html += '<a href="temple-details.html" class="view-details-btn">View Temple Details</a>';
+
+      // 7b. Like, Share, Review Action Bar
+      var templeKey = tid || temple.name.replace(/\s+/g, '_').toLowerCase();
+      var likedTemples = JSON.parse(localStorage.getItem('temple_likes') || '[]');
+      var isLiked = likedTemples.indexOf(templeKey) !== -1;
+
+      html +=
+        '<div class="temple-actions">' +
+          '<button class="temple-action-btn' + (isLiked ? ' liked' : '') + '" id="like-btn" onclick="toggleLikeTemple()">' +
+            '<span class="ta-icon">' + (isLiked ? '❤️' : '🤍') + '</span>Like' +
+          '</button>' +
+          '<button class="temple-action-btn" onclick="shareTemple()">' +
+            '<span class="ta-icon">📤</span>Share' +
+          '</button>' +
+          '<button class="temple-action-btn" onclick="document.getElementById(\'reviews-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<span class="ta-icon">⭐</span>Reviews' +
+          '</button>' +
+        '</div>';
+
+      // 7c. Reviews Section
+      var allReviews = JSON.parse(localStorage.getItem('temple_reviews') || '{}');
+      var templeReviews = allReviews[templeKey] || [];
+
+      // Default reviews if none exist
+      if (templeReviews.length === 0) {
+        templeReviews = [
+          { name: 'Rajesh K', rating: 5, text: 'Wonderful divine experience. The temple architecture is breathtaking and the priests are very helpful.', date: '2026-02-28' },
+          { name: 'Priya S', rating: 4, text: 'Peaceful atmosphere. Morning darshan is less crowded. Parking could be better organized.', date: '2026-02-15' },
+          { name: 'Venkat R', rating: 5, text: 'One of the most sacred places I have visited. The rituals are performed with great devotion.', date: '2026-01-20' }
+        ];
+      }
+
+      // Calculate rating stats
+      var totalRating = 0;
+      var ratingCounts = [0, 0, 0, 0, 0];
+      templeReviews.forEach(function(r) {
+        totalRating += r.rating;
+        ratingCounts[r.rating - 1]++;
+      });
+      var avgRating = templeReviews.length > 0 ? (totalRating / templeReviews.length).toFixed(1) : '0';
+      var avgStars = '';
+      for (var s = 0; s < 5; s++) avgStars += s < Math.round(parseFloat(avgRating)) ? '★' : '☆';
+
+      html += '<div class="reviews-section" id="reviews-section">';
+      html += '<div class="section-title">Reviews & Ratings</div>';
+
+      // Review summary
+      html +=
+        '<div class="review-summary">' +
+          '<div class="review-big-score">' +
+            '<div class="rbs-num">' + avgRating + '</div>' +
+            '<div class="rbs-stars">' + avgStars + '</div>' +
+            '<div class="rbs-count">' + templeReviews.length + ' reviews</div>' +
+          '</div>' +
+          '<div class="review-bars">';
+      for (var b = 5; b >= 1; b--) {
+        var pct = templeReviews.length > 0 ? Math.round((ratingCounts[b-1] / templeReviews.length) * 100) : 0;
+        html +=
+          '<div class="review-bar-row">' +
+            '<span>' + b + '</span>' +
+            '<div class="review-bar-track"><div class="review-bar-fill" style="width:' + pct + '%"></div></div>' +
+            '<span>' + ratingCounts[b-1] + '</span>' +
+          '</div>';
+      }
+      html += '</div></div>';
+
+      // Individual reviews (show last 3)
+      var displayReviews = templeReviews.slice(-3).reverse();
+      displayReviews.forEach(function(r) {
+        var initials = r.name.split(' ').map(function(w) { return w[0]; }).join('').toUpperCase();
+        var stars = '';
+        for (var s = 0; s < 5; s++) stars += s < r.rating ? '★' : '☆';
+        html +=
+          '<div class="review-card">' +
+            '<div class="review-card-header">' +
+              '<div class="review-avatar">' + esc(initials) + '</div>' +
+              '<div>' +
+                '<div class="review-author">' + esc(r.name) + '</div>' +
+                '<div class="review-date">' + esc(r.date) + '</div>' +
+              '</div>' +
+              '<div class="review-stars" style="margin-left:auto;">' + stars + '</div>' +
+            '</div>' +
+            '<div class="review-text">' + esc(r.text) + '</div>' +
+          '</div>';
+      });
+
+      // Write a review button
+      html += '<button class="write-review-btn" onclick="openReviewModal()">✍️ Write a Review</button>';
+      html += '</div>';
+
+      // Review Modal
+      html +=
+        '<div class="review-modal-overlay" id="review-modal">' +
+          '<div class="review-modal">' +
+            '<h3>Rate & Review</h3>' +
+            '<div class="star-rating-input" id="star-input">' +
+              '<button class="star-btn" onclick="setReviewRating(1)">★</button>' +
+              '<button class="star-btn" onclick="setReviewRating(2)">★</button>' +
+              '<button class="star-btn" onclick="setReviewRating(3)">★</button>' +
+              '<button class="star-btn" onclick="setReviewRating(4)">★</button>' +
+              '<button class="star-btn" onclick="setReviewRating(5)">★</button>' +
+            '</div>' +
+            '<textarea class="review-textarea" id="review-text" placeholder="Share your experience at this temple..."></textarea>' +
+            '<button class="review-submit-btn" onclick="submitReview()">Submit Review</button>' +
+            '<button style="width:100%;padding:10px;border:none;background:none;color:var(--text-light);font-size:0.85rem;cursor:pointer;margin-top:6px;" onclick="closeReviewModal()">Cancel</button>' +
+          '</div>' +
+        '</div>';
+
+      // 8. Footer
+      html +=
+        '<div class="app-footer">' +
+          '<div class="footer-brand">🛕 ' + esc(temple.name) + '</div>' +
+          '<p>' + esc(temple.location) + '</p>' +
+          '<div class="footer-links">' +
+            '<a href="temple-list.html">All Temples</a>' +
+            '<a href="donation.html">Donate</a>' +
+            '<a href="home.html">Home</a>' +
+          '</div>' +
+          '<div class="footer-copy">&copy; 2026 Temple Digital. All rights reserved.</div>' +
+        '</div>';
+
+      // 9. Bottom Navigation
+      html += buildBottomNav('');
+
+      root.innerHTML = html;
+
+      function esc(str) {
+        if (!str) return '';
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      function buildBottomNav(active) {
+        var items = [
+          { href: 'home.html', icon: '🏠', label: 'Home', key: 'home' },
+          { href: 'temple-list.html', icon: '🛕', label: 'Temples', key: 'temples' },
+          { href: 'community.html', icon: '👥', label: 'Community', key: 'community' },
+          { href: 'feed.html', icon: '📰', label: 'Feed', key: 'feed' },
+          { href: 'profile.html', icon: '👤', label: 'Profile', key: 'profile' }
+        ];
+        var nav = '<nav class="bottom-nav">';
+        items.forEach(function(it) {
+          nav += '<a href="' + it.href + '" class="nav-item' + (it.key === active ? ' active' : '') + '">' +
+            '<span class="nav-icon">' + it.icon + '</span><span data-lang="nav_' + it.key + '">' + it.label + '</span></a>';
+        });
+        nav += '</nav>';
+        return nav;
+      }
+    })();
+
+    var servicesExpanded = false;
+    function toggleServices() {
+      servicesExpanded = !servicesExpanded;
+      var extras = document.querySelectorAll('.extra-service');
+      var btn = document.querySelector('.see-all');
+      extras.forEach(function(el) {
+        el.style.display = servicesExpanded ? '' : 'none';
+      });
+      if (btn) btn.textContent = servicesExpanded ? 'Show Less' : 'See All';
+    }
+
+    // ===== Like, Share & Review Functions =====
+    var _templeKey = '';
+    (function() {
+      try {
+        var sel = JSON.parse(localStorage.getItem('selected_temple'));
+        if (sel && sel.id) _templeKey = sel.id;
+        else if (sel && sel.name) _templeKey = sel.name.replace(/\s+/g, '_').toLowerCase();
+      } catch(e) {}
+    })();
+
+    function toggleLikeTemple() {
+      var likes = JSON.parse(localStorage.getItem('temple_likes') || '[]');
+      var idx = likes.indexOf(_templeKey);
+      var btn = document.getElementById('like-btn');
+      if (idx === -1) {
+        likes.push(_templeKey);
+        btn.classList.add('liked');
+        btn.querySelector('.ta-icon').textContent = '❤️';
+        showToast(typeof t === 'function' ? t('temple_liked', 'Temple liked!') : 'Temple liked!', 'success');
+      } else {
+        likes.splice(idx, 1);
+        btn.classList.remove('liked');
+        btn.querySelector('.ta-icon').textContent = '🤍';
+        showToast(typeof t === 'function' ? t('temple_unliked', 'Like removed') : 'Like removed', 'info');
+      }
+      localStorage.setItem('temple_likes', JSON.stringify(likes));
+    }
+
+    function shareTemple() {
+      var templeName = '';
+      try {
+        var sel = JSON.parse(localStorage.getItem('selected_temple'));
+        if (sel) templeName = sel.name || 'Temple';
+      } catch(e) { templeName = 'Temple'; }
+
+      var shareText = 'Visit ' + templeName + ' - Book darshan, pooja & more on Temple Digital! ' + window.location.href;
+
+      if (navigator.share) {
+        navigator.share({
+          title: templeName + ' - Temple Digital',
+          text: shareText,
+          url: window.location.href
+        }).catch(function() {});
+      } else {
+        // Fallback - copy to clipboard
+        navigator.clipboard.writeText(shareText).then(function() {
+          showToast(typeof t === 'function' ? t('link_copied', 'Link copied to clipboard!') : 'Link copied to clipboard!', 'success');
+        }).catch(function() {
+          showToast(typeof t === 'function' ? t('share_failed', 'Share not available') : 'Share not available', 'error');
+        });
+      }
+    }
+
+    var reviewRating = 0;
+
+    function openReviewModal() {
+      reviewRating = 0;
+      var modal = document.getElementById('review-modal');
+      modal.classList.add('show');
+      document.querySelectorAll('#star-input .star-btn').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById('review-text').value = '';
+    }
+
+    function closeReviewModal() {
+      document.getElementById('review-modal').classList.remove('show');
+    }
+
+    function setReviewRating(stars) {
+      reviewRating = stars;
+      document.querySelectorAll('#star-input .star-btn').forEach(function(s, i) {
+        s.classList.toggle('active', i < stars);
+      });
+    }
+
+    function submitReview() {
+      if (reviewRating === 0) {
+        showToast(typeof t === 'function' ? t('select_rating', 'Please select a rating') : 'Please select a rating', 'error');
+        return;
+      }
+      var text = document.getElementById('review-text').value.trim();
+      if (!text) {
+        showToast(typeof t === 'function' ? t('write_review_error', 'Please write a review') : 'Please write a review', 'error');
+        return;
+      }
+
+      // Get user name
+      var userName = 'Devotee';
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user'));
+        if (user && user.name) userName = user.name;
+      } catch(e) {}
+
+      // Save review
+      var allReviews = JSON.parse(localStorage.getItem('temple_reviews') || '{}');
+      if (!allReviews[_templeKey]) allReviews[_templeKey] = [];
+      allReviews[_templeKey].push({
+        name: userName,
+        rating: reviewRating,
+        text: text,
+        date: new Date().toISOString().split('T')[0]
+      });
+      localStorage.setItem('temple_reviews', JSON.stringify(allReviews));
+
+      closeReviewModal();
+      showToast(typeof t === 'function' ? t('review_submitted', 'Review submitted! Thank you.') : 'Review submitted! Thank you.', 'success');
+
+      // Refresh page to show new review
+      setTimeout(function() { location.reload(); }, 1000);
+    }
+
+    function toggleFollowTemple() {
+      var following = JSON.parse(localStorage.getItem('temple_following') || '[]');
+      var idx = following.indexOf(_templeKey);
+      var btn = document.getElementById('follow-btn');
+      if (idx === -1) {
+        following.push(_templeKey);
+        btn.className = 'hero-follow-btn following';
+        btn.textContent = '✓ Following';
+        showToast(typeof t === 'function' ? t('temple_followed', 'Following this temple!') : 'Following this temple!', 'success');
+      } else {
+        following.splice(idx, 1);
+        btn.className = 'hero-follow-btn not-following';
+        btn.textContent = '+ Follow';
+        showToast(typeof t === 'function' ? t('temple_unfollowed', 'Unfollowed') : 'Unfollowed', 'info');
+      }
+      localStorage.setItem('temple_following', JSON.stringify(following));
+    }
+
+    // Close review modal on overlay click
+    document.addEventListener('click', function(e) {
+      if (e.target.id === 'review-modal') closeReviewModal();
+    });
+  </script>
+</body>
+</html>

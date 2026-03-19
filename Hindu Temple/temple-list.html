@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temples - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== Header ===== */
+    .page-header {
+      padding: 1.25rem 1.25rem 0.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+    }
+    .page-header h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 2px; }
+    .page-header p { font-size: 0.82rem; opacity: 0.85; margin-bottom: 0.75rem; }
+    .search-bar { padding: 0 1.25rem 1rem; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: white;
+      outline: none;
+    }
+    .search-wrapper { position: relative; }
+    .search-wrapper::before {
+      content: '🔍';
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+
+    /* ===== Category View ===== */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 1rem 1.25rem;
+    }
+    .category-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid var(--border);
+      background: white;
+    }
+    .category-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .cat-banner {
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-banner img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .cat-banner .cat-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 20%, rgba(0,0,0,0.6));
+    }
+    .cat-icon {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      font-size: 1.8rem;
+      z-index: 2;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+    }
+    .cat-body {
+      padding: 10px 12px;
+    }
+    .cat-body h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .cat-body .cat-count {
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    /* ===== District Browse ===== */
+    .district-section { padding: 0.75rem 0 0.5rem; }
+    .district-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 1.25rem 0.75rem;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .district-scroll::-webkit-scrollbar { display: none; }
+    .district-chip {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      padding: 10px 16px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      min-width: 90px;
+    }
+    .district-chip:hover, .district-chip.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border-color: var(--primary);
+    }
+    .district-chip .dc-icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+    .district-chip .dc-name { font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
+    .district-chip .dc-count { font-size: 0.62rem; opacity: 0.7; }
+
+    /* Temple detail badges in district view */
+    .temple-card-badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .temple-badge {
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+    .temple-badge.famous { background: #fff3e0; color: #E65100; }
+    .temple-badge.history { background: #e3f2fd; color: #1565C0; }
+    .temple-badge.video { background: #fce4ec; color: #C62828; }
+
+    /* Temple history snippet */
+    .temple-card-history {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      line-height: 1.4;
+      margin-top: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Fun facts chip */
+    .fun-fact-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: #f3e5f5;
+      color: #7B1FA2;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* ===== Temple List View ===== */
+    .temple-list-view { display: none; }
+    .temple-list-view.active { display: block; }
+    .categories-view.hidden { display: none; }
+
+    .list-header {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .list-back-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      margin-right: 12px;
+    }
+    .list-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      flex: 1;
+    }
+    .list-header .temple-count {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      background: #f5f5f5;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .temple-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin: 0 1.25rem 1rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .temple-card:first-of-type { margin-top: 1rem; }
+    .temple-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    .temple-card-banner {
+      height: 150px;
+      position: relative;
+      overflow: hidden;
+      background: #f0e6d3;
+    }
+    .temple-card-banner img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .temple-card-body { padding: 1rem 1.25rem; }
+    .temple-card-body h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .temple-card-body .loc {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .temple-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.25rem;
+      border-top: 1px solid #f5f5f5;
+    }
+    .temple-card-footer .rating { font-size: 0.85rem; font-weight: 600; color: var(--accent); }
+    .temple-tags { display: flex; gap: 0.35rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .temple-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      background: #fff3e0;
+      color: var(--primary);
+      border-radius: 10px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+
+    <!-- ===== CATEGORY VIEW ===== -->
+    <div class="categories-view" id="categories-view">
+      <div class="page-header">
+        <h1>Temples</h1>
+        <p>Explore temples by deity or district</p>
+      </div>
+      <div class="search-bar">
+        <div class="search-wrapper">
+          <input type="text" class="search-input" placeholder="Search temples by name or city..." id="temple-search" oninput="searchTemples()">
+        </div>
+      </div>
+
+      <!-- District Browse Section -->
+      <div class="district-section" id="district-section">
+        <div style="padding:0 1.25rem 0.5rem; font-size:1rem; font-weight:700;">Browse by District</div>
+        <div class="district-scroll" id="district-scroll">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div style="padding:0 1.25rem 0.25rem; font-size:1rem; font-weight:700;">Browse by Deity</div>
+      <div class="categories-grid" id="categories-grid">
+        <div class="category-card" onclick="showCategory('shiva')">
+          <div class="cat-banner">
+            <img src="images/brihadeeswarar-temple.jpg" alt="Shiva Temples">
+            <div class="cat-overlay"></div>
+            <span class="cat-icon">🔱</span>
+          </div>
+          <div class="cat-body">
+            <h3>Shiva Temples</h3>
+            <span class="cat-count">5 Temples</span>
+          </div>
+        </div>
+
+        <div class="category-card" onclick="showCategory('vishnu')">
+          <div class="cat-banner">
+            <img src="images/ranganathaswamy-temple.jpg" alt="Vishnu Temples">
+            <div class="cat-overlay"></div>
+            <span class="cat-icon">🕉️</span>
+          </div>
+          <div class="cat-body">
+            <h3>Vishnu Temples</h3>
+            <span class="cat-count">5 Temples</span>
+          </div>
+        </div>
+
+        <div class="category-card" onclick="showCategory('devi')">
+          <div class="cat-banner">
+            <img src="images/meenakshi-amman-temple.jpg" alt="Devi Temples">
+            <div class="cat-overlay"></div>
+            <span class="cat-icon">🪷</span>
+          </div>
+          <div class="cat-body">
+            <h3>Devi / Amman</h3>
+            <span class="cat-count">5 Temples</span>
+          </div>
+        </div>
+
+        <div class="category-card" onclick="showCategory('ganesh')">
+          <div class="cat-banner">
+            <img src="images/siddhivinayak-temple.jpg" alt="Ganesh Temples">
+            <div class="cat-overlay"></div>
+            <span class="cat-icon">🐘</span>
+          </div>
+          <div class="cat-body">
+            <h3>Ganesh Temples</h3>
+            <span class="cat-count">5 Temples</span>
+          </div>
+        </div>
+
+        <div class="category-card" onclick="showCategory('murugan')">
+          <div class="cat-banner">
+            <img src="images/palani-murugan-temple.jpg" alt="Murugan Temples">
+            <div class="cat-overlay"></div>
+            <span class="cat-icon">🗡️</span>
+          </div>
+          <div class="cat-body">
+            <h3>Murugan Temples</h3>
+            <span class="cat-count">5 Temples</span>
+          </div>
+        </div>
+
+        <div class="category-card" onclick="showCategory('hanuman')">
+          <div class="cat-banner">
+            <img src="images/hanuman-garhi-temple.jpg" alt="Hanuman Temples">
+            <div class="cat-overlay"></div>
+            <span class="cat-icon">🐒</span>
+          </div>
+          <div class="cat-body">
+            <h3>Hanuman Temples</h3>
+            <span class="cat-count">5 Temples</span>
+          </div>
+        </div>
+
+        <div class="category-card" onclick="showCategory('local')" style="grid-column: 1 / -1;">
+          <div class="cat-banner" style="height:80px; background: linear-gradient(135deg, #FF6F00, #E65100);">
+            <div class="cat-overlay" style="background: linear-gradient(transparent, rgba(0,0,0,0.3));"></div>
+            <span class="cat-icon">📍</span>
+          </div>
+          <div class="cat-body">
+            <h3>Local & Popular Temples</h3>
+            <span class="cat-count">19 Temples - Chennai, Coimbatore, Madurai & more</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TEMPLE LIST VIEW (rendered by JS) ===== -->
+    <div class="temple-list-view" id="temple-list-view"></div>
+
+    <!-- ===== SEARCH RESULTS VIEW ===== -->
+    <div class="temple-list-view" id="search-results-view"></div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item active"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span>
+        <span data-lang="nav_feed">Feed</span>
+      </a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // ===== COMPLETE TEMPLE DATABASE - 30 temples across 6 categories =====
+    var templeDatabase = {
+      // ===== SHIVA TEMPLES =====
+      chidambaram: {
+        id: 'chidambaram', category: 'shiva', name: 'Chidambaram Nataraja Temple', deity: 'Lord Nataraja (Shiva)',
+        location: 'Chidambaram, Tamil Nadu', district: 'Cuddalore', image: 'images/chidambaram-nataraja-temple.jpg',
+        rating: '4.8', reviews: '11.2K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of the Pancha Bhoota Sthalams representing Akasha (space). The temple is famous for the cosmic dance of Nataraja. Features the Chit Sabha with a golden roof and the secret of the Chidambara Rahasyam.',
+        history: 'Built during the 10th century by the Chola kings. The temple represents Akasha (ether/space) among the Pancha Bhoota Sthalams. The Chidambara Rahasyam (secret of Chidambaram) behind a golden curtain remains one of Hinduism\'s greatest mysteries.',
+        videoId: 'chidambaram_temple', funFacts: ['Only temple where Shiva is worshipped in formless space', 'Roof of Chit Sabha uses 21,600 gold tiles representing breaths per day', 'Managed by Dikshitars - a hereditary priest community for over 2000 years'],
+        phone: '+91 4144 220 336', email: 'info@chidambaramtemple.org',
+        tags: ['Pancha Bhootam', 'Akasha', 'Nataraja'],
+        festivals: [
+          { name: 'Natyanjali Festival', date: '19 Feb', desc: 'Dance festival at Nataraja shrine' },
+          { name: 'Arudra Darshan', date: '24 Dec', desc: 'Cosmic dance of Lord Nataraja' },
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long Shiva worship' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Rudra Homam', 'Annadhanam']
+      },
+      brihadeeswarar: {
+        id: 'brihadeeswarar', category: 'shiva', name: 'Brihadeeswarar Temple', deity: 'Lord Shiva (Peruvudaiyar)',
+        location: 'Thanjavur, Tamil Nadu', district: 'Thanjavur', image: 'images/brihadeeswarar-temple.jpg',
+        rating: '4.9', reviews: '9.2K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'A UNESCO World Heritage Site built by Raja Raja Chola I in 1010 AD. The vimana rises to 66 meters and is one of the tallest in the world. The Nandi at the entrance weighs 25 tonnes.',
+        history: 'Completed in 1010 AD by the great Chola emperor Raja Raja Chola I. The 80-tonne capstone atop the 66m vimana was moved without cranes using a 6km ramp. It remained the tallest structure in India for centuries.',
+        videoId: 'brihadeeswarar_temple', funFacts: ['Shadow of the vimana never falls on the ground at noon', 'The 80-ton capstone was placed without modern machinery', 'Nandi statue carved from a single rock weighing 25 tonnes'],
+        phone: '+91 4362 274 476', email: 'info@thanjavurtemple.org',
+        tags: ['UNESCO Heritage', 'Chola Dynasty', 'Jyotirlinga'],
+        festivals: [
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long worship of Lord Shiva' },
+          { name: 'Aippasi Pournami', date: '15 Oct', desc: 'Full moon celebrations' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand chariot festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Rudra Homam', 'Annadhanam']
+      },
+      ekambareswarar: {
+        id: 'ekambareswarar', category: 'shiva', name: 'Ekambareswarar Temple', deity: 'Lord Shiva (Prithvi Lingam)',
+        location: 'Kanchipuram, Tamil Nadu', image: 'images/ekambareswarar-temple.jpg',
+        rating: '4.7', reviews: '7.8K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'One of the Pancha Bhoota Sthalams representing Prithvi (Earth). The temple has a 3500-year-old mango tree with four branches representing the four Vedas. The gopuram stands at 59 meters.',
+        phone: '+91 4112 222 480', email: 'info@ekambareswarar.org',
+        tags: ['Pancha Bhootam', 'Prithvi', 'Ancient'],
+        festivals: [
+          { name: 'Panguni Brahmotsavam', date: '28 Mar', desc: '10-day grand festival' },
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long worship' },
+          { name: 'Arudra Darshan', date: '24 Dec', desc: 'Special darshan' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Homam', 'Annadhanam']
+      },
+      arunachaleswarar: {
+        id: 'arunachaleswarar', category: 'shiva', name: 'Arunachaleswarar Temple', deity: 'Lord Shiva (Agni Lingam)',
+        location: 'Thiruvannamalai, Tamil Nadu', image: 'images/arunachaleswarar-temple.jpg',
+        rating: '4.8', reviews: '14.3K',
+        timings: { morning: '5:30 AM - 12:30 PM', evening: '3:30 PM - 9:30 PM' },
+        description: 'One of the Pancha Bhoota Sthalams representing Agni (Fire). Famous for the Karthigai Deepam festival when a giant lamp is lit on top of Arunachala hill. The temple covers 25 acres with four towering gopurams.',
+        phone: '+91 4175 252 438', email: 'info@arunachaleswarar.org',
+        tags: ['Pancha Bhootam', 'Agni', 'Karthigai Deepam'],
+        festivals: [
+          { name: 'Karthigai Deepam', date: '05 Dec', desc: 'Giant lamp lit atop Arunachala hill' },
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long worship' },
+          { name: 'Girivalam', date: 'Monthly', desc: 'Full moon circumambulation of the hill' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Girivalam', 'Homam', 'Annadhanam']
+      },
+      ramanathaswamy: {
+        id: 'ramanathaswamy', category: 'shiva', name: 'Ramanathaswamy Temple', deity: 'Lord Shiva (Jyotirlinga)',
+        location: 'Rameswaram, Tamil Nadu', image: 'images/ramanathaswamy-temple.jpg',
+        rating: '4.8', reviews: '10.3K',
+        timings: { morning: '5:00 AM - 1:00 PM', evening: '3:00 PM - 9:00 PM' },
+        description: 'One of the twelve Jyotirlinga temples and a Char Dham pilgrimage site. Features the longest corridor of any Hindu temple in India at 1,220 meters. The temple has 22 sacred wells (theerthams).',
+        phone: '+91 4573 221 223', email: 'info@rameswaram.org',
+        tags: ['Jyotirlinga', 'Char Dham', '22 Theerthams'],
+        festivals: [
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long Shiva worship' },
+          { name: 'Arudra Darshan', date: '24 Dec', desc: 'Cosmic dance of Lord Nataraja' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Divine wedding ceremony' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Theertham Bath', 'Homam', 'Annadhanam']
+      },
+
+      // ===== VISHNU TEMPLES =====
+      tirumala: {
+        id: 'tirumala', category: 'vishnu', name: 'Tirumala Venkateswara Temple', deity: 'Lord Venkateswara (Balaji)',
+        location: 'Tirupati, Andhra Pradesh', image: 'images/tirumala-venkateswara-temple.jpg',
+        rating: '4.9', reviews: '25.8K',
+        timings: { morning: '3:00 AM - 12:00 PM', evening: '12:00 PM - 12:00 AM' },
+        description: 'The richest and most visited Hindu temple in the world, receiving 50,000-100,000 pilgrims daily. The golden vimana and the idol decorated with diamonds are a sight to behold. Located atop the seven hills of Tirumala.',
+        phone: '+91 877 227 7777', email: 'info@tirumala.org',
+        tags: ['Divya Desam', 'Richest Temple', 'Seven Hills'],
+        festivals: [
+          { name: 'Brahmotsavam', date: '01 Oct', desc: '9-day grand annual festival' },
+          { name: 'Vaikunta Ekadashi', date: '26 Dec', desc: 'Opening of the Paradise Gate' },
+          { name: 'Rathasaptami', date: '04 Feb', desc: 'Surya Jayanti chariot festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Special Darshan', 'Kalyanotsavam', 'Annadhanam']
+      },
+      ranganatha: {
+        id: 'ranganatha', category: 'vishnu', name: 'Sri Ranganathaswamy Temple', deity: 'Lord Ranganatha (Vishnu)',
+        location: 'Srirangam, Tamil Nadu', image: 'images/ranganathaswamy-temple.jpg',
+        rating: '4.9', reviews: '12.5K',
+        timings: { morning: '6:00 AM - 1:00 PM', evening: '3:00 PM - 9:00 PM' },
+        description: 'The largest functioning Hindu temple in the world, spread across 156 acres with 21 gopurams. A premier Vaishnava temple and one of the 108 Divya Desams.',
+        phone: '+91 431 243 2246', email: 'info@srirangam.org',
+        tags: ['Divya Desam', 'Largest Temple', '108 Temples'],
+        festivals: [
+          { name: 'Vaikunta Ekadashi', date: '26 Dec', desc: 'Opening of the Paradise Gate' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Celestial wedding of Lord Ranganatha' },
+          { name: 'Chithirai Brahmotsavam', date: '14 Apr', desc: '10-day grand festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kalyanam', 'Homam', 'Annadhanam']
+      },
+      oppiliappan: {
+        id: 'oppiliappan', category: 'vishnu', name: 'Oppiliappan Temple', deity: 'Lord Oppiliappan (Vishnu)',
+        location: 'Kumbakonam, Tamil Nadu', image: 'images/oppiliappan-temple.jpg',
+        rating: '4.7', reviews: '6.4K',
+        timings: { morning: '6:30 AM - 12:00 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'One of the 108 Divya Desams, unique for not using salt or tamarind in the temple prasadam. The deity is also known as Venkatachalapathi. The temple has a distinct Dravidian architecture.',
+        phone: '+91 435 247 2234', email: 'info@oppiliappan.org',
+        tags: ['Divya Desam', 'No Salt Prasadam', 'Dravidian'],
+        festivals: [
+          { name: 'Vaikunta Ekadashi', date: '26 Dec', desc: 'Paradise Gate ceremony' },
+          { name: 'Tulasi Vivah', date: '20 Nov', desc: 'Sacred Tulasi wedding' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Divine marriage festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kalyanam', 'Annadhanam']
+      },
+      varadaraja: {
+        id: 'varadaraja', category: 'vishnu', name: 'Varadaraja Perumal Temple', deity: 'Lord Varadaraja (Vishnu)',
+        location: 'Kanchipuram, Tamil Nadu', image: 'images/varadaraja-perumal-temple.jpg',
+        rating: '4.7', reviews: '8.1K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '3:30 PM - 8:30 PM' },
+        description: 'One of the 108 Divya Desams and one of the most famous Vishnu temples. Known for the Athigiri Varadar deity made of fig wood, which is taken out of the temple tank once every 40 years.',
+        phone: '+91 4112 222 340', email: 'info@varadaraja.org',
+        tags: ['Divya Desam', 'Athigiri Varadar', 'Kanchipuram'],
+        festivals: [
+          { name: 'Vaikunta Ekadashi', date: '26 Dec', desc: 'Paradise Gate darshan' },
+          { name: 'Brahmotsavam', date: '15 May', desc: 'Grand 10-day festival' },
+          { name: 'Garuda Sevai', date: '15 May', desc: 'Lord on Garuda mount procession' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Special Darshan', 'Annadhanam']
+      },
+      parthasarathy: {
+        id: 'parthasarathy', category: 'vishnu', name: 'Parthasarathy Temple', deity: 'Lord Krishna (Parthasarathy)',
+        location: 'Chennai, Tamil Nadu', image: 'images/parthasarathy-temple.jpg',
+        rating: '4.6', reviews: '7.5K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of the 108 Divya Desams, built by the Pallavas in the 8th century. The only temple where Lord Krishna is seen with scars from the Mahabharata battle. Located in the historic Triplicane area.',
+        phone: '+91 44 2844 1289', email: 'info@parthasarathy.org',
+        tags: ['Divya Desam', 'Pallava Era', 'Triplicane'],
+        festivals: [
+          { name: 'Vaikunta Ekadashi', date: '26 Dec', desc: 'Paradise Gate opening' },
+          { name: 'Brahmotsavam', date: '20 Apr', desc: 'Grand annual festival' },
+          { name: 'Krishna Jayanti', date: '22 Aug', desc: 'Lord Krishna birthday' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Special Darshan', 'Annadhanam']
+      },
+
+      // ===== DEVI / AMMAN TEMPLES =====
+      meenakshi: {
+        id: 'meenakshi', category: 'devi', name: 'Meenakshi Amman Temple', deity: 'Goddess Meenakshi & Lord Sundareshwar',
+        location: 'Madurai, Tamil Nadu', image: 'images/meenakshi-amman-temple.jpg',
+        rating: '4.9', reviews: '15.1K',
+        timings: { morning: '5:00 AM - 12:30 PM', evening: '4:00 PM - 9:30 PM' },
+        description: 'Historic temple dedicated to Goddess Meenakshi (Parvati) and Lord Sundareshwar (Shiva). The complex has 14 gopurams, the tallest being 170 feet. Features the famous Hall of 1000 Pillars.',
+        phone: '+91 452 234 3360', email: 'info@meenakshitemple.org',
+        tags: ['Shakti Peetham', '14 Gopurams', '1000 Pillars'],
+        festivals: [
+          { name: 'Chithirai Thiruvizha', date: '14 Apr', desc: 'Grand 10-day wedding festival' },
+          { name: 'Navaratri', date: '02 Oct', desc: '9 nights of divine celebration' },
+          { name: 'Float Festival', date: '08 Feb', desc: 'Deities on decorated floats' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kalyanam', 'Special Darshan', 'Annadhanam']
+      },
+      kamakshi: {
+        id: 'kamakshi', category: 'devi', name: 'Kamakshi Amman Temple', deity: 'Goddess Kamakshi',
+        location: 'Kanchipuram, Tamil Nadu', image: 'images/kamakshi-amman-temple.jpg',
+        rating: '4.7', reviews: '8.6K',
+        timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of the three major Shakti Peethas (along with Madurai and Varanasi). Adi Shankaracharya established the Sri Chakra here. The goddess sits in Padmasana pose, a rare depiction.',
+        phone: '+91 4112 222 943', email: 'info@kamakshitemple.org',
+        tags: ['Shakti Peetham', 'Sri Chakra', 'Shankaracharya'],
+        festivals: [
+          { name: 'Navaratri', date: '02 Oct', desc: '9 nights of Devi worship' },
+          { name: 'Aadi Pooram', date: '20 Jul', desc: 'Grand festival for Amman' },
+          { name: 'Panguni Brahmotsavam', date: '28 Mar', desc: '10-day festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kumkuma Pooja', 'Annadhanam']
+      },
+      samayapuram: {
+        id: 'samayapuram', category: 'devi', name: 'Samayapuram Mariamman Temple', deity: 'Goddess Mariamman',
+        location: 'Trichy, Tamil Nadu', image: 'images/samayapuram-mariamman-temple.jpg',
+        rating: '4.6', reviews: '9.3K',
+        timings: { morning: '5:30 AM - 1:00 PM', evening: '3:00 PM - 9:30 PM' },
+        description: 'The richest Amman temple in Tamil Nadu. The goddess is believed to cure diseases and protect from epidemics. Draws millions during the Panguni and Aadi festivals.',
+        phone: '+91 431 254 1200', email: 'info@samayapuram.org',
+        tags: ['Mariamman', 'Richest Amman Temple', 'Healing'],
+        festivals: [
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Car festival and fire-walking' },
+          { name: 'Aadi Festival', date: '18 Jul', desc: 'Month-long celebrations' },
+          { name: 'Navaratri', date: '02 Oct', desc: '9 nights of worship' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Annadhanam']
+      },
+      mookambika: {
+        id: 'mookambika', category: 'devi', name: 'Mookambika Temple', deity: 'Goddess Mookambika',
+        location: 'Kollur, Karnataka', image: 'images/mookambika-temple.jpg',
+        rating: '4.8', reviews: '10.1K',
+        timings: { morning: '6:00 AM - 1:00 PM', evening: '3:00 PM - 9:00 PM' },
+        description: 'One of the seven Mukthi Sthalas of Karnataka, dedicated to Goddess Mookambika (a form of Parvati). Located at the foot of the Kodachadri hills. Adi Shankaracharya meditated here.',
+        phone: '+91 8385 258 233', email: 'info@mookambikatemple.org',
+        tags: ['Mukthi Sthala', 'Kodachadri', 'Shankaracharya'],
+        festivals: [
+          { name: 'Navaratri', date: '02 Oct', desc: 'Grand 9-night celebration' },
+          { name: 'Sarvajanik Pooja', date: '12 Jan', desc: 'Community worship' },
+          { name: 'Rathotsava', date: '15 Mar', desc: 'Chariot festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Sahasranama', 'Annadhanam']
+      },
+      kanyakumari: {
+        id: 'kanyakumari', category: 'devi', name: 'Kanyakumari Amman Temple', deity: 'Goddess Kanya Kumari (Parvati)',
+        location: 'Kanyakumari, Tamil Nadu', image: 'images/kanyakumari-amman-temple.jpg',
+        rating: '4.7', reviews: '11.5K',
+        timings: { morning: '4:30 AM - 12:00 PM', evening: '4:00 PM - 8:00 PM' },
+        description: 'At the southernmost tip of India where three oceans meet. The goddess is said to be waiting to marry Lord Shiva. The diamond nose ring of the deity is so bright that it can be seen from the sea.',
+        phone: '+91 4652 247 300', email: 'info@kanyakumari.org',
+        tags: ['Three Oceans', 'Shakti Peetham', 'Southernmost'],
+        festivals: [
+          { name: 'Navaratri', date: '02 Oct', desc: '9 nights of Devi worship' },
+          { name: 'Chaitra Purnima', date: '13 Apr', desc: 'Full moon festival' },
+          { name: 'Vaikasi Visakam', date: '23 May', desc: 'Grand temple festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Special Darshan', 'Annadhanam']
+      },
+
+      // ===== GANESH TEMPLES =====
+      pillayarpatti: {
+        id: 'pillayarpatti', category: 'ganesh', name: 'Pillayarpatti Vinayagar Temple', deity: 'Lord Karpaga Vinayagar',
+        location: 'Pillayarpatti, Tamil Nadu', image: 'images/pillayarpatti-temple.jpg',
+        rating: '4.7', reviews: '5.8K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'A rock-cut cave temple dating back to the 7th century. The Ganesha idol is carved out of a single rock inside the cave. The temple is known for performing Ganesha Chaturthi celebrations on a grand scale.',
+        phone: '+91 4565 255 234', email: 'info@pillayarpatti.org',
+        tags: ['Rock-cut', '7th Century', 'Cave Temple'],
+        festivals: [
+          { name: 'Ganesh Chaturthi', date: '27 Aug', desc: 'Grand Ganesha festival' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Special pooja celebrations' },
+          { name: 'Vinayaka Chathurthi', date: 'Monthly', desc: 'Monthly worship' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Modak Offering', 'Annadhanam']
+      },
+      ucchipillayar: {
+        id: 'ucchipillayar', category: 'ganesh', name: 'Ucchi Pillayar Temple', deity: 'Lord Ganesha',
+        location: 'Trichy, Tamil Nadu', image: 'images/ucchi-pillayar-temple.jpg',
+        rating: '4.6', reviews: '8.2K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '3:30 PM - 8:30 PM' },
+        description: 'Perched atop the Rockfort in Tiruchirappalli, 273 steps lead to this stunning temple. Offers panoramic views of Trichy city. Legend says Ganesha snatched the Shiva Lingam from Vibhishana here.',
+        phone: '+91 431 270 4621', email: 'info@ucchipillayar.org',
+        tags: ['Rockfort', '273 Steps', 'Panoramic View'],
+        festivals: [
+          { name: 'Ganesh Chaturthi', date: '27 Aug', desc: '10-day grand celebration' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Special abhishekam' },
+          { name: 'Aadi Festival', date: '18 Jul', desc: 'Month celebrations' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Special Darshan']
+      },
+      siddhivinayak: {
+        id: 'siddhivinayak', category: 'ganesh', name: 'Siddhivinayak Temple', deity: 'Lord Ganesha (Siddhivinayak)',
+        location: 'Mumbai, Maharashtra', image: 'images/siddhivinayak-temple.jpg',
+        rating: '4.7', reviews: '18.6K',
+        timings: { morning: '5:30 AM - 12:00 PM', evening: '12:00 PM - 9:50 PM' },
+        description: 'One of the most revered temples of Lord Ganesha, originally built in 1801. The temple houses a unique idol where the trunk tilts to the right, symbolizing immense spiritual power.',
+        phone: '+91 22 2437 3626', email: 'info@siddhivinayak.org',
+        tags: ['Right-trunk Ganesha', 'Mumbai Landmark', '1801 AD'],
+        festivals: [
+          { name: 'Ganesh Chaturthi', date: '27 Aug', desc: '10-day grand festival' },
+          { name: 'Maghi Ganesh Jayanti', date: '01 Feb', desc: 'Birthday of Lord Ganesha' },
+          { name: 'Sankashti Chaturthi', date: 'Monthly', desc: 'Monthly Ganesha worship' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Modak Offering', 'Special Darshan']
+      },
+      manakula: {
+        id: 'manakula', category: 'ganesh', name: 'Manakula Vinayagar Temple', deity: 'Lord Vinayagar (Ganesha)',
+        location: 'Puducherry', image: 'images/manakula-vinayagar-temple.jpg',
+        rating: '4.6', reviews: '6.9K',
+        timings: { morning: '5:45 AM - 12:30 PM', evening: '4:00 PM - 9:30 PM' },
+        description: 'A 400-year-old temple near the Puducherry beach. Famous for its temple elephant that blesses devotees. The name means "temple near the sand dunes." Features 40 different forms of Ganesha on its walls.',
+        phone: '+91 413 233 6843', email: 'info@manakulavinayagar.org',
+        tags: ['Temple Elephant', 'Puducherry', '40 Ganesha Forms'],
+        festivals: [
+          { name: 'Ganesh Chaturthi', date: '27 Aug', desc: 'Grand festival with procession' },
+          { name: 'Brahmotsavam', date: '10 Feb', desc: '18-day grand festival' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Special celebrations' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Elephant Blessing', 'Annadhanam']
+      },
+      doddaganapathi: {
+        id: 'doddaganapathi', category: 'ganesh', name: 'Dodda Ganapathi Temple', deity: 'Lord Ganesha (Dodda Ganapathi)',
+        location: 'Bangalore, Karnataka', image: 'images/dodda-ganapathi-temple.jpg',
+        rating: '4.5', reviews: '5.3K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '5:30 PM - 9:00 PM' },
+        description: 'Houses an 18-feet tall and 16-feet wide monolithic Ganesha idol, one of the largest in India. Located in the Basavanagudi area of Bangalore. The idol is covered with 100 kg of butter during festivals.',
+        phone: '+91 80 2661 5426', email: 'info@doddaganapathi.org',
+        tags: ['18-feet Idol', 'Monolithic', 'Basavanagudi'],
+        festivals: [
+          { name: 'Ganesh Chaturthi', date: '27 Aug', desc: '100 kg butter abhishekam' },
+          { name: 'Kadalekai Parishe', date: '20 Nov', desc: 'Groundnut fair festival' },
+          { name: 'Sankashti Chaturthi', date: 'Monthly', desc: 'Monthly Ganesha worship' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Special Darshan']
+      },
+
+      // ===== MURUGAN TEMPLES =====
+      palani: {
+        id: 'palani', category: 'murugan', name: 'Arulmigu Dhandayuthapani Temple', deity: 'Lord Murugan (Dhandayuthapani)',
+        location: 'Palani, Tamil Nadu', image: 'images/palani-murugan-temple.jpg',
+        rating: '4.8', reviews: '8.9K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of the six abodes (Arupadai Veedu) of Lord Murugan, situated atop a 150m hill. The idol is made of Navapashanam (nine sacred herbs). Devotees climb 693 steps or use the winch.',
+        phone: '+91 4545 241 430', email: 'info@palanitemple.org',
+        tags: ['Arupadai Veedu', 'Navapashanam', 'Hill Temple'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand festival with Kavadi attam' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Divine wedding of Lord Murugan' },
+          { name: 'Skanda Sashti', date: '30 Oct', desc: '6-day battle festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Annadhanam', 'Special Darshan']
+      },
+      tiruchendur: {
+        id: 'tiruchendur', category: 'murugan', name: 'Tiruchendur Murugan Temple', deity: 'Lord Murugan (Senthilnathan)',
+        location: 'Tiruchendur, Tamil Nadu', image: 'images/tiruchendur-murugan-temple.jpg',
+        rating: '4.8', reviews: '9.7K',
+        timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'The only Arupadai Veedu temple by the seashore. Built on a rocky cliff overlooking the Bay of Bengal. The underground sanctum is reached through a tunnel-like corridor.',
+        phone: '+91 4639 242 220', email: 'info@tiruchendur.org',
+        tags: ['Arupadai Veedu', 'Seashore', 'Underground Sanctum'],
+        festivals: [
+          { name: 'Skanda Sashti', date: '30 Oct', desc: 'Grand war re-enactment festival' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Kavadi festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Wedding festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Annadhanam']
+      },
+      swamimalai: {
+        id: 'swamimalai', category: 'murugan', name: 'Swamimalai Murugan Temple', deity: 'Lord Murugan (Swaminatha)',
+        location: 'Swamimalai, Tamil Nadu', image: 'images/swamimalai-murugan-temple.jpg',
+        rating: '4.7', reviews: '6.1K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'One of the Arupadai Veedu where Lord Murugan taught the meaning of Pranava Mantra (Om) to Lord Shiva himself. Climb 60 steps symbolizing the 60 Tamil years to reach the hilltop shrine.',
+        phone: '+91 435 245 4211', email: 'info@swamimalai.org',
+        tags: ['Arupadai Veedu', 'Pranava Mantra', '60 Steps'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand Kavadi festival' },
+          { name: 'Vaikasi Visakam', date: '23 May', desc: 'Birthday of Lord Murugan' },
+          { name: 'Skanda Sashti', date: '30 Oct', desc: 'Special celebrations' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Annadhanam']
+      },
+      thiruttani: {
+        id: 'thiruttani', category: 'murugan', name: 'Thiruttani Murugan Temple', deity: 'Lord Murugan (Subrahmanya)',
+        location: 'Thiruttani, Tamil Nadu', image: 'images/thiruttani-murugan-temple.jpg',
+        rating: '4.7', reviews: '7.4K',
+        timings: { morning: '5:30 AM - 1:00 PM', evening: '3:00 PM - 9:00 PM' },
+        description: 'One of the Arupadai Veedu where Lord Murugan rested after defeating Surapadman. Located on a hilltop reached by 365 steps. Known as "South Kashi" for its spiritual significance.',
+        phone: '+91 4118 262 100', email: 'info@thiruttani.org',
+        tags: ['Arupadai Veedu', '365 Steps', 'South Kashi'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand celebration' },
+          { name: 'Skanda Sashti', date: '30 Oct', desc: 'Victory festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Wedding of Murugan and Valli' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Special Darshan', 'Annadhanam']
+      },
+      pazhamudircholai: {
+        id: 'pazhamudircholai', category: 'murugan', name: 'Pazhamudircholai Temple', deity: 'Lord Murugan (Pazhamudir Solai)',
+        location: 'Madurai, Tamil Nadu', image: 'images/pazhamudircholai-temple.jpg',
+        rating: '4.6', reviews: '5.5K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '3:30 PM - 8:00 PM' },
+        description: 'One of the Arupadai Veedu set in a dense forest atop Pazhamudircholai hills near Madurai. The only Arupadai Veedu where Murugan is seen with both consorts Valli and Deivanai.',
+        phone: '+91 452 258 9100', email: 'info@pazhamudircholai.org',
+        tags: ['Arupadai Veedu', 'Forest Temple', 'Both Consorts'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Kavadi festival' },
+          { name: 'Vaikasi Visakam', date: '23 May', desc: 'Birthday of Murugan' },
+          { name: 'Skanda Sashti', date: '30 Oct', desc: 'Victory celebration' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Annadhanam']
+      },
+
+      // ===== HANUMAN TEMPLES =====
+      namakkal: {
+        id: 'namakkal', category: 'hanuman', name: 'Namakkal Anjaneyar Temple', deity: 'Lord Hanuman (Anjaneyar)',
+        location: 'Namakkal, Tamil Nadu', image: 'images/namakkal-anjaneyar-temple.jpg',
+        rating: '4.6', reviews: '5.1K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'Features an 18-feet tall standing Hanuman idol carved from a single rock. Adjacent to the Narasimha Swamy cave temple on Namakkal Rock. One of the tallest Hanuman statues in India.',
+        phone: '+91 4286 282 233', email: 'info@namakkalanjaneyar.org',
+        tags: ['18-feet Statue', 'Rock-carved', 'Namakkal Rock'],
+        festivals: [
+          { name: 'Hanuman Jayanti', date: '16 Apr', desc: 'Grand birthday celebration' },
+          { name: 'Ram Navami', date: '06 Apr', desc: 'Lord Rama birthday' },
+          { name: 'Saturday Special', date: 'Weekly', desc: 'Special abhishekam every Saturday' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Sunderkand Path', 'Annadhanam']
+      },
+      nanganallur: {
+        id: 'nanganallur', category: 'hanuman', name: 'Nanganallur Anjaneyar Temple', deity: 'Lord Hanuman (Panchamukha)',
+        location: 'Chennai, Tamil Nadu', image: 'images/nanganallur-anjaneyar-temple.jpg',
+        rating: '4.5', reviews: '4.8K',
+        timings: { morning: '5:30 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'Famous for the Panchamukha (five-faced) Hanuman idol. The temple also features a 32-feet tall Hanuman statue visible from the road. One of Chennai\'s most popular Hanuman temples.',
+        phone: '+91 44 2223 4567', email: 'info@nanganallurtemple.org',
+        tags: ['Panchamukha', '32-feet Statue', 'Chennai'],
+        festivals: [
+          { name: 'Hanuman Jayanti', date: '16 Apr', desc: 'Grand celebrations' },
+          { name: 'Saturday Abhishekam', date: 'Weekly', desc: 'Special Saturday worship' },
+          { name: 'Ram Navami', date: '06 Apr', desc: 'Lord Rama birthday' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Sunderkand Path', 'Vadamalai']
+      },
+      hanumangarhi: {
+        id: 'hanumangarhi', category: 'hanuman', name: 'Hanuman Garhi Temple', deity: 'Lord Hanuman',
+        location: 'Ayodhya, Uttar Pradesh', image: 'images/hanuman-garhi-temple.jpg',
+        rating: '4.7', reviews: '7.2K',
+        timings: { morning: '5:00 AM - 12:00 PM', evening: '12:00 PM - 10:00 PM' },
+        description: 'A 10th-century temple situated on a hilltop in Ayodhya, reached by climbing 76 steps. The main deity is Maa Anjani with baby Hanuman on her lap. Hanuman is believed to live here to guard Ayodhya.',
+        phone: '+91 5278 232 456', email: 'info@hanumangarhi.org',
+        tags: ['10th Century', 'Hilltop', 'Ayodhya'],
+        festivals: [
+          { name: 'Hanuman Jayanti', date: '16 Apr', desc: 'Birthday of Lord Hanuman' },
+          { name: 'Ram Navami', date: '06 Apr', desc: 'Birthday of Lord Rama' },
+          { name: 'Diwali', date: '01 Nov', desc: 'Festival of lights in Ram Nagri' }
+        ],
+        services: ['Archana', 'Sunderkand Path', 'Prasadam', 'Annadhanam']
+      },
+      jakhu: {
+        id: 'jakhu', category: 'hanuman', name: 'Jakhu Temple', deity: 'Lord Hanuman',
+        location: 'Shimla, Himachal Pradesh', image: 'images/jakhu-temple.jpg',
+        rating: '4.5', reviews: '6.3K',
+        timings: { morning: '5:00 AM - 12:00 PM', evening: '12:00 PM - 9:00 PM' },
+        description: 'Located at 8,000 feet on Jakhu Hill, the highest point in Shimla. Features a 108-feet tall Hanuman statue, visible from all parts of the city. Legend says Hanuman rested here carrying the Sanjeevani herb.',
+        phone: '+91 177 281 2345', email: 'info@jakhutemple.org',
+        tags: ['108-feet Statue', 'Shimla Peak', 'Sanjeevani Legend'],
+        festivals: [
+          { name: 'Hanuman Jayanti', date: '16 Apr', desc: 'Grand hilltop celebration' },
+          { name: 'Ram Navami', date: '06 Apr', desc: 'Lord Rama birthday' },
+          { name: 'Dussehra', date: '12 Oct', desc: 'Kullu-Shimla Dussehra' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Prasadam', 'Special Darshan']
+      },
+      salasar: {
+        id: 'salasar', category: 'hanuman', name: 'Salasar Balaji Temple', deity: 'Lord Hanuman (Balaji)',
+        location: 'Salasar, Rajasthan', image: 'images/salasar-balaji-temple.jpg',
+        rating: '4.7', reviews: '8.9K',
+        timings: { morning: '4:30 AM - 1:00 PM', evening: '3:00 PM - 10:30 PM' },
+        description: 'One of the most famous Hanuman temples in North India. The self-manifested idol has a beard, making it unique among Hanuman temples. Draws millions of devotees from Rajasthan and neighboring states.',
+        phone: '+91 1574 222 100', email: 'info@salasarbalaji.org',
+        tags: ['Bearded Hanuman', 'Self-manifested', 'Rajasthan'],
+        festivals: [
+          { name: 'Hanuman Jayanti', date: '16 Apr', desc: 'Massive celebration' },
+          { name: 'Chaitra & Ashwin Purnima', date: '13 Apr', desc: 'Full moon melas' },
+          { name: 'Saturday Special', date: 'Weekly', desc: 'Special Saturday darshan' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Sunderkand Path', 'Prasadam', 'Annadhanam']
+      },
+
+      // ===== LOCAL & POPULAR TEMPLES - CHENNAI =====
+      kapaleeswarar: {
+        id: 'kapaleeswarar', category: 'local', name: 'Kapaleeswarar Temple', deity: 'Lord Shiva (Kapaleeswarar)',
+        location: 'Mylapore, Chennai', image: 'images/kapaleeshwarar-temple.jpg',
+        rating: '4.7', reviews: '12.1K',
+        timings: { morning: '5:30 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of Chennai\'s oldest and most iconic temples, located in the heart of Mylapore. Built in Dravidian style with a colorful 37-meter gopuram. Dedicated to Lord Shiva as Kapaleeswarar and Goddess Karpagambal.',
+        phone: '+91 44 2464 1670', email: 'info@kapaleeswarar.org',
+        tags: ['Mylapore', 'Dravidian', 'Ancient'],
+        festivals: [
+          { name: 'Arubathu Moovar', date: '14 Apr', desc: '63 Nayanmars festival procession' },
+          { name: 'Panguni Peruvizha', date: '28 Mar', desc: '10-day Brahmotsavam' },
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long worship' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Homam', 'Kalyanam', 'Annadhanam']
+      },
+      ashtalakshmi: {
+        id: 'ashtalakshmi', category: 'local', name: 'Ashtalakshmi Temple', deity: 'Goddess Lakshmi (8 forms)',
+        location: 'Besant Nagar, Chennai', image: 'images/default-temple.svg',
+        rating: '4.5', reviews: '7.3K',
+        timings: { morning: '6:30 AM - 12:00 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'A beautiful shore temple dedicated to the eight forms of Goddess Lakshmi (Ashta Lakshmi). Built on the Elliot\'s Beach shore in a unique multi-level architecture. Each floor houses a different form of Lakshmi.',
+        phone: '+91 44 2446 0040', email: 'info@ashtalakshmi.org',
+        tags: ['Shore Temple', 'Eight Lakshmis', 'Besant Nagar'],
+        festivals: [
+          { name: 'Navaratri', date: '07 Oct', desc: '9-day Devi celebration' },
+          { name: 'Lakshmi Pooja', date: '19 Oct', desc: 'Deepavali Lakshmi worship' },
+          { name: 'Pongal', date: '14 Jan', desc: 'Harvest festival celebrations' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Lakshmi Pooja', 'Special Darshan']
+      },
+      vadapalani: {
+        id: 'vadapalani', category: 'local', name: 'Vadapalani Andavar Temple', deity: 'Lord Murugan (Andavar)',
+        location: 'Vadapalani, Chennai', image: 'images/palani-murugan-temple.jpg',
+        rating: '4.6', reviews: '9.4K',
+        timings: { morning: '5:00 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of Chennai\'s most popular Murugan temples. The presiding deity is Lord Murugan in a unique standing posture. The temple is widely visited by film industry professionals seeking blessings before new projects.',
+        phone: '+91 44 2483 6572', email: 'info@vadapalani.org',
+        tags: ['Film Industry', 'Popular', 'Murugan'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand Murugan festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Celestial wedding' },
+          { name: 'Skanda Sashti', date: '25 Oct', desc: 'Victory of Murugan' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Annadhanam']
+      },
+      marundeeswarar: {
+        id: 'marundeeswarar', category: 'local', name: 'Marundeeswarar Temple', deity: 'Lord Shiva (The Healer)',
+        location: 'Thiruvanmiyur, Chennai', image: 'images/ekambareswarar-temple.jpg',
+        rating: '4.6', reviews: '5.8K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'An ancient temple where Lord Shiva is worshipped as the Divine Physician (Marundeeswarar). Devotees believe prayers here cure illnesses and health problems. The temple neem tree is considered medicinal.',
+        phone: '+91 44 2441 2234', email: 'info@marundeeswarar.org',
+        tags: ['Healing Temple', 'Ancient', 'Thiruvanmiyur'],
+        festivals: [
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Night-long worship' },
+          { name: 'Arudra Darshan', date: '24 Dec', desc: 'Special darshan' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Festival celebrations' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Healing Pooja', 'Homam']
+      },
+      mundakakanni: {
+        id: 'mundakakanni', category: 'local', name: 'Mundakakanni Amman Temple', deity: 'Goddess Mundakakanni Amman',
+        location: 'Mylapore, Chennai', image: 'images/default-temple.svg',
+        rating: '4.4', reviews: '3.5K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:30 PM - 8:30 PM' },
+        description: 'A famous local Amman temple in Mylapore, dedicated to Goddess Mundakakanni Amman. Very popular among locals for solving life problems and fulfilling wishes. Known for powerful parikaram rituals.',
+        phone: '+91 44 2498 2456', email: 'info@mundakakanni.org',
+        tags: ['Mylapore', 'Amman', 'Parikaram'],
+        festivals: [
+          { name: 'Navaratri', date: '07 Oct', desc: '9-day celebration' },
+          { name: 'Aadi Festival', date: '18 Jul', desc: 'Special Amman pooja' },
+          { name: 'Pongal', date: '14 Jan', desc: 'Harvest festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Parikaram', 'Kumkum Archana']
+      },
+
+      // ===== LOCAL TEMPLES - COIMBATORE =====
+      perur: {
+        id: 'perur', category: 'local', name: 'Perur Pateeswarar Temple', deity: 'Lord Shiva (Pateeswarar)',
+        location: 'Perur, Coimbatore', image: 'images/chidambaram-nataraja-temple.jpg',
+        rating: '4.7', reviews: '6.2K',
+        timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'An ancient Shiva temple famous for Lord Nataraja\'s cosmic dance performance. One of the most important temples in the Coimbatore region. Features stunning stone carvings and a musical pillar mandapam.',
+        phone: '+91 422 269 2100', email: 'info@perurtemple.org',
+        tags: ['Nataraja Dance', 'Musical Pillars', 'Ancient'],
+        festivals: [
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Grand celebration' },
+          { name: 'Natyanjali', date: '19 Feb', desc: 'Dance festival' },
+          { name: 'Arudra Darshan', date: '24 Dec', desc: 'Nataraja special' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Homam', 'Annadhanam']
+      },
+      marudhamalai: {
+        id: 'marudhamalai', category: 'local', name: 'Marudhamalai Murugan Temple', deity: 'Lord Murugan (Dhandayuthapani)',
+        location: 'Marudhamalai, Coimbatore', image: 'images/thiruttani-murugan-temple.jpg',
+        rating: '4.6', reviews: '8.1K',
+        timings: { morning: '6:00 AM - 1:00 PM', evening: '3:00 PM - 8:00 PM' },
+        description: 'A hilltop Murugan temple at 1000 feet elevation on the Western Ghats foothills. Known as "Coimbatore\'s Palani". The temple has ancient medicinal herb gardens and offers a scenic panoramic view of the city.',
+        phone: '+91 422 248 2334', email: 'info@marudhamalai.org',
+        tags: ['Hilltop', 'Western Ghats', 'Medicinal Herbs'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand Murugan festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Celestial wedding' },
+          { name: 'Skanda Sashti', date: '25 Oct', desc: '6-day festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Girivalam', 'Annadhanam']
+      },
+      eachanari: {
+        id: 'eachanari', category: 'local', name: 'Eachanari Vinayagar Temple', deity: 'Lord Ganesha (Eachanari)',
+        location: 'Eachanari, Coimbatore', image: 'images/pillayarpatti-temple.jpg',
+        rating: '4.7', reviews: '7.5K',
+        timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'One of the most famous Ganesha temples in Tamil Nadu. The presiding deity is a massive 6-feet tall Vinayagar idol. Very popular for vehicle pooja and new venture blessings. Known for its powerful Ganapathi Homam.',
+        phone: '+91 422 261 5678', email: 'info@eachanari.org',
+        tags: ['6-feet Ganesha', 'Vehicle Pooja', 'Popular'],
+        festivals: [
+          { name: 'Vinayaka Chaturthi', date: '07 Sep', desc: 'Grand birthday celebrations' },
+          { name: 'Sankatahara Chaturthi', date: 'Monthly', desc: 'Monthly special pooja' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Festival celebrations' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Vehicle Pooja', 'Ganapathi Homam', 'Annadhanam']
+      },
+      koniamman: {
+        id: 'koniamman', category: 'local', name: 'Koniamman Temple', deity: 'Goddess Koniamman',
+        location: 'Town Hall, Coimbatore', image: 'images/default-temple.svg',
+        rating: '4.5', reviews: '4.9K',
+        timings: { morning: '5:30 AM - 12:30 PM', evening: '4:00 PM - 9:00 PM' },
+        description: 'The presiding deity of Coimbatore city. Koniamman is the guardian goddess of the region. The annual Koniamman festival with the famous chariot procession is a massive event that brings the entire city together.',
+        phone: '+91 422 239 2345', email: 'info@koniamman.org',
+        tags: ['City Deity', 'Chariot Festival', 'Guardian Goddess'],
+        festivals: [
+          { name: 'Koniamman Chariot', date: '15 May', desc: 'Grand chariot procession' },
+          { name: 'Navaratri', date: '07 Oct', desc: '9-day celebration' },
+          { name: 'Aadi Festival', date: '18 Jul', desc: 'Special Amman pooja' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Parikaram', 'Kumkum Archana']
+      },
+
+      // ===== OTHER POPULAR LOCAL TEMPLES =====
+      siruvapuri: {
+        id: 'siruvapuri', category: 'local', name: 'Siruvapuri Murugan Temple', deity: 'Lord Murugan (Bala Murugan)',
+        location: 'Siruvapuri, Thiruvallur', image: 'images/swamimalai-murugan-temple.jpg',
+        rating: '4.6', reviews: '5.3K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'One of the Aaru Padai Veedu-associated temples where Lord Murugan appears as a child (Bala Murugan). Very popular for marriage parikaram and child blessing poojas. Located near Chennai, easily accessible.',
+        phone: '+91 44 2763 4567', email: 'info@siruvapuri.org',
+        tags: ['Bala Murugan', 'Marriage Parikaram', 'Near Chennai'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand kavadi festival' },
+          { name: 'Skanda Sashti', date: '25 Oct', desc: 'Victory festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Celestial wedding' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Vivaha Parikaram', 'Kavadi', 'Annadhanam']
+      },
+      thirunallar: {
+        id: 'thirunallar', category: 'local', name: 'Thirunallar Saniswaran Temple', deity: 'Lord Shani (Saniswaran)',
+        location: 'Thirunallar, Karaikal', image: 'images/default-temple.svg',
+        rating: '4.6', reviews: '8.7K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'The most famous Shani temple in South India. Devotees visit to get relief from Shani Dosham (Saturn affliction) and Sade Sati. The temple tank (Nala Theertham) is believed to wash away the effects of Saturn.',
+        phone: '+91 4368 236 789', email: 'info@thirunallar.org',
+        tags: ['Shani Temple', 'Sade Sati Relief', 'Nala Theertham'],
+        festivals: [
+          { name: 'Shani Peyarchi', date: 'Transit Day', desc: 'Saturn transition special pooja' },
+          { name: 'Shani Amavasai', date: 'Monthly', desc: 'New moon Saturn pooja' },
+          { name: 'Thai Amavasai', date: '13 Jan', desc: 'Grand Shani pooja' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Shani Dosha Parikaram', 'Navagraha Pooja', 'Thila Sesame Pooja']
+      },
+      thirupparankundram: {
+        id: 'thirupparankundram', category: 'local', name: 'Thirupparankundram Murugan Temple', deity: 'Lord Murugan (Subramanya)',
+        location: 'Thirupparankundram, Madurai', image: 'images/tiruchendur-murugan-temple.jpg',
+        rating: '4.7', reviews: '9.2K',
+        timings: { morning: '5:30 AM - 1:00 PM', evening: '3:30 PM - 9:00 PM' },
+        description: 'One of the six abodes (Aaru Padai Veedu) of Lord Murugan. This rock-cut cave temple is where Lord Murugan married Goddess Deivanai. Extremely popular for marriage parikarams and wedding blessings.',
+        phone: '+91 452 248 2456', email: 'info@thirupparankundram.org',
+        tags: ['Aaru Padai Veedu', 'Rock-Cut Cave', 'Marriage Blessing'],
+        festivals: [
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Grand Kavadi festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Divine wedding re-enactment' },
+          { name: 'Skanda Sashti', date: '25 Oct', desc: 'Victory festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Vivaha Parikaram', 'Kavadi', 'Kalyanam']
+      },
+      samayapuram: {
+        id: 'samayapuram_local', category: 'local', name: 'Samayapuram Mariamman Temple', deity: 'Goddess Mariamman',
+        location: 'Samayapuram, Trichy', image: 'images/samayapuram-mariamman-temple.jpg',
+        rating: '4.7', reviews: '11.5K',
+        timings: { morning: '5:30 AM - 1:00 PM', evening: '3:30 PM - 9:30 PM' },
+        description: 'The richest and most popular Amman temple in Tamil Nadu. Known for powerful healing and problem-solving poojas. Devotees offer lemon garlands and perform rolling prayers (angapradakshinam) for wish fulfillment.',
+        phone: '+91 431 260 2200', email: 'info@samayapuram.org',
+        tags: ['Richest Amman Temple', 'Healing', 'Wish Fulfillment'],
+        festivals: [
+          { name: 'Chithirai Festival', date: '14 Apr', desc: '10-day grand festival with chariot' },
+          { name: 'Aadi Festival', date: '18 Jul', desc: 'Special Amman celebration' },
+          { name: 'Navaratri', date: '07 Oct', desc: '9-day Devi festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Parikaram', 'Angapradakshinam', 'Annadhanam']
+      },
+      thiruchendur_local: {
+        id: 'thiruchendur_local', category: 'local', name: 'Thiruchendur Murugan Temple', deity: 'Lord Murugan (Senthil Andavar)',
+        location: 'Thiruchendur, Thoothukudi', image: 'images/tiruchendur-murugan-temple.jpg',
+        rating: '4.8', reviews: '10.8K',
+        timings: { morning: '5:00 AM - 1:00 PM', evening: '3:00 PM - 9:00 PM' },
+        description: 'One of the six abodes (Aaru Padai Veedu) of Lord Murugan, the only one located by the sea. Famous for powerful Soorasamharam enactment during Skanda Sashti. The shore temple offers a mesmerizing ocean view.',
+        phone: '+91 4639 242 223', email: 'info@thiruchendur.org',
+        tags: ['Aaru Padai Veedu', 'Seaside Temple', 'Soorasamharam'],
+        festivals: [
+          { name: 'Skanda Sashti', date: '25 Oct', desc: 'Grand Soorasamharam by the sea' },
+          { name: 'Thai Poosam', date: '10 Jan', desc: 'Kavadi festival' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Divine wedding' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kavadi', 'Dosha Parikaram', 'Annadhanam']
+      },
+      srivilliputhur: {
+        id: 'srivilliputhur', category: 'local', name: 'Srivilliputhur Andal Temple', deity: 'Goddess Andal & Lord Rangamannar',
+        location: 'Srivilliputhur, Virudhunagar', image: 'images/default-temple.svg',
+        rating: '4.6', reviews: '5.4K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'The birthplace of Goddess Andal, one of the 12 Alwars. The 192-feet Rajagopuram is the official emblem of the Tamil Nadu Government. Famous for marriages and Vivaha Parikaram.',
+        phone: '+91 4563 260 789', email: 'info@srivilliputhur.org',
+        tags: ['Andal Birthplace', 'TN Emblem', 'Alwar Temple'],
+        festivals: [
+          { name: 'Aadi Pooram', date: '20 Jul', desc: 'Andal birthday festival' },
+          { name: 'Margazhi', date: 'Dec-Jan', desc: 'Thiruppavai recitation month' },
+          { name: 'Panguni Uthiram', date: '28 Mar', desc: 'Andal-Rangamannar wedding' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Kalyanam', 'Vivaha Parikaram']
+      },
+      vaitheeswaran: {
+        id: 'vaitheeswaran', category: 'local', name: 'Vaitheeswaran Koil', deity: 'Lord Shiva (The Divine Healer)',
+        location: 'Vaitheeswaran Koil, Nagapattinam', image: 'images/arunachaleswarar-temple.jpg',
+        rating: '4.6', reviews: '7.8K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'A famous healing temple where Lord Shiva is worshipped as Vaitheeswaran (God of Healing). Also known for Nadi Jyothisham (palm leaf astrology). Devotees with health issues visit for special healing poojas.',
+        phone: '+91 4364 279 456', email: 'info@vaitheeswarankoil.org',
+        tags: ['Healing God', 'Nadi Astrology', 'Health Cure'],
+        festivals: [
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Grand Shiva worship' },
+          { name: 'Skanda Sashti', date: '25 Oct', desc: 'Murugan festival' },
+          { name: 'Arudra Darshan', date: '24 Dec', desc: 'Nataraja festival' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Healing Pooja', 'Nadi Reading', 'Dosha Parikaram']
+      },
+      suryanar: {
+        id: 'suryanar', category: 'local', name: 'Suryanar Kovil', deity: 'Lord Surya (Sun God) & Navagrahas',
+        location: 'Suryanar Kovil, Kumbakonam', image: 'images/default-temple.svg',
+        rating: '4.5', reviews: '5.1K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'The only temple in India dedicated to all nine planets (Navagrahas) with individual shrines. Most important destination for Graha Dosha Parikaram. Each planet has a separate sannidhi with specific rituals.',
+        phone: '+91 435 246 7890', email: 'info@suryanarkovil.org',
+        tags: ['Navagraha Temple', 'Graha Shanti', 'Sun God'],
+        festivals: [
+          { name: 'Ratha Saptami', date: '04 Feb', desc: 'Sun God chariot festival' },
+          { name: 'Graha Peyarchi', date: 'Transit Days', desc: 'Planet transition poojas' },
+          { name: 'Pongal', date: '14 Jan', desc: 'Sun God harvest festival' }
+        ],
+        services: ['Navagraha Pooja', 'Graha Shanti', 'Dosha Parikaram', 'Archana', 'Abhishekam']
+      },
+      karaikal_amman: {
+        id: 'karaikal_amman', category: 'local', name: 'Karaikal Ammaiyar Temple', deity: 'Goddess Karaikal Ammaiyar',
+        location: 'Karaikal, Puducherry', image: 'images/default-temple.svg',
+        rating: '4.4', reviews: '3.2K',
+        timings: { morning: '6:00 AM - 12:00 PM', evening: '4:00 PM - 8:00 PM' },
+        description: 'Dedicated to Karaikal Ammaiyar, one of the 63 Nayanmars. A unique temple for women devotees facing marital problems. Known for powerful parikarams for family harmony and removal of mangal dosham.',
+        phone: '+91 4368 222 345', email: 'info@karaikalammaiyar.org',
+        tags: ['Nayanmar', 'Women Devotees', 'Family Harmony'],
+        festivals: [
+          { name: 'Maha Shivaratri', date: '19 Mar', desc: 'Grand worship' },
+          { name: 'Navaratri', date: '07 Oct', desc: 'Devi celebration' },
+          { name: 'Aadi Festival', date: '18 Jul', desc: 'Special pooja' }
+        ],
+        services: ['Archana', 'Abhishekam', 'Mangal Dosha Parikaram', 'Family Harmony Pooja']
+      },
+      rahu_ketu: {
+        id: 'rahu_ketu', category: 'local', name: 'Naganathaswamy Temple (Rahu-Ketu)', deity: 'Lord Shiva & Naga Devata',
+        location: 'Thirunageswaram, Kumbakonam', image: 'images/default-temple.svg',
+        rating: '4.5', reviews: '6.3K',
+        timings: { morning: '6:00 AM - 12:30 PM', evening: '4:00 PM - 8:30 PM' },
+        description: 'The premier temple for Rahu dosha and Naga dosha removal. One of the Navagraha temples dedicated to Rahu. Devotees perform Naga Prathishta and milk abhishekam for serpent curse removal.',
+        phone: '+91 435 248 9012', email: 'info@thirunageswaram.org',
+        tags: ['Rahu Temple', 'Naga Dosha', 'Serpent Cure'],
+        festivals: [
+          { name: 'Rahu Kalam Pooja', date: 'Daily', desc: 'Special pooja during Rahu Kalam' },
+          { name: 'Naga Chaturthi', date: '08 Oct', desc: 'Naga worship day' },
+          { name: 'Amavasai', date: 'Monthly', desc: 'New moon naga pooja' }
+        ],
+        services: ['Naga Dosha Parikaram', 'Rahu Pooja', 'Archana', 'Abhishekam', 'Naga Prathishta']
+      }
+    };
+
+    // ===== ENRICH TEMPLES: district, history, videoId, funFacts =====
+    var templeEnrichment = {
+      // SHIVA
+      ekambareswarar: { district: 'Kanchipuram', history: 'One of the Pancha Bhoota Sthalams representing Earth. The 3500-year-old mango tree has 4 branches for 4 Vedas. Built by the Pallavas and later expanded by the Cholas and Vijayanagara rulers.', funFacts: ['3500-year-old mango tree still bears fruit of 4 different tastes', 'Gopuram stands 59m tall - one of the tallest in India', 'Lingam is made of sand (Prithvi/Earth element)'] },
+      arunachaleswarar: { district: 'Tiruvannamalai', history: 'Ancient temple dating back over 1200 years. Represents Agni (Fire) in the Pancha Bhoota series. The Karthigai Deepam festival when a massive lamp is lit atop the hill is visible from miles away.', funFacts: ['Arunachala Hill is considered older than the Himalayas', 'Karthigai Deepam flame can be seen from 35 km away', 'Girivalam path around the hill is 14 km long'] },
+      ramanathaswamy: { district: 'Ramanathapuram', history: 'According to legend, Lord Rama installed and worshipped the Shiva Lingam here to absolve the sin of killing Ravana. Features the longest corridor of any Hindu temple in India.', funFacts: ['Has the longest temple corridor in India - 1,220 meters', '22 sacred wells (theerthams) with different medicinal properties', 'One of the four sacred Char Dham pilgrimage sites'] },
+      // VISHNU
+      tirumala: { district: 'Tirupati', history: 'The richest temple in the world. Lord Venkateswara is believed to have appeared here during Kali Yuga. The temple receives 50,000-100,000 pilgrims daily. TTD manages the temple operations.', funFacts: ['Receives more visitors than Vatican City and Mecca combined', 'Hundi collection exceeds ₹3000 crores annually', 'Hair donated by devotees is auctioned internationally for wig-making'] },
+      ranganatha: { district: 'Tiruchirappalli', history: 'The largest functioning Hindu temple in the world, spread over 156 acres with 7 prakarams (enclosures) and 21 gopurams. The Vaikunta Ekadashi festival attracts millions.', funFacts: ['Largest functioning Hindu temple in the world - 156 acres', 'Has 21 gopurams across 7 concentric enclosures', 'The reclining Ranganatha idol is 6 meters long'] },
+      oppiliappan: { district: 'Thanjavur', history: 'Unique Vishnu temple where no salt or turmeric is used in prasadam. Lord married Bhoomi Devi when she was young, so no turmeric (symbol of marriage) is used. One of 108 Divya Desams.', funFacts: ['Only temple where prasadam is made without salt or turmeric', 'Marriage conducted here without tying Thali', 'Honey is used instead of sugar in all offerings'] },
+      varadaraja: { district: 'Kanchipuram', history: 'One of the most important Vishnu temples. The Athigiri Varadar idol is immersed in the temple tank and brought out once every 40 years for a grand festival.', funFacts: ['Athi Varadar comes out of the tank only once in 40 years', '100-pillar mandapam is an architectural marvel', 'Lizard carvings (golden & silver) on the ceiling attract devotees'] },
+      parthasarathy: { district: 'Chennai', history: 'One of the oldest temples in Chennai, built by the Pallavas in the 8th century. The only temple where Lord Krishna is seen with battle scars from the Mahabharata war.', funFacts: ['Only temple where Vishnu is shown with war wounds', 'Built by Pallava king Narasimhavarman I in 8th century', '5 forms of Vishnu are worshipped in this temple'] },
+      // DEVI
+      meenakshi: { district: 'Madurai', history: 'The iconic temple of Madurai, originally built by Kulasekara Pandyan in 6th century BCE and rebuilt by Nayak kings. The daily Palliyarai ceremony (night ceremony) re-enacts the marriage of Meenakshi and Sundareshwar.', funFacts: ['Has 33,000 sculptures in the temple complex', 'Golden Lotus Tank was used for critiquing Tamil literary works', 'Daily wedding ceremony of Meenakshi & Sundareshwar every night'] },
+      kamakshi: { district: 'Kanchipuram', history: 'One of the three major Shakti Peethas. Adi Shankaracharya installed the Sri Chakra here and established the Kanchi Kamakoti Peetham, one of Hinduism\'s most important monastic institutions.', funFacts: ['One of the 3 Shakti Peethas in India', 'Sri Chakra installed by Adi Shankaracharya himself', 'Kamakshi sits in Padmasana - rare seated posture for a goddess'] },
+      samayapuram: { district: 'Tiruchirappalli', history: 'One of the richest and most popular Amman temples in Tamil Nadu. The goddess is believed to have immense power to solve any problem. Devotees perform angapradakshinam (rolling prayer) for wish fulfillment.', funFacts: ['Richest Amman temple in Tamil Nadu', 'Lemon garland is the most popular offering', 'Devotees roll around the temple for wish fulfillment'] },
+      mookambika: { district: 'Other', history: 'Located in Karnataka, this is one of the seven Muktisthalas. Adi Shankaracharya received his divine powers here. The goddess is worshipped as both Saraswati and Parvati.', funFacts: ['One of the 7 Muktisthalas in Karnataka', 'Adi Shankaracharya meditated here before his mission', 'Jyotirlinga and Shakti are worshipped in same idol'] },
+      kanyakumari: { district: 'Kanniyakumari', history: 'At the southernmost tip of India where three oceans meet. Goddess Kumari did severe penance to marry Lord Shiva, but the wedding was interrupted, and the unused wedding rice turned to stone.', funFacts: ['Located where Indian Ocean, Bay of Bengal & Arabian Sea meet', 'Wedding rice that turned to stone can be seen on the shore', 'Only place in India to see sunrise and sunset over the sea'] },
+      // GANESH
+      pillayarpatti: { district: 'Sivagangai', history: 'Rock-cut cave temple dating back to the 7th century. The Vinayagar idol is carved directly into the rock face of the cave. One of the most ancient Ganesh temples in Tamil Nadu.', funFacts: ['Idol is carved directly from the rock cave wall', 'Over 1600 years old', 'The cave has natural acoustic properties'] },
+      ucchipillayar: { district: 'Tiruchirappalli', history: 'Perched atop the famous Rock Fort in Trichy, 83 meters above the city. Legend says Vinayagar snatched the Shiva Lingam here from Vibhishana who was carrying it to Lanka.', funFacts: ['Located atop the Rock Fort - 83 meters high', 'Rock Fort is estimated to be 3.8 billion years old', '437 steps carved into the rock to reach the top'] },
+      siddhivinayak: { district: 'Other', history: 'One of the richest and most visited temples in Mumbai. Built in 1801 by Laxman Vithu and Deubai Patil. The trunk of the deity turns to the right, which is considered very rare and auspicious.', funFacts: ['Right-curved trunk is extremely rare and auspicious', 'Originally a small temple built by a woman in 1801', 'Gold-plated dome weighs approximately 3.7 tonnes'] },
+      manakula: { district: 'Other', history: 'Located in Pondicherry, this 500+ year old temple survived French colonial attempts to destroy it. The French tried multiple times but faced mysterious obstacles each time.', funFacts: ['Survived multiple French attempts to demolish it', 'Temple elephant blesses devotees daily', 'Over 500 years old, predating French colonization'] },
+      doddaganapathi: { district: 'Other', history: 'Located in Basavanagudi, Bangalore. Houses a massive 18-feet tall and 16-feet wide monolithic Ganesha idol. Originally an open-air idol, the temple was built around it later.', funFacts: ['Ganesha idol is 18 feet tall, carved from a single rock', 'Believed to grow bigger every year', 'Originally installed in the 16th century by Kempe Gowda'] },
+      // MURUGAN
+      palani: { district: 'Dindigul', history: 'One of the Aaru Padai Veedu. The Dandayudhapani idol is made of an herbal paste called Navapashanam (9 poisons). Palani Panchamirtham is a GI-tagged prasadam known worldwide.', funFacts: ['Idol made of 9 poisonous herbs (Navapashanam) by sage Bogar', 'Palani Panchamirtham has Geographical Indication tag', 'Rope car and winch carry 1000s of devotees up the hill daily'] },
+      tiruchendur: { district: 'Thoothukudi', history: 'The only Aaru Padai Veedu by the sea. This is where Murugan defeated the demon Soorapadman. The famous Soorasamharam is re-enacted during Skanda Sashti with the sea as the backdrop.', funFacts: ['Only Aaru Padai Veedu located by the sea', 'Soorasamharam is enacted on the beach with lakhs watching', 'Underground sanctum was discovered containing ancient idols'] },
+      swamimalai: { district: 'Thanjavur', history: 'One of the Aaru Padai Veedu where Murugan taught the meaning of Pranava Mantra (Om) to his own father Shiva. Hence he is called Swaminatha (Lord of even Shiva).', funFacts: ['Where Murugan became the Guru of Shiva himself', '60 steps to the hilltop represent the 60 Tamil years', 'Famous for bronze casting - Swamimalai bronze icons are GI-tagged'] },
+      thiruttani: { district: 'Tiruvallur', history: 'One of the Aaru Padai Veedu where Murugan rested after the war with Soorapadman. He married Valli here. The 365 steps represent the days of the year.', funFacts: ['365 steps to the hilltop - one for each day of the year', 'Murugan married Valli at this location', 'Located between Chennai and Tirupati, easily accessible'] },
+      pazhamudircholai: { district: 'Madurai', history: 'One of the Aaru Padai Veedu set amidst lush greenery on the Azhahar Hills near Madurai. Known for its natural beauty and the sacred Nupura Ganga waterfall.', funFacts: ['Most scenic of all Aaru Padai Veedu', 'Noopura Gangai waterfall is considered sacred', 'Dense forest with rare medicinal herbs surrounds the temple'] },
+      // HANUMAN
+      namakkal: { district: 'Namakkal', history: 'The 18-feet tall rock-cut Hanuman idol is one of the tallest in India. Adjacent to Narasimha Temple, both carved from a single massive rock.', funFacts: ['18-feet tall Hanuman carved from a single rock', 'Adjacent Narasimha Swamy is also rock-cut', 'Town of Namakkal is named after this rock'] },
+      nanganallur: { district: 'Chennai', history: 'One of the most popular Hanuman temples in Chennai. The Panchamukha (five-faced) Hanuman idol is unique and draws thousands of devotees every Saturday.', funFacts: ['Features rare 5-faced (Panchamukha) Hanuman', 'Saturdays see 50,000+ devotees', 'One of the largest Hanuman temples in South India'] },
+      hanumangarhi: { district: 'Other', history: 'Located in Ayodhya, this temple is a 10th century fort-like structure with 76 steps leading to it. It is believed that Hanuman guarded Ayodhya from this hillock.', funFacts: ['76 steps lead up to this hilltop temple', 'Hanuman is believed to guard Rama\'s Ayodhya from here', 'Temple structure resembles a medieval fort'] },
+      jakhu: { district: 'Other', history: 'Perched at 2,500 meters in Shimla, this temple has the world\'s tallest Hanuman statue at 108 feet. Legend says Hanuman rested here while carrying the Sanjeevani mountain.', funFacts: ['Has the tallest Hanuman statue in the world - 108 feet', 'Located at 2,500 meters altitude in Shimla', 'Hundreds of monkeys (langurs) live around the temple'] },
+      salasar: { district: 'Other', history: 'Located in Rajasthan, this is one of the most visited Hanuman temples in North India. The idol is unique as it has a beard - very rare for Hanuman idols.', funFacts: ['One of the few Hanuman idols with a beard', 'Self-manifested (swayambhu) idol found by a farmer', 'Devotees travel barefoot from far distances'] },
+      // LOCAL TEMPLES
+      kapaleeswarar: { district: 'Chennai', history: 'The most iconic Shiva temple in Chennai, originally built by the Pallavas near the shore and later rebuilt in Dravidian style by the Vijayanagara kings in the 16th century at its current Mylapore location.', funFacts: ['Original temple was by the sea before Portuguese destroyed it', 'Rebuilt in the 16th century at current Mylapore location', 'Mylapore gets its name from Mayil (peacock) - Parvati worshipped Shiva as a peacock here'] },
+      ashtalakshmi: { district: 'Chennai', history: 'Built in 1974 on the shores of Elliot\'s Beach in Besant Nagar. Dedicated to the eight forms of Lakshmi. The multi-storeyed structure with ocean views makes it unique.', funFacts: ['Dedicated to 8 forms of Goddess Lakshmi', 'Built on the shore of Elliot\'s Beach', 'Multi-storey temple with stunning sea views'] },
+      vadapalani: { district: 'Chennai', history: 'Originally a small shrine under a tree, this Murugan temple grew into one of Chennai\'s most important temples. Tamil film industry traditionally starts shoots after prayers here.', funFacts: ['Tamil film industry\'s favorite temple for movie launches', 'Originally a small shrine under a palm tree', 'Vadapalani area is named after this temple'] },
+      marundeeswarar: { district: 'Chennai', history: 'Ancient temple where Shiva is worshipped as the divine healer. The holy tree here is a Marudha tree with medicinal properties. Located in Thiruvanmiyur.', funFacts: ['Shiva as the God of Medicine in this temple', 'Marudha tree in the temple has healing properties', 'One of the oldest temples in Chennai - over 1100 years old'] },
+      mundakakanni: { district: 'Chennai', history: 'One of the oldest Amman temples in Mylapore, Chennai. The goddess is believed to have three eyes, and the temple is closely linked to the Kapaleeshwarar Temple.', funFacts: ['Three-eyed goddess (Mundakakanni = one who has three eyes)', 'Located in the heart of historic Mylapore', 'Closely linked with Kapaleeshwarar Temple lore'] },
+      perur: { district: 'Coimbatore', history: 'Ancient temple where Lord Shiva performed the cosmic dance (Nataraja). Built by the Chera kings and later renovated by the Kongu Cholas. The Kanaka Sabha here mirrors Chidambaram.', funFacts: ['Called the Chidambaram of the South', 'Shiva performed the cosmic dance here', 'Sundarar composed hymns at this temple'] },
+      marudhamalai: { district: 'Coimbatore', history: 'Hilltop Murugan temple at 500 feet above sea level in the Western Ghats. Rich in medicinal herbs, the hill itself is considered healing. The steps are flanked by dense vegetation.', funFacts: ['Hill has abundant medicinal herbs and plants', 'At 500 feet elevation in the Western Ghats', 'Peacocks frequently spotted on the hill'] },
+      eachanari: { district: 'Coimbatore', history: 'Famous for the 6-feet tall Vinayagar idol, one of the largest in Tamil Nadu. The temple is especially known for vehicle pooja - devotees bring new vehicles for blessings.', funFacts: ['6-feet tall Vinayagar idol - one of the largest in TN', 'Most popular temple for vehicle pooja in the region', 'Name Eachanari means \"Bull Lord\" in Tamil'] },
+      koniamman: { district: 'Coimbatore', history: 'One of the most powerful Amman temples in Kongu Nadu region. The annual chariot festival is the largest in Coimbatore. The goddess is the guardian deity of Coimbatore city.', funFacts: ['Guardian deity of Coimbatore city', 'Annual chariot festival is the biggest event in Coimbatore', 'Kongu Nadu\'s most important Amman temple'] },
+      siruvapuri: { district: 'Tiruvallur', history: 'One of the temples associated with the Aaru Padai Veedu. Lord Murugan appears as Bala Murugan (child form). Extremely popular for marriage parikaram and child blessings.', funFacts: ['Murugan in child form (Bala Murugan) is very rare', 'Top destination for marriage parikaram in Tamil Nadu', 'Located just 40 km from Chennai - easy day trip'] },
+      thirunallar: { district: 'Karaikal', history: 'The most famous Shani temple in South India. King Nala was freed from Saturn\'s curse after bathing in the temple tank. The Nala Theertham is believed to wash away Saturn\'s effects.', funFacts: ['Most famous Shani temple in South India', 'Nala Theertham tank removes effects of Sade Sati', 'Saturdays see 100,000+ devotees during Shani Peyarchi'] },
+      thirupparankundram: { district: 'Madurai', history: 'First of the Aaru Padai Veedu where Murugan married Deivanai after defeating Soorapadman. The rock-cut cave temple has both Hindu and Jain sculptures dating back to the 8th century.', funFacts: ['First of the six Aaru Padai Veedu of Murugan', 'Has both Hindu and Jain sculptures in the cave', 'Murugan\'s marriage to Deivanai took place here'] },
+      samayapuram_local: { district: 'Tiruchirappalli', history: 'The most visited Amman temple in Tamil Nadu with millions of devotees annually. The goddess is believed to have immense power to solve problems and fulfill wishes.', funFacts: ['Most visited Amman temple in Tamil Nadu', 'Angapradakshinam (rolling prayer) is the signature ritual', 'Annual revenue rivals major temples in the state'] },
+      thiruchendur_local: { district: 'Thoothukudi', history: 'One of the six Aaru Padai Veedu by the sea. The underground sanctum and seaside location make it unique. The Soorasamharam festival is the most spectacular in Tamil Nadu.', funFacts: ['Only Aaru Padai Veedu by the sea', 'Soorasamharam attracts lakhs to the beach', 'Has an underground sanctum sanctorum'] },
+      srivilliputhur: { district: 'Virudhunagar', history: 'Birthplace of Andal, one of the 12 Alwars. The 192-feet Rajagopuram is the tallest in Tamil Nadu and is the official emblem of the Tamil Nadu Government.', funFacts: ['192-feet gopuram is the TN Government official emblem', 'Birthplace of Andal - the only female Alwar', 'Srivilliputhur Palkova is a GI-tagged sweet from here'] },
+      vaitheeswaran: { district: 'Nagapattinam', history: 'Lord Shiva as the divine healer. Angaraka (Mars) was cured of leprosy here. The temple is the center of Nadi Jyothisham - ancient palm leaf astrology practiced for thousands of years.', funFacts: ['Center of Nadi Astrology - palm leaf readings', 'Mars (Angaraka) was healed by Shiva here', 'Temple tank water is believed to cure diseases'] },
+      suryanar: { district: 'Thanjavur', history: 'The only temple dedicated to all 9 planets (Navagrahas) with separate shrines. Each planet has specific rituals. Ratha Saptami is the biggest festival dedicated to the Sun God.', funFacts: ['Only temple with individual shrines for all 9 planets', 'Each planet shrine faces a specific direction per astrology', 'Most important temple for graha dosha removal'] },
+      karaikal_amman: { district: 'Karaikal', history: 'Dedicated to Karaikal Ammaiyar, one of the 63 Nayanmars. She gave up her beauty to worship Shiva. The temple is a powerful site for women facing marital problems.', funFacts: ['Dedicated to a Nayanmar who gave up beauty for devotion', 'Powerful temple for women facing family issues', 'Karaikal Ammaiyar is depicted in skeletal form'] },
+      rahu_ketu: { district: 'Thanjavur', history: 'Premier temple for Rahu dosha removal. Part of the Navagraha temple circuit near Kumbakonam. Devotees perform special milk abhishekam to the Naga (serpent) deities.', funFacts: ['Premier temple for Rahu/Naga dosha removal', 'Part of the Navagraha temple circuit', 'Milk abhishekam to serpent idols is the key ritual'] }
+    };
+    // ===== TRAVEL & DIRECTIONS DATA =====
+    var templeTravel = {
+      // SHIVA TEMPLES
+      chidambaram: {
+        nearestCity: 'Chidambaram',
+        nearestRailway: 'Chidambaram Railway Station (0.5 km)',
+        nearestAirport: 'Tiruchirappalli Airport (150 km)',
+        busRoutes: ['SETC buses from Chennai (5 hrs)', 'Town bus 1, 2, 3 from Chidambaram Bus Stand', 'Direct buses from Kumbakonam, Mayiladuthurai & Pondicherry'],
+        byRoad: 'NH-45A from Chennai (235 km, ~5 hrs). Well connected from Pondicherry (65 km), Kumbakonam (60 km)',
+        byTrain: 'Chidambaram station on Chennai-Tiruchirappalli line. Trains from Chennai Egmore, Trichy, Madurai',
+        parking: 'Temple parking on East Car Street and West Car Street. Two-wheeler parking near East Gopuram.',
+        tips: 'Best to visit during early morning or evening pooja times. Natyanjali festival (Feb) is the best time to visit.'
+      },
+      brihadeeswarar: {
+        nearestCity: 'Thanjavur',
+        nearestRailway: 'Thanjavur Junction (2 km)',
+        nearestAirport: 'Tiruchirappalli Airport (55 km)',
+        busRoutes: ['SETC from Chennai (8 hrs)', 'Town bus 74 from Thanjavur Bus Stand', 'Frequent buses from Trichy (1 hr), Kumbakonam (40 min)'],
+        byRoad: 'NH-36 from Trichy (55 km, 1 hr). Well connected from Chennai (350 km), Madurai (200 km)',
+        byTrain: 'Thanjavur Junction on Trichy-Nagapattinam line. Trains from Chennai, Trichy, Madurai, Rameswaram',
+        parking: 'Free parking on South Main Road. Car park near entrance.',
+        tips: 'Visit during Pongal (Jan) for grand celebrations. The temple is beautifully lit in the evenings.'
+      },
+      ekambareswarar: {
+        nearestCity: 'Kanchipuram',
+        nearestRailway: 'Kanchipuram Railway Station (1 km)',
+        nearestAirport: 'Chennai Airport (72 km)',
+        busRoutes: ['Bus 212, 812 from Chennai CMBT (2 hrs)', 'Town bus from Kanchipuram Bus Stand (auto ₹50)', 'Direct buses from Vellore, Tiruvallur'],
+        byRoad: 'NH-4 from Chennai (72 km, ~2 hrs). From Vellore (70 km), Tiruvannamalai (105 km)',
+        byTrain: 'Kanchipuram station on Chennai-Arakkonam line. Local trains from Chennai Beach & Tambaram',
+        parking: 'Parking available on the main road near the temple. Two-wheeler parking at east gate.',
+        tips: 'Combine visit with Kamakshi Amman & Varadaraja Perumal - all 3 within 3 km in Kanchipuram.'
+      },
+      arunachaleswarar: {
+        nearestCity: 'Tiruvannamalai',
+        nearestRailway: 'Tiruvannamalai Railway Station (1 km)',
+        nearestAirport: 'Chennai Airport (185 km)',
+        busRoutes: ['SETC from Chennai CMBT (4 hrs)', 'Govt buses from Vellore (80 km), Kanchipuram (105 km)', 'Direct buses from Pondicherry, Villupuram, Trichy'],
+        byRoad: 'From Chennai via Vellore (185 km, 4 hrs). From Bangalore via Krishnagiri (200 km, 4.5 hrs)',
+        byTrain: 'Tiruvannamalai station on Villupuram-Katpadi line. Trains from Chennai Egmore and Villupuram',
+        parking: 'Large parking area on Girivalam Road. Separate two-wheeler parking near Ammani Amman sannidhi.',
+        tips: 'Full moon nights (Pournami) are special for Girivalam. Arrive early on Karthigai Deepam day.'
+      },
+      ramanathaswamy: {
+        nearestCity: 'Rameswaram',
+        nearestRailway: 'Rameswaram Railway Station (1 km)',
+        nearestAirport: 'Madurai Airport (163 km)',
+        busRoutes: ['SETC from Chennai (10 hrs overnight)', 'Govt buses from Madurai (4 hrs), Trichy (5 hrs)', 'Local bus from Rameswaram Bus Stand'],
+        byRoad: 'From Madurai via Ramanathapuram (163 km, 3.5 hrs). Pamban Bridge connects the island to mainland.',
+        byTrain: 'Rameswaram is the terminus. Trains from Chennai Egmore (Sethu Express), Madurai, Trichy',
+        parking: 'Temple trust parking near East Tower. Vehicle parking on Sea Road.',
+        tips: 'Visit all 22 Theerthams in the morning. Carry extra clothes for the holy bath.'
+      },
+      // VISHNU TEMPLES
+      tirumala: {
+        nearestCity: 'Tirupati',
+        nearestRailway: 'Tirupati Railway Station (22 km)',
+        nearestAirport: 'Tirupati Airport (15 km)',
+        busRoutes: ['APSRTC buses from all major cities to Tirupati', 'Free TTD buses from Tirupati to Tirumala hilltop', 'Buses from Chennai (3 hrs), Bangalore (6 hrs)'],
+        byRoad: 'From Chennai (135 km, 3 hrs via NH-16). From Bangalore (250 km, 6 hrs). Ghat road to hilltop.',
+        byTrain: 'Tirupati Junction is a major station. Trains from Chennai, Hyderabad, Mumbai, Delhi',
+        parking: 'Vehicle parking at Alipiri base. Use TTD buses to hilltop. Limited hilltop parking for VIP pass holders.',
+        tips: 'Book Sarvadarshan token online via TTD website. Visit on weekdays to avoid long queues.'
+      },
+      ranganatha: {
+        nearestCity: 'Srirangam (Trichy)',
+        nearestRailway: 'Srirangam Railway Station (0.5 km) / Trichy Junction (8 km)',
+        nearestAirport: 'Tiruchirappalli Airport (12 km)',
+        busRoutes: ['Town bus 1 from Trichy Central Bus Stand to Srirangam', 'SETC from Chennai (6 hrs), Madurai (3 hrs)', 'Auto from Trichy Junction ₹150'],
+        byRoad: 'From Chennai (320 km, 6 hrs). From Madurai (140 km, 3 hrs). Located on the island between Cauvery & Kollidam rivers.',
+        byTrain: 'Srirangam has its own station. Trichy Junction is a major hub connected to all cities.',
+        parking: 'Parking near Rajagopuram entrance. Two-wheeler parking inside outer prakaram.',
+        tips: 'Vaikunta Ekadashi (Dec) has special Vaikunta Vaasal opening. Carry socks - large area to walk barefoot.'
+      },
+      oppiliappan: {
+        nearestCity: 'Kumbakonam',
+        nearestRailway: 'Kumbakonam Railway Station (8 km)',
+        nearestAirport: 'Tiruchirappalli Airport (95 km)',
+        busRoutes: ['Town bus from Kumbakonam Bus Stand (20 min)', 'Auto from Kumbakonam ₹150', 'Buses from Thanjavur (25 km)'],
+        byRoad: 'From Kumbakonam (8 km). From Trichy (95 km). From Thanjavur (25 km)',
+        byTrain: 'Nearest station: Kumbakonam on Trichy-Mayiladuthurai line',
+        parking: 'Small parking near temple entrance.',
+        tips: 'Try the unique prasadam - made without salt. Combine with Kumbakonam temple circuit.'
+      },
+      varadaraja: {
+        nearestCity: 'Kanchipuram',
+        nearestRailway: 'Kanchipuram Railway Station (2 km)',
+        nearestAirport: 'Chennai Airport (72 km)',
+        busRoutes: ['Bus 212, 812 from Chennai CMBT (2 hrs)', 'Auto from Kanchipuram Bus Stand ₹60', 'Direct buses from Vellore, Tiruvallur'],
+        byRoad: 'From Chennai (75 km, 2 hrs via NH-4). Combined visit with Ekambareswarar & Kamakshi.',
+        byTrain: 'Kanchipuram station - local trains from Chennai Beach & Tambaram',
+        parking: 'Temple parking on Pillayar Koil Street.',
+        tips: 'Don\'t miss the golden & silver lizard carvings on the ceiling of the 100-pillar mandapam.'
+      },
+      parthasarathy: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Triplicane / Chennai Egmore (3 km)',
+        nearestAirport: 'Chennai Airport (14 km)',
+        busRoutes: ['MTC buses 5D, 21G, 29C to Triplicane', 'Auto from Egmore ₹80', 'Walk from Marina Beach (1 km)'],
+        byRoad: 'Located in Triplicane, central Chennai. Near Marina Beach and Kamarajar Salai.',
+        byTrain: 'Chennai Egmore (3 km) or Chennai Central (5 km). Local train to Triplicane (under construction)',
+        parking: 'Street parking on Triplicane High Road. Paid parking lots nearby.',
+        tips: 'Located in historic Triplicane - explore the area\'s many food stalls for authentic South Indian food.'
+      },
+      // DEVI TEMPLES
+      meenakshi: {
+        nearestCity: 'Madurai',
+        nearestRailway: 'Madurai Junction (1.5 km)',
+        nearestAirport: 'Madurai Airport (12 km)',
+        busRoutes: ['SETC from Chennai (8 hrs overnight)', 'Town bus from Periyar Bus Stand (10 min walk)', 'Direct buses from all major TN cities'],
+        byRoad: 'From Chennai (460 km, 8 hrs). From Trichy (140 km, 3 hrs). From Coimbatore (220 km, 4.5 hrs)',
+        byTrain: 'Madurai Junction - major station with trains from Chennai, Mumbai, Delhi, Bangalore, Trichy',
+        parking: 'Parking at Puthu Mandapam and South Avani Moola Street. Temple trust parking near West Tower.',
+        tips: 'Don\'t miss the evening Palliyarai ceremony (8:30 PM). The Golden Lotus Tank at sunset is beautiful.'
+      },
+      kamakshi: {
+        nearestCity: 'Kanchipuram',
+        nearestRailway: 'Kanchipuram Railway Station (1 km)',
+        nearestAirport: 'Chennai Airport (72 km)',
+        busRoutes: ['Bus 212, 812 from Chennai CMBT (2 hrs)', 'Auto from Kanchipuram Bus Stand ₹40', 'Direct buses from Vellore'],
+        byRoad: 'From Chennai (72 km, 2 hrs). In Kanchipuram town center, walkable from bus stand.',
+        byTrain: 'Kanchipuram station - local trains from Chennai',
+        parking: 'Parking on Anna Salai near the temple.',
+        tips: 'Visit during Navaratri for the grand 10-day festival. Combine with Ekambareswarar & Varadaraja.'
+      },
+      samayapuram: {
+        nearestCity: 'Trichy',
+        nearestRailway: 'Trichy Junction (15 km)',
+        nearestAirport: 'Tiruchirappalli Airport (20 km)',
+        busRoutes: ['Town bus 63, 128 from Trichy Central Bus Stand (30 min)', 'Direct buses from Chennai (5 hrs), Madurai (3 hrs)', 'Auto from Trichy ₹250'],
+        byRoad: 'On the Trichy-Chennai highway (NH-45), 15 km from Trichy. Well sign-posted.',
+        byTrain: 'Nearest: Trichy Junction. Then bus/auto to Samayapuram (15 km)',
+        parking: 'Large temple parking complex. Gets crowded on Tuesdays and Fridays.',
+        tips: 'Tuesdays & Fridays are peak days - arrive before 6 AM. Aadi month (Jul-Aug) is the busiest.'
+      },
+      mookambika: {
+        nearestCity: 'Kollur, Karnataka',
+        nearestRailway: 'Kundapura Railway Station (40 km)',
+        nearestAirport: 'Mangalore Airport (130 km)',
+        busRoutes: ['KSRTC buses from Mangalore (4 hrs), Udupi (2 hrs)', 'Private buses from Bangalore (8 hrs)', 'Local bus from Kundapura to Kollur'],
+        byRoad: 'From Mangalore (130 km), Udupi (80 km), Bangalore (420 km). Ghat road section.',
+        byTrain: 'Kundapura station on Konkan Railway line. Then bus/auto to Kollur (40 km)',
+        parking: 'Temple trust parking near the entrance. Free parking available.',
+        tips: 'Book accommodation at temple guest house in advance. Kodachadri trek can be combined.'
+      },
+      kanyakumari: {
+        nearestCity: 'Kanyakumari',
+        nearestRailway: 'Kanyakumari Railway Station (0.5 km)',
+        nearestAirport: 'Trivandrum Airport (85 km)',
+        busRoutes: ['SETC from Chennai (14 hrs overnight)', 'Govt buses from Madurai (5 hrs), Trichy (7 hrs)', 'KSRTC from Trivandrum (2 hrs)'],
+        byRoad: 'Southernmost tip of India. From Madurai (240 km), Trivandrum (85 km), Chennai (700 km)',
+        byTrain: 'Kanyakumari terminus - trains from Chennai, Mumbai, Bangalore, Trivandrum',
+        parking: 'Parking near the temple and Vivekananda Rock ferry point.',
+        tips: 'Watch sunrise from the beach and sunset from Sunset Point. Visit Vivekananda Rock Memorial by ferry.'
+      },
+      // GANESH TEMPLES
+      pillayarpatti: {
+        nearestCity: 'Sivagangai / Karaikudi',
+        nearestRailway: 'Karaikudi Railway Station (12 km)',
+        nearestAirport: 'Madurai Airport (90 km)',
+        busRoutes: ['Local bus from Karaikudi (30 min)', 'Govt buses from Madurai (3 hrs)', 'Auto from Karaikudi ₹200'],
+        byRoad: 'From Karaikudi (12 km), Sivagangai (30 km), Madurai (90 km). On Karaikudi-Sivagangai road.',
+        byTrain: 'Karaikudi station on Trichy-Rameswaram line',
+        parking: 'Temple parking on the main road.',
+        tips: 'The rock-cut cave temple is unique. Combine with Chettinad heritage tour from Karaikudi.'
+      },
+      ucchipillayar: {
+        nearestCity: 'Trichy',
+        nearestRailway: 'Trichy Junction (2 km)',
+        nearestAirport: 'Tiruchirappalli Airport (8 km)',
+        busRoutes: ['Town bus to Rock Fort area', 'Auto from Trichy Junction ₹60', 'Walk from Teppakulam (1 km)'],
+        byRoad: 'In the heart of Trichy city, on the Rock Fort. From Chennai (320 km), Madurai (140 km)',
+        byTrain: 'Trichy Junction - major station with connections to all cities',
+        parking: 'Parking at base of Rock Fort on Mahatma Gandhi Road.',
+        tips: 'Climb 437 steps to the top. Visit early morning to avoid heat. Stunning city view from the top.'
+      },
+      siddhivinayak: {
+        nearestCity: 'Mumbai',
+        nearestRailway: 'Dadar Railway Station (1 km)',
+        nearestAirport: 'Mumbai Airport (8 km)',
+        busRoutes: ['BEST bus 312, 313 to Prabhadevi', 'Dadar local train station (1 km walk)', 'Auto from Dadar ₹30'],
+        byRoad: 'In Prabhadevi, central Mumbai. Well connected by road from all parts of Mumbai.',
+        byTrain: 'Dadar station on Western & Central lines. Prabhadevi station on Western line (closest)',
+        parking: 'Temple trust parking (limited). Paid parking lots on S.K. Bole Road.',
+        tips: 'Tuesdays are extremely crowded. Early morning (5:30 AM) on weekdays is the best time.'
+      },
+      manakula: {
+        nearestCity: 'Pondicherry',
+        nearestRailway: 'Pondicherry Railway Station (1 km)',
+        nearestAirport: 'Chennai Airport (135 km)',
+        busRoutes: ['Govt buses from Chennai (3.5 hrs)', 'Town bus within Pondicherry', 'Walk from Pondicherry beach (0.5 km)'],
+        byRoad: 'From Chennai (160 km via ECR, 3.5 hrs). In the French Quarter of Pondicherry.',
+        byTrain: 'Pondicherry station - trains from Chennai Egmore, Villupuram',
+        parking: 'Street parking on Manakula Vinayagar Koil Street.',
+        tips: 'The temple elephant blesses devotees in the morning. Explore the French Quarter after darshan.'
+      },
+      doddaganapathi: {
+        nearestCity: 'Bangalore',
+        nearestRailway: 'Bangalore City Railway Station (5 km)',
+        nearestAirport: 'Kempegowda Airport (35 km)',
+        busRoutes: ['BMTC bus to Basavanagudi / Bull Temple Road', 'Metro: nearest Jayanagar station', 'Auto from Majestic ₹100'],
+        byRoad: 'In Basavanagudi, south Bangalore. Near Bull Temple and Bugle Rock Park.',
+        byTrain: 'Bangalore City station or Yeshwanthpur station',
+        parking: 'Parking near Bull Temple. Street parking available.',
+        tips: 'Visit the adjacent Nandi (Bull) Temple too. Nearby Lalbagh Botanical Garden is a must-visit.'
+      },
+      // MURUGAN TEMPLES
+      palani: {
+        nearestCity: 'Palani',
+        nearestRailway: 'Palani Railway Station (2 km)',
+        nearestAirport: 'Madurai Airport (120 km) / Coimbatore Airport (110 km)',
+        busRoutes: ['SETC from Chennai (8 hrs)', 'Govt buses from Coimbatore (2.5 hrs), Madurai (3 hrs)', 'Town bus from Palani Bus Stand'],
+        byRoad: 'From Coimbatore (110 km, 2.5 hrs). From Madurai (120 km, 3 hrs). From Chennai (450 km, 8 hrs)',
+        byTrain: 'Palani Junction on Dindigul-Pollachi line. Trains from Madurai, Dindigul, Coimbatore',
+        parking: 'Parking at the base of the hill near winch station. Separate two-wheeler parking.',
+        tips: 'Take the rope car or winch to avoid climbing 693 steps. Early morning has shortest queues.'
+      },
+      tiruchendur: {
+        nearestCity: 'Tiruchendur',
+        nearestRailway: 'Tiruchendur Railway Station (0.5 km)',
+        nearestAirport: 'Tuticorin Airport (40 km)',
+        busRoutes: ['Govt buses from Madurai (5 hrs), Trichy (6 hrs)', 'Direct buses from Thoothukudi (40 km, 1 hr)', 'SETC from Chennai (12 hrs overnight)'],
+        byRoad: 'From Thoothukudi (40 km, 1 hr). From Madurai (220 km, 5 hrs). Coastal road from Rameswaram.',
+        byTrain: 'Tiruchendur station on Tuticorin-Tiruchendur line',
+        parking: 'Parking on Beach Road near the temple. Temple trust parking available.',
+        tips: 'Skanda Sashti (Oct-Nov) is the grandest festival. The seaside view from the temple is stunning.'
+      },
+      swamimalai: {
+        nearestCity: 'Kumbakonam',
+        nearestRailway: 'Kumbakonam Railway Station (5 km)',
+        nearestAirport: 'Tiruchirappalli Airport (90 km)',
+        busRoutes: ['Town bus from Kumbakonam (15 min)', 'Auto from Kumbakonam ₹100', 'Buses from Thanjavur (30 km)'],
+        byRoad: 'From Kumbakonam (5 km). From Thanjavur (30 km). From Trichy (90 km).',
+        byTrain: 'Kumbakonam station on Trichy-Mayiladuthurai line',
+        parking: 'Parking at the base of the 60 steps.',
+        tips: 'Climb the 60 steps (one for each Tamil year). Visit the famous Swamimalai bronze workshops nearby.'
+      },
+      thiruttani: {
+        nearestCity: 'Thiruttani',
+        nearestRailway: 'Thiruttani Railway Station (1 km)',
+        nearestAirport: 'Chennai Airport (84 km)',
+        busRoutes: ['Bus from Chennai CMBT (2.5 hrs)', 'Frequent buses from Arakkonam (20 km)', 'Direct bus from Tirupati (100 km)'],
+        byRoad: 'From Chennai (84 km, 2.5 hrs via NH-1). From Tirupati (100 km). On Chennai-Tirupati highway.',
+        byTrain: 'Thiruttani station on Chennai-Arakkonam-Renigunta line. Frequent local trains from Chennai.',
+        parking: 'Parking at the base of the hill.',
+        tips: '365 steps to the top. Easy day trip from Chennai. Combine with Tirupati visit.'
+      },
+      pazhamudircholai: {
+        nearestCity: 'Madurai',
+        nearestRailway: 'Madurai Junction (20 km)',
+        nearestAirport: 'Madurai Airport (25 km)',
+        busRoutes: ['Town bus from Madurai Periyar Bus Stand', 'Auto from Madurai ₹400', 'Shared auto available from Alanganallur'],
+        byRoad: 'From Madurai (20 km, 45 min). On the Azhahar Hills, off Madurai-Dindigul highway.',
+        byTrain: 'Madurai Junction. Then bus/auto to Pazhamudircholai.',
+        parking: 'Parking at the base of Azhahar Hills.',
+        tips: 'Visit the Noopura Gangai waterfall. Combine with Meenakshi Temple and Thirupparankundram.'
+      },
+      // HANUMAN TEMPLES
+      namakkal: {
+        nearestCity: 'Namakkal',
+        nearestRailway: 'Namakkal Road (Salem line, 10 km)',
+        nearestAirport: 'Tiruchirappalli Airport (100 km) / Salem Airport (55 km)',
+        busRoutes: ['Govt buses from Salem (55 km, 1.5 hrs)', 'Buses from Trichy (100 km, 2.5 hrs)', 'SETC from Chennai (6 hrs)'],
+        byRoad: 'From Salem (55 km), Trichy (100 km), Erode (60 km). On NH-44.',
+        byTrain: 'Salem Junction (55 km) is the nearest major station',
+        parking: 'Parking at the base of the rock.',
+        tips: 'Adjacent Narasimha temple is equally impressive. The rock formation is a geological wonder.'
+      },
+      nanganallur: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Nanganallur Road Metro / Meenambakkam (3 km)',
+        nearestAirport: 'Chennai Airport (3 km)',
+        busRoutes: ['MTC buses 51B, 52A, 119 to Nanganallur', 'Metro to Nanganallur Road station', 'Auto from Guindy ₹80'],
+        byRoad: 'In Nanganallur, south Chennai. Near the airport. 15 km from city center.',
+        byTrain: 'Nanganallur Road Metro station (Blue line). Meenambakkam MRTS station (3 km).',
+        parking: 'Temple trust parking on 65 Feet Road. Gets very crowded on Saturdays.',
+        tips: 'Saturdays are special for Hanuman worship. Arrive before 6 AM on Saturdays to beat crowds.'
+      },
+      hanumangarhi: {
+        nearestCity: 'Ayodhya',
+        nearestRailway: 'Ayodhya Junction (1 km)',
+        nearestAirport: 'Ayodhya Airport (8 km)',
+        busRoutes: ['UP Roadways from Lucknow (3 hrs)', 'Buses from Varanasi (5 hrs)', 'Auto from Ayodhya station ₹30'],
+        byRoad: 'From Lucknow (135 km, 3 hrs). From Varanasi (200 km, 5 hrs).',
+        byTrain: 'Ayodhya Junction & Ayodhya Cantt stations. Trains from Lucknow, Delhi, Varanasi',
+        parking: 'Parking near Naya Ghat. Walk to temple (500m).',
+        tips: 'Combine with Ram Mandir visit. Tuesdays and Saturdays are special.'
+      },
+      jakhu: {
+        nearestCity: 'Shimla',
+        nearestRailway: 'Shimla Railway Station (2 km)',
+        nearestAirport: 'Shimla Airport (23 km)',
+        busRoutes: ['HRTC buses from Delhi (10 hrs)', 'Local bus/taxi from Shimla Mall Road', 'Ropeway available from Ridge'],
+        byRoad: 'At Jakhoo Hill peak in Shimla. From Delhi (340 km). Steep climb from Mall Road (2 km).',
+        byTrain: 'Shimla station on the heritage Kalka-Shimla narrow gauge railway',
+        parking: 'No parking at top. Park at Mall Road and walk/take ropeway.',
+        tips: 'Beware of monkeys - don\'t carry food openly. The view from the top is spectacular.'
+      },
+      salasar: {
+        nearestCity: 'Salasar, Rajasthan',
+        nearestRailway: 'Sujangarh Railway Station (24 km)',
+        nearestAirport: 'Jaipur Airport (185 km)',
+        busRoutes: ['RSRTC from Jaipur (5 hrs)', 'Buses from Delhi (8 hrs via Jaipur)', 'Local bus from Sujangarh (30 min)'],
+        byRoad: 'From Jaipur (185 km, 5 hrs). From Delhi (350 km, 8 hrs). On Jaipur-Bikaner highway.',
+        byTrain: 'Sujangarh station (24 km). Then auto/bus to Salasar.',
+        parking: 'Large parking complex near the temple.',
+        tips: 'Chaitra Purnima & Ashwin Purnima are the biggest festivals. Many devotees walk barefoot from afar.'
+      },
+      // LOCAL TEMPLES
+      kapaleeswarar: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Mylapore / Luz Church Road (0.5 km)',
+        nearestAirport: 'Chennai Airport (10 km)',
+        busRoutes: ['MTC buses 5, 5B, 21H to Mylapore', 'Auto from T. Nagar ₹60', 'Walk from Luz Metro (under construction)'],
+        byRoad: 'In Mylapore, central Chennai. 10 km from Chennai Central. Kutchery Road entrance.',
+        byTrain: 'Luz Church Road MRTS station (0.5 km). Chennai Egmore (4 km).',
+        parking: 'Parking on Chitrakulam Street. Limited street parking on Kutchery Road.',
+        tips: 'Attend the Arubathimoovar festival (Apr) to see 63 Nayanmar procession. Mylapore is great for street food.'
+      },
+      ashtalakshmi: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Thiruvanmiyur MRTS (2 km)',
+        nearestAirport: 'Chennai Airport (8 km)',
+        busRoutes: ['MTC bus 19B, 21H to Besant Nagar', 'Auto from Adyar ₹60', 'Walk from Elliot\'s Beach entrance'],
+        byRoad: 'On Elliot\'s Beach Road, Besant Nagar. 12 km from Chennai Central.',
+        byTrain: 'Thiruvanmiyur MRTS station (2 km). Indira Nagar MRTS (3 km)',
+        parking: 'Beach Road parking. Besant Nagar parking near beach entrance.',
+        tips: 'Visit during sunset for beautiful sea views from the temple. Elliot\'s Beach is ideal for an evening walk after darshan.'
+      },
+      vadapalani: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Vadapalani Metro Station (0.3 km)',
+        nearestAirport: 'Chennai Airport (7 km)',
+        busRoutes: ['MTC buses 27, 27A, 47A to Vadapalani', 'Metro Blue line - Vadapalani station (direct)', 'Auto from T. Nagar ₹50'],
+        byRoad: 'In Vadapalani, west Chennai. On Arcot Road. 10 km from Chennai Central.',
+        byTrain: 'Vadapalani Metro station (Blue line) - closest station. Also Ashok Nagar Metro (1 km).',
+        parking: 'Temple trust parking on 100 Feet Road. Multi-level parking nearby.',
+        tips: 'Very crowded on Thai Poosam & Skanda Sashti. Early morning is best for a peaceful darshan.'
+      },
+      marundeeswarar: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Thiruvanmiyur MRTS (0.5 km)',
+        nearestAirport: 'Chennai Airport (6 km)',
+        busRoutes: ['MTC buses to Thiruvanmiyur', 'Auto from Adyar ₹40', 'MRTS to Thiruvanmiyur station (0.5 km)'],
+        byRoad: 'In Thiruvanmiyur, south Chennai. On ECR (East Coast Road).',
+        byTrain: 'Thiruvanmiyur MRTS station (closest)',
+        parking: 'Street parking on Thiruvanmiyur High Road.',
+        tips: 'Visit for health-related prayers. The Marudha tree in the temple is believed to have healing powers.'
+      },
+      mundakakanni: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Mylapore / Luz Church Road MRTS (0.3 km)',
+        nearestAirport: 'Chennai Airport (10 km)',
+        busRoutes: ['MTC buses 5, 5B to Mylapore', 'Walk from Kapaleeshwarar Temple (0.3 km)', 'Auto from T. Nagar ₹60'],
+        byRoad: 'In Mylapore, near Kapaleeshwarar Temple. East Mada Street.',
+        byTrain: 'Luz Church Road MRTS (0.3 km)',
+        parking: 'Use Kapaleeshwarar Temple parking. Street parking on Mada Streets.',
+        tips: 'Visit together with Kapaleeshwarar Temple - they are just 300m apart.'
+      },
+      perur: {
+        nearestCity: 'Coimbatore',
+        nearestRailway: 'Coimbatore Junction (8 km)',
+        nearestAirport: 'Coimbatore Airport (12 km)',
+        busRoutes: ['Town bus 76 from Gandhipuram Bus Stand (30 min)', 'Auto from Coimbatore ₹200', 'Buses from Pollachi (30 km)'],
+        byRoad: 'From Coimbatore (8 km, 20 min). On the Coimbatore-Pollachi road.',
+        byTrain: 'Coimbatore Junction - major station. Then bus/auto to Perur.',
+        parking: 'Temple parking near the entrance gate.',
+        tips: 'Called the Chidambaram of the South. The Kanaka Sabha is a must-see. Combine with Eachanari visit.'
+      },
+      marudhamalai: {
+        nearestCity: 'Coimbatore',
+        nearestRailway: 'Coimbatore Junction (15 km)',
+        nearestAirport: 'Coimbatore Airport (18 km)',
+        busRoutes: ['Town bus 12B from Gandhipuram (45 min)', 'Auto from Coimbatore ₹300', 'Buses from Mettupalayam (25 km)'],
+        byRoad: 'From Coimbatore (15 km). On the foothills of Western Ghats, off Mettupalayam Road.',
+        byTrain: 'Coimbatore Junction. Then bus/auto to Marudhamalai.',
+        parking: 'Parking at the base of the hill. Steps lead to the hilltop temple.',
+        tips: 'The hill is rich in medicinal herbs. Watch for peacocks on the way up.'
+      },
+      eachanari: {
+        nearestCity: 'Coimbatore',
+        nearestRailway: 'Coimbatore Junction (12 km)',
+        nearestAirport: 'Coimbatore Airport (16 km)',
+        busRoutes: ['Town bus 59 from Gandhipuram (40 min)', 'Auto from Coimbatore ₹250', 'Buses from Pollachi (20 km)'],
+        byRoad: 'From Coimbatore (12 km). On the Coimbatore-Pollachi highway.',
+        byTrain: 'Coimbatore Junction. Then bus/auto to Eachanari.',
+        parking: 'Large parking for vehicles (including new vehicle pooja vehicles). Separate two-wheeler parking.',
+        tips: 'This is THE temple for new vehicle pooja. Bring your new vehicle for blessings. Sankatahara Chaturthi is special.'
+      },
+      koniamman: {
+        nearestCity: 'Coimbatore',
+        nearestRailway: 'Coimbatore Junction (1 km)',
+        nearestAirport: 'Coimbatore Airport (10 km)',
+        busRoutes: ['Walk from Gandhipuram Bus Stand (1 km)', 'Town bus - most routes pass nearby', 'Auto from Coimbatore Junction ₹40'],
+        byRoad: 'In the heart of Coimbatore city. Near the main market area.',
+        byTrain: 'Coimbatore Junction (1 km walk)',
+        parking: 'Street parking on Big Bazaar Street. Paid parking lots nearby.',
+        tips: 'The annual chariot festival (Panguni) is spectacular. The temple is in the bustling market area.'
+      },
+      siruvapuri: {
+        nearestCity: 'Chennai',
+        nearestRailway: 'Ponneri Railway Station (10 km)',
+        nearestAirport: 'Chennai Airport (50 km)',
+        busRoutes: ['Bus from Chennai CMBT to Ponneri, then auto (1 hr total)', 'Direct share auto from Ponneri to Siruvapuri', 'Govt bus from Tiruvallur (20 km)'],
+        byRoad: 'From Chennai (40 km, 1.5 hrs via Ponneri). From Tiruvallur (20 km).',
+        byTrain: 'Ponneri station on Chennai-Sullurpeta line. Then auto to Siruvapuri (10 km).',
+        parking: 'Temple parking available. Not crowded except on Thai Poosam.',
+        tips: 'Popular for marriage parikaram & child blessings. Easy day trip from Chennai.'
+      },
+      thirunallar: {
+        nearestCity: 'Karaikal',
+        nearestRailway: 'Karaikal Railway Station (8 km)',
+        nearestAirport: 'Tiruchirappalli Airport (130 km)',
+        busRoutes: ['Buses from Karaikal (15 min)', 'Direct buses from Kumbakonam (40 km, 1 hr)', 'SETC from Chennai (7 hrs)'],
+        byRoad: 'From Karaikal (8 km). From Kumbakonam (40 km). From Nagapattinam (25 km).',
+        byTrain: 'Karaikal station. Nagapattinam Junction (25 km) is larger with more trains.',
+        parking: 'Temple parking on the main road. Overcrowded on Saturdays & Shani Peyarchi days.',
+        tips: 'Bathe in Nala Theertham before darshan. Saturdays & Shani transit days are extremely crowded - arrive by 4 AM.'
+      },
+      thirupparankundram: {
+        nearestCity: 'Madurai',
+        nearestRailway: 'Thirupparankundram Railway Station (0.5 km)',
+        nearestAirport: 'Madurai Airport (6 km)',
+        busRoutes: ['Town bus 4, 4A from Madurai Periyar Bus Stand (30 min)', 'Auto from Madurai ₹150', 'Frequent buses from Madurai city'],
+        byRoad: 'From Madurai (8 km, 20 min). At the base of Thirupparankundram hill.',
+        byTrain: 'Thirupparankundram has its own station on Madurai-Virudhunagar line.',
+        parking: 'Temple parking near the hill base. Steps lead up to the cave temple.',
+        tips: 'First of the 6 Aaru Padai Veedu. Combine with Meenakshi Temple & Pazhamudircholai.'
+      },
+      samayapuram_local: {
+        nearestCity: 'Trichy',
+        nearestRailway: 'Trichy Junction (15 km)',
+        nearestAirport: 'Tiruchirappalli Airport (20 km)',
+        busRoutes: ['Town bus 63, 128 from Trichy Bus Stand (30 min)', 'Direct buses from Chennai, Madurai', 'Auto from Trichy ₹250'],
+        byRoad: 'On NH-45, 15 km north of Trichy. Well sign-posted.',
+        byTrain: 'Trichy Junction, then bus/auto (15 km)',
+        parking: 'Large temple parking complex. Crowded on Tuesdays & Fridays.',
+        tips: 'Tuesdays & Fridays are peak days. Aadi month (Jul-Aug) draws millions.'
+      },
+      thiruchendur_local: {
+        nearestCity: 'Tiruchendur',
+        nearestRailway: 'Tiruchendur Railway Station (0.5 km)',
+        nearestAirport: 'Tuticorin Airport (40 km)',
+        busRoutes: ['Buses from Thoothukudi (1 hr)', 'SETC from Chennai (12 hrs)', 'Govt buses from Madurai (5 hrs)'],
+        byRoad: 'From Thoothukudi (40 km). From Madurai (220 km). Coastal road.',
+        byTrain: 'Tiruchendur station. Tuticorin Junction (40 km) has more trains.',
+        parking: 'Beach Road parking near temple.',
+        tips: 'Skanda Sashti festival (Oct-Nov) on the beach is unforgettable.'
+      },
+      srivilliputhur: {
+        nearestCity: 'Srivilliputhur',
+        nearestRailway: 'Srivilliputhur Railway Station (0.5 km)',
+        nearestAirport: 'Madurai Airport (75 km)',
+        busRoutes: ['Buses from Madurai (2.5 hrs)', 'Buses from Virudhunagar (30 km, 45 min)', 'SETC from Chennai (10 hrs)'],
+        byRoad: 'From Madurai (75 km). From Virudhunagar (30 km). On Madurai-Tenkasi road.',
+        byTrain: 'Srivilliputhur station on Madurai-Tenkasi line',
+        parking: 'Temple parking near the 192-feet gopuram.',
+        tips: 'The gopuram is the TN Government emblem. Try the famous Srivilliputhur Palkova sweet.'
+      },
+      vaitheeswaran: {
+        nearestCity: 'Vaitheeswaran Koil',
+        nearestRailway: 'Vaitheeswaran Koil Railway Station (0.3 km)',
+        nearestAirport: 'Tiruchirappalli Airport (110 km)',
+        busRoutes: ['Buses from Kumbakonam (30 km, 45 min)', 'Buses from Mayiladuthurai (15 km)', 'SETC from Chennai (6 hrs)'],
+        byRoad: 'From Kumbakonam (30 km). From Chidambaram (40 km). On Kumbakonam-Chidambaram road.',
+        byTrain: 'Vaitheeswaran Koil station on Mayiladuthurai-Kumbakonam line',
+        parking: 'Temple parking on the main road.',
+        tips: 'Try a Nadi Astrology reading - many readers around the temple. Visit during Skanda Sashti.'
+      },
+      suryanar: {
+        nearestCity: 'Kumbakonam',
+        nearestRailway: 'Kumbakonam Railway Station (15 km)',
+        nearestAirport: 'Tiruchirappalli Airport (80 km)',
+        busRoutes: ['Town bus from Kumbakonam (30 min)', 'Auto from Kumbakonam ₹200', 'Buses from Thanjavur (35 km)'],
+        byRoad: 'From Kumbakonam (15 km). Near Aduthurai on Kumbakonam-Thanjavur road.',
+        byTrain: 'Kumbakonam station. Then bus/auto to Suryanar Kovil.',
+        parking: 'Temple parking available.',
+        tips: 'Visit all 9 planet shrines. Ratha Saptami (Feb) is the biggest festival. Combine with Navagraha temple circuit.'
+      },
+      karaikal_amman: {
+        nearestCity: 'Karaikal',
+        nearestRailway: 'Karaikal Railway Station (1 km)',
+        nearestAirport: 'Tiruchirappalli Airport (130 km)',
+        busRoutes: ['Buses from Nagapattinam (20 km)', 'Buses from Kumbakonam (45 km)', 'Walk from Karaikal Bus Stand (1 km)'],
+        byRoad: 'In Karaikal town. From Nagapattinam (20 km). From Kumbakonam (45 km).',
+        byTrain: 'Karaikal station on Nagapattinam-Karaikal line',
+        parking: 'Street parking near the temple.',
+        tips: 'Important temple for women with family issues. Combine with Thirunallar visit (8 km away).'
+      },
+      rahu_ketu: {
+        nearestCity: 'Kumbakonam',
+        nearestRailway: 'Kumbakonam Railway Station (7 km)',
+        nearestAirport: 'Tiruchirappalli Airport (85 km)',
+        busRoutes: ['Town bus from Kumbakonam (20 min)', 'Auto from Kumbakonam ₹150', 'Buses from Thanjavur (25 km)'],
+        byRoad: 'At Thirunageswaram, 7 km from Kumbakonam. On Kumbakonam-Swamimalai road.',
+        byTrain: 'Kumbakonam station. Then bus/auto.',
+        parking: 'Temple parking available.',
+        tips: 'Rahu Kalam time pooja is most powerful. Combine with Navagraha temple circuit and Swamimalai.'
+      }
+    };
+
+    // Apply enrichment and travel to templeDatabase
+    for (var eKey in templeEnrichment) {
+      if (templeDatabase[eKey]) {
+        var en = templeEnrichment[eKey];
+        if (en.district) templeDatabase[eKey].district = en.district;
+        if (en.history) templeDatabase[eKey].history = en.history;
+        if (en.funFacts) templeDatabase[eKey].funFacts = en.funFacts;
+        if (en.videoId) templeDatabase[eKey].videoId = en.videoId;
+      }
+    }
+    for (var tKey in templeTravel) {
+      if (templeDatabase[tKey]) {
+        templeDatabase[tKey].travel = templeTravel[tKey];
+      }
+    }
+
+    // ===== TAMIL NADU DISTRICT DATA =====
+    var tamilNaduDistricts = [
+      { id: 'chennai', name: 'Chennai', icon: '🏙️' },
+      { id: 'madurai', name: 'Madurai', icon: '🏛️' },
+      { id: 'kanchipuram', name: 'Kanchipuram', icon: '🛕' },
+      { id: 'thanjavur', name: 'Thanjavur', icon: '🏰' },
+      { id: 'tiruchirappalli', name: 'Trichy', icon: '🪨' },
+      { id: 'coimbatore', name: 'Coimbatore', icon: '⛰️' },
+      { id: 'tiruvannamalai', name: 'Tiruvannamalai', icon: '🔥' },
+      { id: 'dindigul', name: 'Dindigul', icon: '🗡️' },
+      { id: 'thoothukudi', name: 'Thoothukudi', icon: '🌊' },
+      { id: 'ramanathapuram', name: 'Rameswaram', icon: '🌉' },
+      { id: 'tiruvallur', name: 'Tiruvallur', icon: '📍' },
+      { id: 'nagapattinam', name: 'Nagapattinam', icon: '💊' },
+      { id: 'cuddalore', name: 'Cuddalore', icon: '💃' },
+      { id: 'kanniyakumari', name: 'Kanyakumari', icon: '🌅' },
+      { id: 'sivagangai', name: 'Sivagangai', icon: '🐘' },
+      { id: 'virudhunagar', name: 'Virudhunagar', icon: '🌺' },
+      { id: 'namakkal', name: 'Namakkal', icon: '🪨' },
+      { id: 'karaikal', name: 'Karaikal', icon: '🪐' }
+    ];
+
+    function getTemplesByDistrict(districtId) {
+      var result = [];
+      for (var key in templeDatabase) {
+        var t = templeDatabase[key];
+        if (t.district && t.district.toLowerCase() === districtId.toLowerCase()) {
+          result.push(t);
+        }
+      }
+      return result;
+    }
+
+    // Render district chips
+    (function() {
+      var distHtml = '';
+      tamilNaduDistricts.forEach(function(d) {
+        var count = getTemplesByDistrict(d.id).length;
+        if (count > 0) {
+          distHtml +=
+            '<div class="district-chip" onclick="showDistrict(\'' + d.id + '\')" id="dc-' + d.id + '">' +
+              '<span class="dc-icon">' + d.icon + '</span>' +
+              '<span class="dc-name">' + d.name + '</span>' +
+              '<span class="dc-count">' + count + ' temples</span>' +
+            '</div>';
+        }
+      });
+      document.getElementById('district-scroll').innerHTML = distHtml;
+    })();
+
+    // Category labels and icons
+    var categories = {
+      shiva:   { label: 'Shiva Temples', icon: '🔱' },
+      vishnu:  { label: 'Vishnu Temples', icon: '🕉️' },
+      devi:    { label: 'Devi / Amman Temples', icon: '🪷' },
+      ganesh:  { label: 'Ganesh Temples', icon: '🐘' },
+      murugan: { label: 'Murugan Temples', icon: '🗡️' },
+      hanuman: { label: 'Hanuman Temples', icon: '🐒' },
+      local:   { label: 'Local & Popular Temples', icon: '📍' }
+    };
+
+    // Get temples by category
+    function getTemplesByCategory(cat) {
+      var result = [];
+      for (var key in templeDatabase) {
+        if (templeDatabase[key].category === cat) result.push(templeDatabase[key]);
+      }
+      return result;
+    }
+
+    // Show category temple list
+    function showCategory(cat) {
+      var temples = getTemplesByCategory(cat);
+      var catInfo = categories[cat];
+
+      document.getElementById('categories-view').classList.add('hidden');
+      var listView = document.getElementById('temple-list-view');
+      listView.classList.add('active');
+
+      var html =
+        '<div class="list-header">' +
+          '<button class="list-back-btn" onclick="goBack()">&larr;</button>' +
+          '<h2>' + catInfo.icon + ' ' + catInfo.label + '</h2>' +
+          '<span class="temple-count">' + temples.length + ' temples</span>' +
+        '</div>';
+
+      temples.forEach(function(t) {
+        var tags = t.tags ? t.tags.map(function(tag) { return '<span class="temple-tag">' + esc(tag) + '</span>'; }).join('') : '';
+        html +=
+          '<div class="temple-card" onclick="selectTemple(\'' + t.id + '\')">' +
+            '<div class="temple-card-banner"><img src="' + esc(t.image) + '" alt="' + esc(t.name) + '"></div>' +
+            '<div class="temple-card-body">' +
+              '<h3>' + esc(t.name) + '</h3>' +
+              '<span class="loc">📍 ' + esc(t.location) + '</span>' +
+              '<div class="temple-tags">' + tags + '</div>' +
+            '</div>' +
+            '<div class="temple-card-footer">' +
+              '<span class="rating">⭐ ' + esc(t.rating) + ' (' + esc(t.reviews) + ')</span>' +
+            '</div>' +
+          '</div>';
+      });
+
+      listView.innerHTML = html;
+    }
+
+    // Show temples by district
+    function showDistrict(districtId) {
+      var temples = getTemplesByDistrict(districtId);
+      var distInfo = tamilNaduDistricts.find(function(d) { return d.id === districtId; });
+      var distName = distInfo ? distInfo.name : districtId;
+      var distIcon = distInfo ? distInfo.icon : '📍';
+
+      document.getElementById('categories-view').classList.add('hidden');
+      var listView = document.getElementById('temple-list-view');
+      listView.classList.add('active');
+
+      var html =
+        '<div class="list-header">' +
+          '<button class="list-back-btn" onclick="goBack()">&larr;</button>' +
+          '<h2>' + distIcon + ' ' + esc(distName) + ' Temples</h2>' +
+          '<span class="temple-count">' + temples.length + ' temples</span>' +
+        '</div>';
+
+      // District intro card
+      var distIntros = {
+        chennai: 'The capital city of Tamil Nadu, home to ancient temples dating back to the Pallava dynasty. Chennai\'s Mylapore and Triplicane are cultural hubs with centuries-old shrines.',
+        madurai: 'One of the oldest continuously inhabited cities in the world. Known as the "Temple City" and "Athens of the East", Madurai is dominated by the magnificent Meenakshi Amman Temple.',
+        kanchipuram: 'Known as the "City of Thousand Temples", Kanchipuram is one of the seven sacred cities of Hinduism. It houses both Shaiva and Vaishnava temples of great importance.',
+        thanjavur: 'The cultural capital of Tamil Nadu, home to the UNESCO-listed Brihadeeswarar Temple. The Chola dynasty made Thanjavur the center of art, architecture, and devotion.',
+        tiruchirappalli: 'Trichy is home to the Rock Fort temple, the vast Ranganathaswamy Temple at Srirangam, and numerous sacred sites along the Cauvery river.',
+        coimbatore: 'The Manchester of South India, surrounded by the Western Ghats. Known for powerful Vinayagar, Murugan, and Amman temples along the hill ranges.',
+        tiruvannamalai: 'Dominated by the sacred Arunachala Hill, this district is a major Shaivite center. The Girivalam path around the hill draws millions on full moon nights.',
+        dindigul: 'Home to the famous Palani Murugan Temple, one of the Aaru Padai Veedu. The Palani Hills and surrounding areas have many ancient temples.',
+        thoothukudi: 'The coastal district home to Tiruchendur Murugan Temple - the only seaside Aaru Padai Veedu. Rich in maritime temple heritage.',
+        ramanathapuram: 'The district that houses Rameswaram - one of India\'s most sacred pilgrimage sites and a Char Dham destination. Connected to the Ramayana epic.',
+        tiruvallur: 'The gateway district of Chennai region. Home to Thiruttani Murugan Temple and Siruvapuri Murugan Temple, both important pilgrimage centers.',
+        nagapattinam: 'A historic port district with temples linked to healing traditions. Vaitheeswaran Koil and its Nadi Astrology center draw seekers from around the world.',
+        cuddalore: 'Home to the iconic Chidambaram Nataraja Temple, one of the Pancha Bhoota Sthalams. The district has many ancient Shiva temples.',
+        kanniyakumari: 'At the southernmost tip of India where three oceans meet. A land of divine energy with the Kanyakumari Amman Temple and the Vivekananda Rock Memorial.',
+        sivagangai: 'Home to the ancient rock-cut Pillayarpatti Vinayagar Temple and many heritage temples linked to the Marava dynasty.',
+        virudhunagar: 'Home to Srivilliputhur Andal Temple whose 192-feet gopuram is the official emblem of Tamil Nadu. A land of Alwar traditions.',
+        namakkal: 'Famous for the massive rock-cut Anjaneyar (Hanuman) and Narasimha temples. The town is named after the huge rock formation.',
+        karaikal: 'A Puducherry enclave with the famous Thirunallar Saniswaran Temple and Karaikal Ammaiyar Temple. Major center for Shani dosha removal.'
+      };
+
+      if (distIntros[districtId]) {
+        html +=
+          '<div style="margin:1rem 1.25rem 0; padding:14px 16px; background:linear-gradient(135deg,#fff8f0,#fff3e0); border-radius:12px; border:1px solid #ffe0b2;">' +
+            '<div style="font-size:0.82rem; font-weight:700; color:var(--primary-dark); margin-bottom:4px;">' + distIcon + ' About ' + esc(distName) + '</div>' +
+            '<p style="font-size:0.78rem; color:var(--text); line-height:1.5; margin:0;">' + distIntros[districtId] + '</p>' +
+          '</div>';
+      }
+
+      temples.forEach(function(t) {
+        var tags = t.tags ? t.tags.map(function(tag) { return '<span class="temple-tag">' + esc(tag) + '</span>'; }).join('') : '';
+
+        // Badges: Famous/History/Video
+        var badges = '';
+        if (t.category !== 'local') badges += '<span class="temple-badge famous">Famous Temple</span>';
+        if (t.history) badges += '<span class="temple-badge history">Has History</span>';
+        if (t.funFacts && t.funFacts.length > 0) badges += '<span class="temple-badge video">Fun Facts</span>';
+
+        // History snippet
+        var historySnippet = t.history ? '<div class="temple-card-history">' + esc(t.history) + '</div>' : '';
+
+        // Fun fact chip (show first one)
+        var funFactHtml = '';
+        if (t.funFacts && t.funFacts.length > 0) {
+          funFactHtml = '<div class="fun-fact-chip">✨ ' + esc(t.funFacts[0]) + '</div>';
+        }
+
+        html +=
+          '<div class="temple-card" onclick="selectTemple(\'' + t.id + '\')">' +
+            '<div class="temple-card-banner"><img src="' + esc(t.image) + '" alt="' + esc(t.name) + '"></div>' +
+            '<div class="temple-card-body">' +
+              '<h3>' + esc(t.name) + '</h3>' +
+              '<span class="loc">📍 ' + esc(t.location) + '</span>' +
+              '<div class="temple-card-badges">' + badges + '</div>' +
+              historySnippet +
+              funFactHtml +
+              '<div class="temple-tags">' + tags + '</div>' +
+            '</div>' +
+            '<div class="temple-card-footer">' +
+              '<span class="rating">⭐ ' + esc(t.rating) + ' (' + esc(t.reviews) + ')</span>' +
+            '</div>' +
+          '</div>';
+      });
+
+      listView.innerHTML = html;
+    }
+
+    // Search across all temples
+    function searchTemples() {
+      var query = document.getElementById('temple-search').value.toLowerCase().trim();
+      var searchView = document.getElementById('search-results-view');
+      var catGrid = document.getElementById('categories-grid');
+      var listView = document.getElementById('temple-list-view');
+
+      if (!query) {
+        searchView.classList.remove('active');
+        searchView.innerHTML = '';
+        catGrid.style.display = '';
+        return;
+      }
+
+      catGrid.style.display = 'none';
+      listView.classList.remove('active');
+      searchView.classList.add('active');
+
+      var results = [];
+      for (var key in templeDatabase) {
+        var t = templeDatabase[key];
+        var distName = (t.district || '').toLowerCase();
+        if (t.name.toLowerCase().indexOf(query) !== -1 || t.location.toLowerCase().indexOf(query) !== -1 || t.deity.toLowerCase().indexOf(query) !== -1 || distName.indexOf(query) !== -1) {
+          results.push(t);
+        }
+      }
+
+      var html = '<div class="list-header"><h2>Search Results</h2><span class="temple-count">' + results.length + ' found</span></div>';
+
+      if (results.length === 0) {
+        html += '<div style="text-align:center;padding:40px 20px;color:#999;"><div style="font-size:2.5rem;margin-bottom:12px;">🔍</div><p>No temples found for "' + esc(query) + '"</p></div>';
+      } else {
+        results.forEach(function(t) {
+          var tags = t.tags ? t.tags.map(function(tag) { return '<span class="temple-tag">' + esc(tag) + '</span>'; }).join('') : '';
+          html +=
+            '<div class="temple-card" onclick="selectTemple(\'' + t.id + '\')">' +
+              '<div class="temple-card-banner"><img src="' + esc(t.image) + '" alt="' + esc(t.name) + '"></div>' +
+              '<div class="temple-card-body">' +
+                '<h3>' + esc(t.name) + '</h3>' +
+                '<span class="loc">📍 ' + esc(t.location) + '</span>' +
+                '<div class="temple-tags">' + tags + '</div>' +
+              '</div>' +
+              '<div class="temple-card-footer">' +
+                '<span class="rating">⭐ ' + esc(t.rating) + ' (' + esc(t.reviews) + ')</span>' +
+              '</div>' +
+            '</div>';
+        });
+      }
+
+      searchView.innerHTML = html;
+    }
+
+    // Select temple and navigate to temple home
+    function selectTemple(id) {
+      var temple = templeDatabase[id];
+      if (temple) {
+        localStorage.setItem('selected_temple', JSON.stringify(temple));
+        window.location.href = 'temple-home.html';
+      }
+    }
+
+    // Go back to categories
+    function goBack() {
+      document.getElementById('categories-view').classList.remove('hidden');
+      document.getElementById('temple-list-view').classList.remove('active');
+      document.getElementById('temple-list-view').innerHTML = '';
+      document.getElementById('temple-search').value = '';
+      document.getElementById('search-results-view').classList.remove('active');
+      document.getElementById('categories-grid').style.display = '';
+      document.getElementById('district-section').style.display = '';
+    }
+
+    // Handle browser back button
+    window.addEventListener('popstate', function() {
+      if (document.getElementById('temple-list-view').classList.contains('active')) {
+        goBack();
+      }
+    });
+
+    // Escape HTML
+    function esc(str) {
+      if (!str) return '';
+      var div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    // Auto-open category or district if URL param present
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var cat = params.get('cat');
+      var dist = params.get('district');
+      if (dist) {
+        showDistrict(dist);
+      } else if (cat && categories[cat]) {
+        showCategory(cat);
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Temple Digital Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+
+            <a href="dashboard.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link active" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <div class="admin-main">
+
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">User Management</h1>
+                    <div class="page-breadcrumb">
+                        <a href="dashboard.html">Dashboard</a>
+                        <span class="separator">&#x25B8;</span>
+                        <span>Users</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-search">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+                <input type="text" placeholder="Search users..." id="header-search-input">
+            </div>
+
+            <div class="header-actions">
+                <button class="header-action-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="header-divider"></div>
+                <div class="admin-avatar">
+                    <div class="avatar-placeholder" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                    <div>
+                        <div class="admin-avatar-name">Admin</div>
+                        <div class="admin-avatar-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+
+            <!-- ========== Stats Row ========== -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-users"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-number" id="total-users">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-user-check"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Active Users</div>
+                        <div class="stat-number" id="active-users">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-user-slash"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">Blocked Users</div>
+                        <div class="stat-number" id="blocked-users">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon yellow"><i class="fas fa-user-plus"></i></div>
+                    <div class="stat-details">
+                        <div class="stat-label">New This Month</div>
+                        <div class="stat-number" id="new-users">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== Filter / Action Bar ========== -->
+            <div class="card" style="margin-bottom:24px;">
+                <div class="filter-bar">
+                    <div class="filter-search">
+                        <span class="search-icon"><i class="fas fa-search"></i></span>
+                        <input type="text" id="user-search" placeholder="Search by name, email or phone..." oninput="searchUsers(this.value)">
+                    </div>
+
+                    <div style="display:flex;gap:4px;">
+                        <button class="btn btn-sm btn-primary" data-user-filter="All" onclick="filterUsers('All')">All</button>
+                        <button class="btn btn-sm btn-secondary" data-user-filter="Active" onclick="filterUsers('Active')">Active</button>
+                        <button class="btn btn-sm btn-secondary" data-user-filter="Blocked" onclick="filterUsers('Blocked')">Blocked</button>
+                    </div>
+
+                    <button class="btn btn-sm btn-secondary" id="exportUsers" onclick="exportUsers()" title="Export CSV">
+                        <i class="fas fa-file-export"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- ========== Users Table ========== -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>All Users</h3>
+                </div>
+                <div class="card-body" style="overflow-x:auto;">
+                    <table class="data-table" id="users-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Joined</th>
+                                <th>Bookings</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="7" style="text-align:center;padding:40px;color:#999;">
+                                    <div style="font-size:2rem;margin-bottom:8px;"><i class="fas fa-users"></i></div>
+                                    No users found. Registered users will appear here.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="card-footer">
+                    <div style="font-size:0.8125rem;color:var(--text-muted);">
+                        Showing <span id="pagination-info">0</span> users
+                    </div>
+                    <div class="pagination" id="users-pagination">
+                        <button class="pagination-btn" disabled title="Previous">&#x25C0;</button>
+                        <button class="pagination-btn active">1</button>
+                        <button class="pagination-btn" disabled title="Next">&#x25B6;</button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.admin-content -->
+    </div><!-- /.admin-main -->
+
+</div><!-- /.admin-wrapper -->
+
+
+<!-- ============================================================
+     USER DETAIL MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="user-detail-modal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3>User Profile</h3>
+            <button class="modal-close" onclick="closeUserModal()" title="Close">&times;</button>
+        </div>
+        <div class="modal-body" id="user-detail-body">
+
+            <!-- Avatar & Name -->
+            <div style="text-align:center;margin-bottom:24px;">
+                <div id="detail-user-avatar" style="width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.75rem;font-weight:700;color:#fff;margin:0 auto 12px;"></div>
+                <div id="detail-user-name" style="font-size:1.125rem;font-weight:700;">-</div>
+                <div id="detail-user-email" style="font-size:0.8125rem;color:var(--text-muted);margin-top:2px;">-</div>
+            </div>
+
+            <!-- Info Grid -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Phone</label>
+                    <div id="detail-user-phone" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+                <div>
+                    <label style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;">Joined</label>
+                    <div id="detail-user-joined" style="font-weight:600;margin-top:4px;">-</div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:24px;">
+                <div style="text-align:center;padding:12px;background:var(--bg-light,#f8f9fa);border-radius:8px;">
+                    <div id="detail-total-bookings" style="font-size:1.25rem;font-weight:700;color:var(--primary,#e65100);">0</div>
+                    <div style="font-size:0.6875rem;color:var(--text-muted);margin-top:2px;">Total Bookings</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--bg-light,#f8f9fa);border-radius:8px;">
+                    <div id="detail-total-donated" style="font-size:1.25rem;font-weight:700;color:var(--primary,#e65100);">&#x20B9;0</div>
+                    <div style="font-size:0.6875rem;color:var(--text-muted);margin-top:2px;">Total Donated</div>
+                </div>
+                <div style="text-align:center;padding:12px;background:var(--bg-light,#f8f9fa);border-radius:8px;">
+                    <div id="detail-temples-following" style="font-size:1.25rem;font-weight:700;color:var(--primary,#e65100);">0</div>
+                    <div style="font-size:0.6875rem;color:var(--text-muted);margin-top:2px;">Temples Following</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div>
+                <h4 style="font-size:0.8125rem;font-weight:600;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);">Recent Activity</h4>
+                <div id="detail-recent-activity" style="max-height:160px;overflow-y:auto;">
+                    <div style="text-align:center;padding:16px;color:#999;font-size:0.8125rem;">No recent activity</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger btn-sm" id="modal-block-btn" onclick="toggleBlockFromModal()"><i class="fas fa-user-slash"></i> Block User</button>
+            <button class="btn btn-secondary btn-sm" onclick="closeUserModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Modal Container (used by adminApp.showModal) -->
+<div id="modal-container"></div>
+
+
+<script src="js/admin.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    var currentModalUserId = null;
+    var currentFilter = 'All';
+    var currentSearch = '';
+
+    // --- Avatar colors ---
+    var avatarColors = [
+        '#e65100', '#1565c0', '#2e7d32', '#6a1b9a',
+        '#c62828', '#00838f', '#ef6c00', '#4527a0',
+        '#ad1457', '#00695c', '#d84315', '#283593'
+    ];
+
+    function getAvatarColor(name) {
+        var hash = 0;
+        for (var i = 0; i < (name || '').length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return avatarColors[Math.abs(hash) % avatarColors.length];
+    }
+
+    function getInitials(name) {
+        if (!name) return '?';
+        var parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        return parts[0][0].toUpperCase();
+    }
+
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    // --- Load & Render ---
+    function getUsers() {
+        return JSON.parse(localStorage.getItem('temple_users') || '[]');
+    }
+
+    function getBookingsForUser(userId) {
+        var bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+        return bookings.filter(function (b) {
+            return b.userId === userId || b.user_id === userId;
+        });
+    }
+
+    function getDonationsForUser(userId) {
+        var donations = JSON.parse(localStorage.getItem('temple_donations') || '[]');
+        return donations.filter(function (d) {
+            return d.userId === userId || d.user_id === userId;
+        });
+    }
+
+    function updateStats() {
+        var users = getUsers();
+        var total = users.length;
+        var active = 0, blocked = 0, newThisMonth = 0;
+        var now = new Date();
+        var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        users.forEach(function (u) {
+            var status = (u.status || 'Active').toLowerCase();
+            if (status === 'blocked') blocked++;
+            else active++;
+
+            var joined = new Date(u.joinedDate || u.joined || u.createdAt || u.created_at || '');
+            if (!isNaN(joined.getTime()) && joined >= monthStart) newThisMonth++;
+        });
+
+        var el;
+        el = document.getElementById('total-users'); if (el) el.textContent = total;
+        el = document.getElementById('active-users'); if (el) el.textContent = active;
+        el = document.getElementById('blocked-users'); if (el) el.textContent = blocked;
+        el = document.getElementById('new-users'); if (el) el.textContent = newThisMonth;
+
+        var info = document.getElementById('pagination-info');
+        if (info) info.textContent = total;
+    }
+
+    function renderUsers() {
+        var users = getUsers();
+        var tbody = document.getElementById('usersTableBody');
+        if (!tbody) return;
+
+        // Apply filters
+        var filtered = users.filter(function (u) {
+            var status = (u.status || 'Active');
+            if (currentFilter !== 'All' && status.toLowerCase() !== currentFilter.toLowerCase()) return false;
+
+            if (currentSearch) {
+                var q = currentSearch.toLowerCase();
+                var name = (u.name || u.displayName || '').toLowerCase();
+                var email = (u.email || '').toLowerCase();
+                var phone = (u.phone || u.mobile || '').toLowerCase();
+                if (name.indexOf(q) === -1 && email.indexOf(q) === -1 && phone.indexOf(q) === -1) return false;
+            }
+            return true;
+        });
+
+        var info = document.getElementById('pagination-info');
+        if (info) info.textContent = filtered.length;
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">' +
+                '<div style="font-size:2rem;margin-bottom:8px;"><i class="fas fa-users"></i></div>' +
+                'No users found.' +
+                '</td></tr>';
+            return;
+        }
+
+        var html = '';
+        filtered.forEach(function (u) {
+            var name = u.name || u.displayName || 'Unknown';
+            var email = u.email || '-';
+            var phone = u.phone || u.mobile || '-';
+            var joined = u.joinedDate || u.joined || u.createdAt || u.created_at || '-';
+            var status = u.status || 'Active';
+            var initials = getInitials(name);
+            var color = getAvatarColor(name);
+            var bookingsCount = getBookingsForUser(u.id).length;
+            var isBlocked = status.toLowerCase() === 'blocked';
+            var badgeClass = isBlocked ? 'badge badge-cancelled' : 'badge badge-confirmed';
+
+            // Format joined date
+            if (joined !== '-') {
+                var d = new Date(joined);
+                if (!isNaN(d.getTime())) {
+                    joined = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                }
+            }
+
+            html += '<tr>' +
+                '<td>' +
+                    '<div style="display:flex;align-items:center;gap:10px;">' +
+                        '<div style="width:36px;height:36px;border-radius:50%;background:' + color + ';color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.8125rem;font-weight:700;flex-shrink:0;">' + esc(initials) + '</div>' +
+                        '<span style="font-weight:600;">' + esc(name) + '</span>' +
+                    '</div>' +
+                '</td>' +
+                '<td>' + esc(email) + '</td>' +
+                '<td>' + esc(phone) + '</td>' +
+                '<td>' + esc(joined) + '</td>' +
+                '<td style="text-align:center;">' + bookingsCount + '</td>' +
+                '<td><span class="' + badgeClass + '"><span class="badge-dot"></span> ' + esc(status) + '</span></td>' +
+                '<td>' +
+                    '<div style="display:flex;align-items:center;gap:8px;">' +
+                        '<button class="btn btn-sm btn-secondary" onclick="openUserModal(\'' + u.id + '\')" title="View Profile"><i class="fas fa-eye"></i> View</button>' +
+                        '<label class="toggle-switch" style="position:relative;display:inline-block;width:40px;height:22px;margin:0;">' +
+                            '<input type="checkbox" ' + (isBlocked ? '' : 'checked') + ' onchange="toggleUserStatus(\'' + u.id + '\')" style="opacity:0;width:0;height:0;">' +
+                            '<span class="toggle-slider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:' + (isBlocked ? '#ef5350' : '#4caf50') + ';border-radius:22px;transition:.3s;"></span>' +
+                        '</label>' +
+                    '</div>' +
+                '</td>' +
+                '</tr>';
+        });
+
+        tbody.innerHTML = html;
+
+        // Style toggle sliders with pseudo-element via inline approach
+        var toggles = tbody.querySelectorAll('.toggle-slider');
+        toggles.forEach(function (slider) {
+            var input = slider.previousElementSibling;
+            var dot = document.createElement('span');
+            dot.style.cssText = 'position:absolute;content:"";height:16px;width:16px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;';
+            if (input && input.checked) {
+                dot.style.transform = 'translateX(18px)';
+            }
+            slider.appendChild(dot);
+        });
+    }
+
+    // --- Filter ---
+    window.filterUsers = function (status) {
+        currentFilter = status;
+        var btns = document.querySelectorAll('[data-user-filter]');
+        btns.forEach(function (btn) {
+            if (btn.getAttribute('data-user-filter') === status) {
+                btn.className = 'btn btn-sm btn-primary';
+            } else {
+                btn.className = 'btn btn-sm btn-secondary';
+            }
+        });
+        renderUsers();
+    };
+
+    // --- Search ---
+    window.searchUsers = function (query) {
+        currentSearch = query;
+        renderUsers();
+    };
+
+    // --- Export ---
+    window.exportUsers = function () {
+        var users = getUsers();
+        if (users.length === 0) {
+            if (window.adminApp && window.adminApp.showToast) {
+                window.adminApp.showToast('No users to export', 'warning');
+            }
+            return;
+        }
+        var csv = 'Name,Email,Phone,Joined,Status\n';
+        users.forEach(function (u) {
+            csv += '"' + (u.name || u.displayName || '') + '","' + (u.email || '') + '","' + (u.phone || u.mobile || '') + '","' + (u.joinedDate || u.joined || u.createdAt || '') + '","' + (u.status || 'Active') + '"\n';
+        });
+        var blob = new Blob([csv], { type: 'text/csv' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'users_export.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        if (window.adminApp && window.adminApp.showToast) {
+            window.adminApp.showToast('Users exported successfully', 'success');
+        }
+    };
+
+    // --- Toggle Status ---
+    window.toggleUserStatus = function (id) {
+        if (window.adminApp && window.adminApp.toggleUserStatus) {
+            window.adminApp.toggleUserStatus(id);
+        } else {
+            // Fallback: toggle directly in localStorage
+            var users = getUsers();
+            for (var i = 0; i < users.length; i++) {
+                if (users[i].id === id) {
+                    var current = (users[i].status || 'Active').toLowerCase();
+                    users[i].status = current === 'blocked' ? 'Active' : 'Blocked';
+                    break;
+                }
+            }
+            localStorage.setItem('temple_users', JSON.stringify(users));
+        }
+        updateStats();
+        renderUsers();
+
+        if (window.adminApp && window.adminApp.showToast) {
+            window.adminApp.showToast('User status updated', 'success');
+        }
+    };
+
+    // --- User Detail Modal ---
+    window.openUserModal = function (id) {
+        var users = getUsers();
+        var user = null;
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].id === id) { user = users[i]; break; }
+        }
+        if (!user) return;
+
+        currentModalUserId = id;
+
+        var name = user.name || user.displayName || 'Unknown';
+        var initials = getInitials(name);
+        var color = getAvatarColor(name);
+        var status = (user.status || 'Active');
+        var isBlocked = status.toLowerCase() === 'blocked';
+
+        // Avatar
+        var avatarEl = document.getElementById('detail-user-avatar');
+        if (avatarEl) {
+            avatarEl.style.background = color;
+            avatarEl.textContent = initials;
+        }
+
+        // Basic info
+        document.getElementById('detail-user-name').textContent = name;
+        document.getElementById('detail-user-email').textContent = user.email || '-';
+        document.getElementById('detail-user-phone').textContent = user.phone || user.mobile || '-';
+
+        var joined = user.joinedDate || user.joined || user.createdAt || user.created_at || '-';
+        if (joined !== '-') {
+            var d = new Date(joined);
+            if (!isNaN(d.getTime())) {
+                joined = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            }
+        }
+        document.getElementById('detail-user-joined').textContent = joined;
+
+        // Stats
+        var userBookings = getBookingsForUser(id);
+        var userDonations = getDonationsForUser(id);
+        var totalDonated = 0;
+        userDonations.forEach(function (dn) { totalDonated += Number(dn.amount || 0); });
+
+        document.getElementById('detail-total-bookings').textContent = userBookings.length;
+        document.getElementById('detail-total-donated').textContent = '\u20B9' + totalDonated.toLocaleString('en-IN');
+        document.getElementById('detail-temples-following').textContent = user.templesFollowing || user.temples_following || 0;
+
+        // Recent activity
+        var activityEl = document.getElementById('detail-recent-activity');
+        var activities = [];
+
+        userBookings.slice(-5).reverse().forEach(function (b) {
+            activities.push({
+                icon: '<i class="fas fa-calendar-check"></i>',
+                text: 'Booked ' + (b.service || b.pooja || 'a service'),
+                date: b.date || b.bookingDate || ''
+            });
+        });
+        userDonations.slice(-5).reverse().forEach(function (dn) {
+            activities.push({
+                icon: '<i class="fas fa-hand-holding-heart"></i>',
+                text: 'Donated \u20B9' + Number(dn.amount || 0).toLocaleString('en-IN'),
+                date: dn.date || dn.donationDate || ''
+            });
+        });
+
+        if (activities.length === 0) {
+            activityEl.innerHTML = '<div style="text-align:center;padding:16px;color:#999;font-size:0.8125rem;">No recent activity</div>';
+        } else {
+            var activityHtml = '';
+            activities.slice(0, 8).forEach(function (a) {
+                activityHtml += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-color,#eee);">' +
+                    '<span style="font-size:1rem;">' + a.icon + '</span>' +
+                    '<div style="flex:1;font-size:0.8125rem;">' + esc(a.text) + '</div>' +
+                    '<div style="font-size:0.75rem;color:var(--text-muted);">' + esc(a.date) + '</div>' +
+                    '</div>';
+            });
+            activityEl.innerHTML = activityHtml;
+        }
+
+        // Block/Unblock button
+        var blockBtn = document.getElementById('modal-block-btn');
+        if (isBlocked) {
+            blockBtn.innerHTML = '<i class="fas fa-user-check"></i> Unblock User';
+            blockBtn.className = 'btn btn-success btn-sm';
+        } else {
+            blockBtn.innerHTML = '<i class="fas fa-user-slash"></i> Block User';
+            blockBtn.className = 'btn btn-danger btn-sm';
+        }
+
+        document.getElementById('user-detail-modal').classList.add('active');
+    };
+
+    window.closeUserModal = function () {
+        document.getElementById('user-detail-modal').classList.remove('active');
+        currentModalUserId = null;
+    };
+
+    window.toggleBlockFromModal = function () {
+        if (!currentModalUserId) return;
+        toggleUserStatus(currentModalUserId);
+        closeUserModal();
+    };
+
+    // Close modal on overlay click
+    document.getElementById('user-detail-modal').addEventListener('click', function (e) {
+        if (e.target === this) closeUserModal();
+    });
+
+    // Close modal on Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeUserModal();
+    });
+
+    // --- Page Init ---
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.adminApp && window.adminApp.loadUsers) {
+            window.adminApp.loadUsers();
+        }
+        updateStats();
+        renderUsers();
+    });
+
+})();
+</script>
+
+</body>
+</html>

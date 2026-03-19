@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin - Temple Digital</title>
+  <link rel="stylesheet" href="css/super-admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="sa-login-wrapper">
+    <div class="sa-login-card">
+      <div class="sa-login-logo"><i class="fas fa-shield-halved"></i></div>
+      <h1>Temple Digital</h1>
+      <span class="badge">SUPER ADMIN</span>
+      <p class="subtitle">System-wide control & management</p>
+
+      <form id="sa-login-form" onsubmit="SA.login(event)">
+        <div class="sa-form-group">
+          <label>Username</label>
+          <input type="text" id="sa-username" placeholder="Enter super admin username" required>
+        </div>
+        <div class="sa-form-group">
+          <label>Password</label>
+          <input type="password" id="sa-password" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="sa-btn sa-btn-primary sa-btn-full" style="margin-top:8px;">
+          <i class="fas fa-lock"></i> Login to Super Admin
+        </button>
+      </form>
+
+      <p style="margin-top:24px; font-size:0.78rem; color:#999;">
+        Access restricted to authorized personnel only.
+      </p>
+    </div>
+  </div>
+
+  <script src="js/super-admin.js"></script>
+</body>
+</html>

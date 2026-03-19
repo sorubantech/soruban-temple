@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple Digital App</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <div class="splash" id="splash">
+      <div class="splash-logo">🛕</div>
+      <h1 data-lang="app_name">Temple Digital</h1>
+      <p data-lang="app_tagline">Your Divine Connection Online</p>
+      <div class="loader"></div>
+    </div>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script>
+    setTimeout(() => {
+      const user = localStorage.getItem('temple_user');
+      if (user && JSON.parse(user).loggedIn) {
+        window.location.href = 'home.html';
+      } else {
+        window.location.href = 'login.html';
+      }
+    }, 2500);
+  </script>
+</body>
+</html>

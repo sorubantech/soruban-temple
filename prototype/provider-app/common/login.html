@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provider Login — Soruban Temple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../../shared/design-system.css">
+  <link rel="stylesheet" href="../../shared/phone-frame.css">
+  <link rel="stylesheet" href="../../shared/components.css">
+  <link rel="stylesheet" href="../../shared/animations.css">
+  <style>
+    .provider-login { height:100%; display:flex; flex-direction:column; background:var(--bg-primary); }
+    .provider-hero { background:linear-gradient(135deg,#C62828,#E65100); padding:70px var(--space-6) var(--space-8); text-align:center; position:relative; }
+    .provider-hero::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:30px; background:var(--bg-primary); border-radius:var(--radius-2xl) var(--radius-2xl) 0 0; }
+    .provider-hero h2 { font-size:var(--text-2xl); font-weight:800; color:white; margin-bottom:var(--space-1); }
+    .provider-hero p { font-size:var(--text-sm); color:rgba(255,255,255,0.8); }
+    .provider-cards { padding:var(--space-6); display:flex; flex-direction:column; gap:var(--space-4); flex:1; }
+    .provider-type-card { display:flex; align-items:center; gap:var(--space-4); padding:var(--space-5); border-radius:var(--radius-xl); background:var(--bg-card); border:1.5px solid var(--border-light); cursor:pointer; transition:all var(--duration-normal) var(--ease-out); }
+    .provider-type-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+    .ptc-icon { width:56px; height:56px; border-radius:var(--radius-lg); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
+    .ptc-content h3 { font-size:var(--text-md); font-weight:700; margin-bottom:2px; }
+    .ptc-content p { font-size:var(--text-xs); color:var(--text-light); line-height:var(--leading-relaxed); }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+    <div class="phone-container">
+      <div class="provider-login">
+        <div class="provider-hero">
+          <div style="width:64px;height:64px;border-radius:var(--radius-xl);background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);font-size:1.8rem;color:white;backdrop-filter:blur(8px)">
+            <i class="fa-solid fa-person-praying"></i>
+          </div>
+          <h2>Service Provider</h2>
+          <p>Soruban Temple Provider App</p>
+        </div>
+        <div class="provider-cards">
+          <h3 style="font-size:var(--text-lg);font-weight:700;text-align:center">I am a...</h3>
+          <a href="../p1-priest/index.html" class="provider-type-card">
+            <div class="ptc-icon" style="background:var(--sacred-red-bg);color:var(--sacred-red)"><i class="fa-solid fa-person-praying"></i></div>
+            <div class="ptc-content">
+              <h3>Temple Priest (Iyyer)</h3>
+              <p>Manage temple duties, home bookings, scan QR archana, track earnings</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted)"></i>
+          </a>
+          <a href="../p2-astrologer/index.html" class="provider-type-card">
+            <div class="ptc-icon" style="background:var(--sacred-purple-bg);color:var(--sacred-purple)"><i class="fa-solid fa-moon"></i></div>
+            <div class="ptc-content">
+              <h3>Astrologer (Josiyar)</h3>
+              <p>Manage consultations, video/chat sessions, jathakam tools, earnings</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-muted)"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

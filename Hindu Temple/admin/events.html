@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Management - Temple Digital Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    /* --- Action Bar --- */
+    .action-bar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .action-bar .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 360px;
+    }
+    .action-bar .search-box input {
+      width: 100%;
+      height: 40px;
+      padding: 0 14px 0 38px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      transition: border-color var(--transition);
+    }
+    .action-bar .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(230,81,0,0.1);
+    }
+    .action-bar .search-box .icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .action-bar select {
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      cursor: pointer;
+    }
+    .action-bar select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* --- Events Table --- */
+    .events-table-wrap {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+    .events-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .events-table thead {
+      background: var(--bg);
+    }
+    .events-table th {
+      padding: 14px 16px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .events-table td {
+      padding: 14px 16px;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+    .events-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .events-table tbody tr:hover {
+      background: rgba(230,81,0,0.02);
+    }
+
+    /* --- Status Badges --- */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .status-upcoming { background: var(--info-bg); color: var(--info); }
+    .status-ongoing { background: var(--warning-bg); color: var(--warning); }
+    .status-completed { background: var(--success-bg); color: var(--success); }
+    .status-recurring { background: #f3e5f5; color: #7b1fa2; }
+    .status-cancelled { background: var(--danger-bg); color: var(--danger); }
+
+    /* --- Type Badge --- */
+    .type-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(230,81,0,0.08);
+      color: var(--primary);
+    }
+
+    /* --- Action Buttons in Table --- */
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    /* --- Event Cards (alternative view) --- */
+    .events-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .event-card {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      padding: 20px;
+      transition: box-shadow var(--transition);
+    }
+    .event-card:hover {
+      box-shadow: var(--card-shadow-hover);
+    }
+    .event-card .event-date {
+      font-size: 0.8125rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .event-card h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+    .event-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .event-card .event-type {
+      margin-left: 8px;
+    }
+
+    /* --- Buttons --- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-family);
+      transition: all var(--transition);
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--bg); color: var(--text-primary); border: 1px solid var(--border-color); }
+    .btn-secondary:hover { background: var(--border-color); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #b71c1c; }
+    .btn-sm { padding: 5px 12px; font-size: 0.8125rem; border-radius: 6px; }
+
+    /* --- Modal --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      padding: 28px;
+      width: 90%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .modal-content h2 {
+      margin: 0 0 20px;
+      font-size: 1.25rem;
+    }
+
+    /* --- Form Controls --- */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .form-control {
+      width: 100%;
+      height: 42px;
+      padding: 0 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: var(--font-family);
+      color: var(--text-primary);
+      background: var(--card-bg);
+      transition: border-color var(--transition);
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(230,81,0,0.1);
+    }
+    textarea.form-control {
+      height: auto;
+      padding: 10px 14px;
+      resize: vertical;
+    }
+    select.form-control {
+      cursor: pointer;
+    }
+
+    /* --- Toast --- */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 24px;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .action-bar .search-box {
+        max-width: none;
+      }
+      .events-table th:nth-child(4),
+      .events-table td:nth-child(4) {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-wrapper">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+        <div class="logo-text">Temple <span>Digital</span>
+          <div style="font-size:0.65rem;color:rgba(255,255,255,0.5);font-weight:400;letter-spacing:0.5px;">Admin Panel</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Main</div>
+        <a href="index.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="temples.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+          <span class="nav-label">Temples</span>
+        </a>
+        <a href="bookings.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+          <span class="nav-label">Bookings</span>
+        </a>
+        <a href="donations.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+          <span class="nav-label">Donations</span>
+        </a>
+        <a href="events.html" class="nav-link active">
+          <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+          <span class="nav-label">Events</span>
+        </a>
+        <a href="gallery.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-images"></i></span>
+          <span class="nav-label">Gallery</span>
+        </a>
+        <a href="annadhanam.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+          <span class="nav-label">Annadhanam</span>
+        </a>
+        <a href="posts.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+          <span class="nav-label">Feed &amp; Posts</span>
+        </a>
+        <a href="poojas.html" class="nav-link" data-page="poojas">
+          <span class="nav-icon"><i class="fas fa-om"></i></span>
+          <span class="nav-label">Poojas</span>
+        </a>
+
+        <div class="nav-section-title">Management</div>
+        <a href="darshan.html" class="nav-link" data-page="darshan">
+          <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+          <span class="nav-label">Darshan</span>
+        </a>
+        <a href="notifications.html" class="nav-link" data-page="notifications">
+          <span class="nav-icon"><i class="fas fa-bell"></i></span>
+          <span class="nav-label">Notifications</span>
+        </a>
+        <a href="feedback.html" class="nav-link" data-page="feedback">
+          <span class="nav-icon"><i class="fas fa-comments"></i></span>
+          <span class="nav-label">Feedback</span>
+        </a>
+        <a href="users.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-users"></i></span>
+          <span class="nav-label">Users</span>
+        </a>
+        <a href="reports.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+          <span class="nav-label">Reports</span>
+        </a>
+        <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+          <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+          <span class="nav-label">Admin Accounts</span>
+        </a>
+        <a href="settings.html" class="nav-link">
+          <span class="nav-icon"><i class="fas fa-gear"></i></span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-profile">
+          <img src="https://ui-avatars.com/api/?name=Admin&background=e65100&color=fff&size=36" alt="Admin" class="admin-avatar-sm">
+          <div class="admin-info">
+            <div class="admin-name">Admin</div>
+            <div class="admin-role">Super Admin</div>
+          </div>
+        </div>
+        <a href="#" id="logoutBtn" class="nav-link logout-btn" style="margin-top:10px;padding:8px 0;color:rgba(255,255,255,0.5);font-size:0.8125rem;">
+          <span class="nav-icon"><i class="fas fa-right-from-bracket"></i></span>
+          <span class="nav-label">Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <div class="admin-main">
+
+      <!-- --- Top Header --- -->
+      <header class="admin-header">
+        <div class="header-left">
+          <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+          <div>
+            <h1 class="page-title">Event Management</h1>
+            <div class="page-breadcrumb">
+              <a href="index.html">Dashboard</a>
+              <span class="separator">&#x25B8;</span>
+              <span>Events</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-search">
+          <span class="search-icon"><i class="fas fa-search"></i></span>
+          <input type="text" placeholder="Search..." id="globalSearch">
+        </div>
+        <div class="header-actions">
+          <button class="header-action-btn" title="Notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-dot"></span>
+          </button>
+          <button class="header-action-btn">
+            <img src="https://ui-avatars.com/api/?name=Admin&background=e65100&color=fff&size=36" alt="Admin" style="width:32px;height:32px;border-radius:50%;">
+          </button>
+        </div>
+      </header>
+
+      <!-- --- Page Content --- -->
+      <div class="admin-content">
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+          <button class="btn btn-primary" id="addEventBtn" onclick="window.adminApp.showAddEventForm()">
+            <i class="fas fa-plus"></i> Add New Event
+          </button>
+          <div class="search-box">
+            <span class="icon"><i class="fas fa-search"></i></span>
+            <input type="text" id="eventSearch" placeholder="Search events..." oninput="filterEventsLocal()">
+          </div>
+          <select id="eventTypeFilter" onchange="filterEventsLocal()">
+            <option value="All">All Types</option>
+            <option value="Festival">Festival</option>
+            <option value="Pooja">Pooja</option>
+            <option value="Cultural">Cultural</option>
+            <option value="Monthly">Monthly</option>
+            <option value="Spiritual">Spiritual</option>
+            <option value="Charity">Charity</option>
+            <option value="Educational">Educational</option>
+            <option value="Special">Special</option>
+          </select>
+        </div>
+
+        <!-- Events Table -->
+        <div class="events-table-wrap" id="events-list">
+          <table class="events-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTableBody">
+              <tr>
+                <td colspan="6" style="text-align:center;padding:40px;color:#999;">Loading events...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /admin-content -->
+    </div><!-- /admin-main -->
+  </div><!-- /admin-wrapper -->
+
+  <!-- ============ MODAL CONTAINER ============ -->
+  <div class="modal-overlay" id="event-modal">
+    <div class="modal-content" id="modalBody">
+      <!-- Dynamic modal content injected by admin.js -->
+    </div>
+  </div>
+
+  <!-- ============ TOAST CONTAINER ============ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="js/admin.js"></script>
+  <script>
+    /**
+     * Client-side filtering for the events table by search text and type.
+     * Works on top of the data already rendered by adminApp.loadEvents().
+     */
+    function filterEventsLocal() {
+      var searchVal = (document.getElementById('eventSearch').value || '').toLowerCase();
+      var typeVal = document.getElementById('eventTypeFilter').value;
+      var rows = document.querySelectorAll('#eventsTableBody tr');
+
+      rows.forEach(function (row) {
+        var cells = row.querySelectorAll('td');
+        if (cells.length < 5) return; // skip "no data" row
+
+        var title = (cells[0].textContent || '').toLowerCase();
+        var type = (cells[2].textContent || '').trim();
+        var desc = (cells[3].textContent || '').toLowerCase();
+
+        var matchSearch = !searchVal || title.indexOf(searchVal) !== -1 || desc.indexOf(searchVal) !== -1;
+        var matchType = typeVal === 'All' || type === typeVal;
+
+        row.style.display = (matchSearch && matchType) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

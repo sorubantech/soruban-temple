@@ -1,0 +1,56 @@
+/* P1 — Priest App Styles */
+.schedule-item {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-2);
+  position: relative;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+.schedule-item:hover { box-shadow: var(--shadow-md); }
+.schedule-item .si-time { font-size: var(--text-sm); font-weight: 700; color: var(--primary); min-width: 60px; }
+.schedule-item .si-info { flex: 1; }
+.schedule-item .si-title { font-size: var(--text-sm); font-weight: 600; }
+.schedule-item .si-sub { font-size: var(--text-xs); color: var(--text-light); margin-top: 1px; }
+.schedule-item .si-type { position: absolute; top: 0; right: 0; padding: 2px 10px; font-size: 0.6rem; font-weight: 700; border-radius: 0 var(--radius-lg) 0 var(--radius-sm); }
+
+.request-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--accent-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  animation: fadeInUp var(--duration-slow) var(--ease-out);
+}
+.request-card .rc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+.request-card .rc-service { font-size: var(--text-md); font-weight: 700; }
+.request-card .rc-amount { font-size: var(--text-lg); font-weight: 800; color: var(--sacred-green); }
+.request-card .rc-detail { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-1); }
+.request-card .rc-actions { display: flex; gap: var(--space-3); margin-top: var(--space-3); }
+
+.scan-area {
+  width: 260px;
+  height: 260px;
+  border: 3px dashed var(--primary-light);
+  border-radius: var(--radius-2xl);
+  margin: 0 auto var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--primary-rgb), 0.03);
+  position: relative;
+}
+.scan-area::before, .scan-area::after {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-color: var(--primary);
+  border-style: solid;
+}
+.scan-area::before { top: 12px; left: 12px; border-width: 3px 0 0 3px; border-radius: 8px 0 0 0; }
+.scan-area::after { bottom: 12px; right: 12px; border-width: 0 3px 3px 0; border-radius: 0 0 8px 0; }

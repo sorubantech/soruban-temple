@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Functions - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .family-hero {
+      background: linear-gradient(135deg, #ad1457, #880e4f);
+      color: white;
+      padding: 2rem 1.25rem;
+      text-align: center;
+    }
+    .family-hero .hero-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .family-hero h1 { font-size: 1.35rem; margin-bottom: 0.25rem; }
+    .family-hero p { font-size: 0.85rem; opacity: 0.85; }
+    .function-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 0.85rem;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .function-card:hover, .function-card.selected {
+      border-color: var(--primary);
+    }
+    .function-card.selected { background: #fff3e0; }
+    .fc-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+    .fc-icon {
+      font-size: 2.25rem;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff3e0;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+    .fc-info h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .fc-info p { font-size: 0.8rem; color: var(--text-light); line-height: 1.4; }
+    .fc-info .fc-price {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 0.35rem;
+    }
+    .fc-details {
+      padding: 0 1.25rem 1.25rem;
+      display: none;
+    }
+    .function-card.selected .fc-details { display: block; }
+    .fc-includes {
+      font-size: 0.82rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .fc-includes li {
+      list-style: none;
+      padding: 0.2rem 0;
+    }
+    .fc-includes li::before {
+      content: '✓ ';
+      color: var(--success);
+      font-weight: 700;
+    }
+    .note-box {
+      background: #e8f5e9;
+      border: 1px solid #a5d6a7;
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1.25rem 0;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>Family Functions</h2>
+    </div>
+
+    <!-- Hero -->
+    <div class="family-hero">
+      <div class="hero-icon">👨‍👩‍👧‍👦</div>
+      <h1>Family Ritual Booking</h1>
+      <p>Book temple space for family ceremonies</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Select Function Type</div>
+
+      <!-- Marriage -->
+      <div class="function-card" onclick="selectFunction(this, 'Temple Marriage', 25000)">
+        <div class="fc-top">
+          <div class="fc-icon">💒</div>
+          <div class="fc-info">
+            <h3>Temple Marriage</h3>
+            <p>Traditional Hindu wedding ceremony performed by temple priests in the sacred sanctum.</p>
+            <div class="fc-price">From &#8377;25,000</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Temple hall booking (4 hours)</li>
+            <li>Head priest & 2 assistant priests</li>
+            <li>Muhurtham selection assistance</li>
+            <li>Homa & Mangalya dharanam</li>
+            <li>Flower decoration (mandapam)</li>
+            <li>Prasadam for 50 guests</li>
+            <li>Marriage certificate from temple</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Shashtiapthapoorthi -->
+      <div class="function-card" onclick="selectFunction(this, 'Shashtiapthapoorthi', 15000)">
+        <div class="fc-top">
+          <div class="fc-icon">👴👵</div>
+          <div class="fc-info">
+            <h3>Shashtiapthapoorthi</h3>
+            <p>60th birthday celebration & marriage re-affirmation ceremony. A sacred milestone celebration.</p>
+            <div class="fc-price">From &#8377;15,000</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Temple hall booking (3 hours)</li>
+            <li>Priest for full ceremony</li>
+            <li>Ayush Homam included</li>
+            <li>Mangalya dharanam re-tying</li>
+            <li>Flower decoration</li>
+            <li>Prasadam for 30 guests</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Naming Ceremony -->
+      <div class="function-card" onclick="selectFunction(this, 'Naming Ceremony', 5000)">
+        <div class="fc-top">
+          <div class="fc-icon">👶</div>
+          <div class="fc-info">
+            <h3>Naming Ceremony (Namakaranam)</h3>
+            <p>Sacred naming ritual for newborns, performed on an auspicious day chosen by the temple priest.</p>
+            <div class="fc-price">From &#8377;5,000</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Small hall booking (1.5 hours)</li>
+            <li>Priest for ceremony</li>
+            <li>Nakshatram & name selection guidance</li>
+            <li>Baby's first blessing from deity</li>
+            <li>Prasadam for 15 guests</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Ayush Homam -->
+      <div class="function-card" onclick="selectFunction(this, 'Ayush Homam (Birthday)', 8000)">
+        <div class="fc-top">
+          <div class="fc-icon">🎂</div>
+          <div class="fc-info">
+            <h3>Ayush Homam</h3>
+            <p>Fire ritual for child's long life and well-being. Traditionally performed on 1st birthday or annually.</p>
+            <div class="fc-price">From &#8377;8,000</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Homam hall booking (2 hours)</li>
+            <li>Priest & homam materials</li>
+            <li>Ayush Sukta recitation</li>
+            <li>Special abhishekam for child</li>
+            <li>Prasadam for 20 guests</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Upanayanam -->
+      <div class="function-card" onclick="selectFunction(this, 'Upanayanam', 12000)">
+        <div class="fc-top">
+          <div class="fc-icon">📿</div>
+          <div class="fc-info">
+            <h3>Upanayanam (Thread Ceremony)</h3>
+            <p>Sacred thread ceremony marking the beginning of Vedic education. A significant samskara for boys.</p>
+            <div class="fc-price">From &#8377;12,000</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Temple hall booking (4 hours)</li>
+            <li>Head priest & assistant</li>
+            <li>Homam & Gayatri Mantra initiation</li>
+            <li>Sacred thread & materials</li>
+            <li>Flower decoration</li>
+            <li>Prasadam for 40 guests</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Gruhapravesham -->
+      <div class="function-card" onclick="selectFunction(this, 'Gruhapravesham', 7500)">
+        <div class="fc-top">
+          <div class="fc-icon">🏠</div>
+          <div class="fc-info">
+            <h3>Gruhapravesham</h3>
+            <p>House warming ceremony. Priest visits your new home or performs rituals at the temple for divine blessings.</p>
+            <div class="fc-price">From &#8377;7,500</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Ganapathi Homam</li>
+            <li>Vastu Shanti Pooja</li>
+            <li>Navagraha Shanti</li>
+            <li>Priest travel (within city)</li>
+            <li>All pooja materials included</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Seemantham -->
+      <div class="function-card" onclick="selectFunction(this, 'Seemantham', 6000)">
+        <div class="fc-top">
+          <div class="fc-icon">🤰</div>
+          <div class="fc-info">
+            <h3>Seemantham / Valaikaapu</h3>
+            <p>Baby shower ceremony for expecting mothers. Bangle ceremony with special prayers for safe delivery.</p>
+            <div class="fc-price">From &#8377;6,000</div>
+          </div>
+        </div>
+        <div class="fc-details">
+          <ul class="fc-includes">
+            <li>Small hall booking (2 hours)</li>
+            <li>Priest for ceremony</li>
+            <li>Special prayers for mother & child</li>
+            <li>Bangle ceremony arrangements</li>
+            <li>Prasadam for 25 guests</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Booking Form -->
+      <div class="divider"></div>
+      <div class="section-title">Booking Details</div>
+
+      <form onsubmit="handleFamilyBooking(event)">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="fb-name" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="fb-phone" placeholder="Enter phone number" required>
+        </div>
+        <div class="form-group">
+          <label>Preferred Date</label>
+          <input type="date" id="fb-date" required>
+        </div>
+        <div class="form-group">
+          <label>Expected Guests</label>
+          <select id="fb-guests" required>
+            <option value="">Select</option>
+            <option>Up to 25</option>
+            <option>25 - 50</option>
+            <option>50 - 100</option>
+            <option>100 - 200</option>
+            <option>200+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Special Requests (Optional)</label>
+          <textarea id="fb-notes" rows="3" placeholder="Any special requirements..."></textarea>
+        </div>
+
+        <div class="note-box">
+          <strong>Note:</strong> After submitting, the temple admin will review your request and confirm availability within 24 hours. You will receive a confirmation call/SMS.
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Booking Request</button>
+      </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let selectedFunc = null;
+
+    function selectFunction(card, name, price) {
+      document.querySelectorAll('.function-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      selectedFunc = { name, price };
+    }
+
+    function handleFamilyBooking(e) {
+      e.preventDefault();
+      if (!selectedFunc) {
+        showToast('Please select a function type', 'error');
+        return;
+      }
+      const name = document.getElementById('fb-name').value;
+      const date = document.getElementById('fb-date').value;
+      const guests = document.getElementById('fb-guests').value;
+
+      const bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+      bookings.push({
+        id: Date.now(),
+        type: 'Family Function',
+        pooja: selectedFunc.name,
+        price: selectedFunc.price,
+        name, date, guests,
+        status: 'Pending Approval'
+      });
+      localStorage.setItem('temple_bookings', JSON.stringify(bookings));
+
+      showModal('📋', 'Request Submitted!',
+        `Your ${selectedFunc.name} booking request for ${date} has been submitted. The temple admin will confirm availability within 24 hours.`,
+        'Done', () => navigateTo('home.html'));
+    }
+  </script>
+</body>
+</html>

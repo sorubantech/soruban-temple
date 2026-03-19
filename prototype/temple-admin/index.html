@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple Admin — Soruban Temple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <link rel="stylesheet" href="../shared/components.css">
+  <link rel="stylesheet" href="../shared/animations.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <i class="fa-solid fa-place-of-worship"></i>
+        <span>Temple Admin</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+      <div class="sidebar-footer">
+        <div class="flex items-center gap-2">
+          <div class="avatar avatar-sm">RK</div>
+          <div><div style="font-size:var(--text-sm);font-weight:600">Rajesh Kumar</div><div style="font-size:var(--text-xs);color:var(--text-light)">Temple Manager</div></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-topbar" id="admin-topbar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <h1 id="page-title">Dashboard</h1>
+        <div class="flex items-center gap-3">
+          <button class="header-icon-btn btn-subtle"><i class="fa-solid fa-bell"></i></button>
+          <button class="header-icon-btn btn-subtle" onclick="toggleAdminTheme()"><i class="fa-solid fa-moon" id="admin-theme-icon"></i></button>
+        </div>
+      </header>
+      <div class="admin-content" id="admin-content">
+        <!-- Rendered by JS -->
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

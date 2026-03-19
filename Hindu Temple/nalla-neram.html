@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nalla Neram - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .date-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 52px;
+      z-index: 99;
+    }
+    .date-nav .dn-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: white;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    .date-nav .dn-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .date-nav .dn-date {
+      text-align: center;
+    }
+    .date-nav .dn-date h3 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    .date-nav .dn-date p {
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    .panchangam-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin: 0.75rem 1.25rem;
+      padding: 1.15rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .panchangam-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .pc-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.45rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #f5f5f5;
+    }
+    .pc-row:last-child { border: none; }
+    .pc-row .pc-label { color: var(--text-light); }
+    .pc-row .pc-value { font-weight: 600; text-align: right; max-width: 55%; }
+
+    .time-block {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin: 0.75rem 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .tb-header {
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tb-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tb-header .tb-status {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 10px;
+    }
+    .tb-status.good { background: #e8f5e9; color: #2e7d32; }
+    .tb-status.bad { background: #ffebee; color: #c62828; }
+    .tb-status.active { background: #2e7d32; color: white; animation: glow 2s infinite; }
+    @keyframes glow {
+      0%,100% { box-shadow: 0 0 4px rgba(46,125,50,0.4); }
+      50% { box-shadow: 0 0 12px rgba(46,125,50,0.6); }
+    }
+
+    .time-slots {
+      padding: 0 1.15rem 1rem;
+    }
+    .ts-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 0.85rem;
+    }
+    .ts-item:last-child { border: none; }
+    .ts-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ts-dot.green { background: #2e7d32; }
+    .ts-dot.red { background: #c62828; }
+    .ts-dot.orange { background: #e65100; }
+    .ts-dot.active-dot {
+      box-shadow: 0 0 0 3px rgba(46,125,50,0.25);
+      animation: dotPulse 1.5s infinite;
+    }
+    @keyframes dotPulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+    .ts-time { font-weight: 600; min-width: 110px; }
+    .ts-label { color: var(--text-light); }
+    .ts-now {
+      margin-left: auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #2e7d32;
+      background: #e8f5e9;
+      padding: 0.15rem 0.5rem;
+      border-radius: 8px;
+    }
+
+    .summary-banner {
+      margin: 0.75rem 1.25rem;
+      padding: 1rem 1.15rem;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .summary-banner.auspicious {
+      background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+      border: 1px solid #a5d6a7;
+    }
+    .summary-banner.inauspicious {
+      background: linear-gradient(135deg, #ffebee, #ffcdd2);
+      border: 1px solid #ef9a9a;
+    }
+    .sb-icon { font-size: 2rem; }
+    .sb-info h3 { font-size: 0.95rem; font-weight: 700; }
+    .sb-info p { font-size: 0.78rem; color: var(--text-light); margin-top: 0.15rem; }
+
+    .muhurtham-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.65rem;
+      padding: 0 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .muh-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 0.85rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .muh-card .muh-icon { font-size: 1.5rem; margin-bottom: 0.35rem; }
+    .muh-card h4 { font-size: 0.82rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .muh-card p { font-size: 0.72rem; color: var(--text-light); }
+    .muh-card .muh-verdict {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .muh-verdict.yes { background: #e8f5e9; color: #2e7d32; }
+    .muh-verdict.no { background: #ffebee; color: #c62828; }
+    .muh-verdict.ok { background: #fff3e0; color: #e65100; }
+
+    .section-head {
+      padding: 0.85rem 1.25rem 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2>Nalla Neram & Panchangam</h2>
+    </div>
+
+    <!-- Date Navigation -->
+    <div class="date-nav">
+      <button class="dn-btn" onclick="changeDate(-1)">&#8249;</button>
+      <div class="dn-date">
+        <h3 id="display-date">Today</h3>
+        <p id="display-tamil-date"></p>
+      </div>
+      <button class="dn-btn" onclick="changeDate(1)">&#8250;</button>
+    </div>
+
+    <!-- Current Status Banner -->
+    <div class="summary-banner auspicious" id="current-status">
+      <div class="sb-icon" id="status-icon">🟢</div>
+      <div class="sb-info">
+        <h3 id="status-title">Nalla Neram Now</h3>
+        <p id="status-desc">Current time is auspicious for new beginnings</p>
+      </div>
+    </div>
+
+    <!-- Nalla Neram (Auspicious Time) -->
+    <div class="time-block">
+      <div class="tb-header">
+        <h3>🟢 Nalla Neram (Auspicious)</h3>
+        <span class="tb-status good">Shubh</span>
+      </div>
+      <div class="time-slots" id="nalla-neram-slots"></div>
+    </div>
+
+    <!-- Gowri Nalla Neram -->
+    <div class="time-block">
+      <div class="tb-header">
+        <h3>🌟 Gowri Nalla Neram</h3>
+        <span class="tb-status good">Best</span>
+      </div>
+      <div class="time-slots" id="gowri-slots"></div>
+    </div>
+
+    <!-- Raahu Kaalam (Inauspicious) -->
+    <div class="time-block">
+      <div class="tb-header">
+        <h3>🔴 Raahu Kaalam</h3>
+        <span class="tb-status bad">Avoid</span>
+      </div>
+      <div class="time-slots" id="raahu-slots"></div>
+    </div>
+
+    <!-- Emagandam -->
+    <div class="time-block">
+      <div class="tb-header">
+        <h3>🟠 Emagandam</h3>
+        <span class="tb-status bad">Avoid</span>
+      </div>
+      <div class="time-slots" id="ema-slots"></div>
+    </div>
+
+    <!-- Kuligai -->
+    <div class="time-block">
+      <div class="tb-header">
+        <h3>🟡 Kuligai</h3>
+        <span class="tb-status bad">Caution</span>
+      </div>
+      <div class="time-slots" id="kuligai-slots"></div>
+    </div>
+
+    <!-- Today's Muhurtham -->
+    <div class="section-head">🕉️ Today's Muhurtham Suitability</div>
+    <div class="muhurtham-grid" id="muhurtham-grid"></div>
+
+    <!-- Panchangam Details -->
+    <div class="panchangam-card">
+      <h3>📜 Daily Panchangam</h3>
+      <div id="panchangam-details"></div>
+    </div>
+
+    <!-- Sunrise/Sunset -->
+    <div class="panchangam-card">
+      <h3>🌅 Sun & Moon Timings</h3>
+      <div id="sun-moon-details"></div>
+    </div>
+
+    <!-- Tip -->
+    <div style="margin:0.75rem 1.25rem 1.5rem; padding:0.85rem 1rem; background:#e3f2fd; border:1px solid #90caf9; border-radius:10px; font-size:0.78rem; color:#1565c0; display:flex; align-items:flex-start; gap:0.5rem;">
+      <span style="font-size:1.1rem;">💡</span>
+      <span><strong>Tip:</strong> Nalla Neram is the most auspicious time to begin new activities, visit temples, start business, or perform rituals. Avoid Raahu Kaalam for important tasks.</span>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Day-based auspicious timing data (traditional Tamil panchangam pattern)
+    // Raahu Kaalam order by weekday: Sun=4.5-6, Mon=7.5-9, Tue=3-4.5, Wed=12-1.5, Thu=1.5-3, Fri=10.5-12, Sat=9-10.5
+    const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const tamilDayNames = ['Nyayiru','Thingal','Chevvai','Budhan','Vyazhan','Velli','Sani'];
+    const tamilMonths = ['Thai','Maasi','Panguni','Chithirai','Vaigasi','Aani','Aadi','Aavani','Purattasi','Aippasi','Karthigai','Margazhi'];
+
+    // Raahu Kaalam start hours from sunrise (6:00 AM assumed)
+    const raahuStart = [16.5, 7.5, 15, 12, 13.5, 10.5, 9]; // hours from midnight
+    // Emagandam start hours
+    const emaStart = [12, 15, 13.5, 10.5, 9, 7.5, 16.5];
+    // Kuligai start hours
+    const kuligaiStart = [13.5, 10.5, 9, 16.5, 12, 15, 7.5];
+
+    // Nalla Neram periods per day (traditional)
+    const nallaNeram = {
+      0: [{s:'07:30',e:'09:00'},{s:'11:00',e:'12:30'},{s:'16:00',e:'17:30'}], // Sunday
+      1: [{s:'06:00',e:'07:30'},{s:'09:30',e:'11:00'},{s:'14:30',e:'16:00'}],
+      2: [{s:'07:30',e:'09:00'},{s:'12:00',e:'13:30'},{s:'16:30',e:'18:00'}],
+      3: [{s:'06:00',e:'07:30'},{s:'10:30',e:'12:00'},{s:'15:00',e:'16:30'}],
+      4: [{s:'06:30',e:'08:00'},{s:'09:00',e:'10:30'},{s:'14:00',e:'15:30'}],
+      5: [{s:'06:00',e:'07:30'},{s:'11:30',e:'13:00'},{s:'15:30',e:'17:00'}],
+      6: [{s:'07:00',e:'08:30'},{s:'10:00',e:'11:30'},{s:'16:00',e:'17:30'}]
+    };
+
+    // Gowri Nalla Neram (best subset)
+    const gowriNeram = {
+      0: [{s:'09:00',e:'10:30'}],
+      1: [{s:'06:00',e:'07:30'}],
+      2: [{s:'07:30',e:'09:00'}],
+      3: [{s:'10:30',e:'12:00'}],
+      4: [{s:'09:00',e:'10:30'}],
+      5: [{s:'06:00',e:'07:30'}],
+      6: [{s:'07:00',e:'08:30'}]
+    };
+
+    // Nakshatram cycle (27 stars, cycle based on day of year)
+    const nakshatrams = ['Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Moola','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
+    const tithis = ['Pratipada','Dwitiya','Tritiya','Chaturthi','Panchami','Shashthi','Saptami','Ashtami','Navami','Dashami','Ekadashi','Dwadashi','Trayodashi','Chaturdashi','Purnima','Pratipada','Dwitiya','Tritiya','Chaturthi','Panchami','Shashthi','Saptami','Ashtami','Navami','Dashami','Ekadashi','Dwadashi','Trayodashi','Chaturdashi','Amavasya'];
+    const yogas = ['Vishkambha','Priti','Ayushman','Saubhagya','Shobhana','Atiganda','Sukarma','Dhriti','Shoola','Ganda','Vriddhi','Dhruva','Vyaghata','Harshana','Vajra','Siddhi','Vyatipata','Variyan','Parigha','Shiva','Siddha','Sadhya','Shubha','Shukla','Brahma','Indra','Vaidhriti'];
+    const karanas = ['Bava','Balava','Kaulava','Taitila','Garaja','Vanija','Vishti','Shakuni','Chatushpada','Nagava','Kimstughna'];
+
+    let currentDate = new Date();
+
+    function getDayOfYear(d) {
+      const start = new Date(d.getFullYear(), 0, 0);
+      return Math.floor((d - start) / 86400000);
+    }
+
+    function formatTime12(h24) {
+      const h = Math.floor(h24);
+      const m = Math.round((h24 - h) * 60);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h > 12 ? h - 12 : (h === 0 ? 12 : h);
+      return `${h12}:${m.toString().padStart(2,'0')} ${ampm}`;
+    }
+
+    function isCurrentlyInRange(startStr, endStr) {
+      const now = new Date();
+      if (currentDate.toDateString() !== now.toDateString()) return false;
+      const [sh,sm] = startStr.split(':').map(Number);
+      const [eh,em] = endStr.split(':').map(Number);
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      return nowMin >= sh * 60 + sm && nowMin < eh * 60 + em;
+    }
+
+    function renderTimeSlots(containerId, slots, dotColor) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = slots.map(s => {
+        const isNow = isCurrentlyInRange(s.s, s.e);
+        return `<div class="ts-item">
+          <span class="ts-dot ${dotColor}${isNow ? ' active-dot' : ''}"></span>
+          <span class="ts-time">${s.s} - ${s.e}</span>
+          <span class="ts-label">${s.label || ''}</span>
+          ${isNow ? '<span class="ts-now">NOW</span>' : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function renderPage() {
+      const day = currentDate.getDay();
+      const doy = getDayOfYear(currentDate);
+      const now = new Date();
+      const isToday = currentDate.toDateString() === now.toDateString();
+
+      // Date display
+      const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('display-date').textContent = isToday ? 'Today - ' + dayNames[day] : currentDate.toLocaleDateString('en-IN', opts);
+      const tamilMonth = tamilMonths[(currentDate.getMonth() + 9) % 12];
+      document.getElementById('display-tamil-date').textContent = `${tamilDayNames[day]} | ${tamilMonth} ${currentDate.getDate()}`;
+
+      // Nalla Neram
+      const nnSlots = nallaNeram[day].map(s => ({...s, label: 'Auspicious period'}));
+      renderTimeSlots('nalla-neram-slots', nnSlots, 'green');
+
+      // Gowri Nalla Neram
+      const gnSlots = gowriNeram[day].map(s => ({...s, label: 'Most auspicious'}));
+      renderTimeSlots('gowri-slots', gnSlots, 'green');
+
+      // Raahu Kaalam
+      const rStart = raahuStart[day];
+      const rEnd = rStart + 1.5;
+      renderTimeSlots('raahu-slots', [{s: formatTime24(rStart), e: formatTime24(rEnd), label: 'Do not start new work'}], 'red');
+
+      // Emagandam
+      const eStart = emaStart[day];
+      const eEnd = eStart + 1.5;
+      renderTimeSlots('ema-slots', [{s: formatTime24(eStart), e: formatTime24(eEnd), label: 'Avoid important tasks'}], 'red');
+
+      // Kuligai
+      const kStart = kuligaiStart[day];
+      const kEnd = kStart + 1.5;
+      renderTimeSlots('kuligai-slots', [{s: formatTime24(kStart), e: formatTime24(kEnd), label: 'Exercise caution'}], 'orange');
+
+      // Current status
+      const statusEl = document.getElementById('current-status');
+      const statusIcon = document.getElementById('status-icon');
+      const statusTitle = document.getElementById('status-title');
+      const statusDesc = document.getElementById('status-desc');
+
+      if (isToday) {
+        const nowMin = now.getHours() * 60 + now.getMinutes();
+        const inNalla = nallaNeram[day].some(s => {
+          const [sh,sm] = s.s.split(':').map(Number);
+          const [eh,em] = s.e.split(':').map(Number);
+          return nowMin >= sh*60+sm && nowMin < eh*60+em;
+        });
+        const rStartMin = rStart * 60, rEndMin = rEnd * 60;
+        const inRaahu = nowMin >= rStartMin && nowMin < rEndMin;
+
+        if (inNalla) {
+          statusEl.className = 'summary-banner auspicious';
+          statusIcon.textContent = '🟢';
+          statusTitle.textContent = 'Nalla Neram Now!';
+          statusDesc.textContent = 'This is an auspicious time. Good for new beginnings, temple visits & rituals.';
+        } else if (inRaahu) {
+          statusEl.className = 'summary-banner inauspicious';
+          statusIcon.textContent = '🔴';
+          statusTitle.textContent = 'Raahu Kaalam Active';
+          statusDesc.textContent = 'Avoid starting new work or important tasks during this period.';
+        } else {
+          statusEl.className = 'summary-banner auspicious';
+          statusIcon.textContent = '🟡';
+          statusTitle.textContent = 'Neutral Period';
+          statusDesc.textContent = 'Current time is neither highly auspicious nor inauspicious.';
+        }
+      } else {
+        statusEl.className = 'summary-banner auspicious';
+        statusIcon.textContent = '📅';
+        statusTitle.textContent = dayNames[day] + ' Timings';
+        statusDesc.textContent = 'Viewing auspicious timings for ' + currentDate.toLocaleDateString('en-IN', {month:'short',day:'numeric'});
+      }
+
+      // Muhurtham suitability
+      const muhurthams = [
+        { icon: '🛕', name: 'Temple Visit', verdict: 'yes', text: 'Recommended' },
+        { icon: '💼', name: 'New Business', verdict: day === 2 || day === 6 ? 'no' : 'yes', text: day === 2 || day === 6 ? 'Not ideal' : 'Favorable' },
+        { icon: '💍', name: 'Marriage', verdict: [1,3,4,5].includes(day) ? 'yes' : 'ok', text: [1,3,4,5].includes(day) ? 'Auspicious' : 'Consult pandit' },
+        { icon: '🏠', name: 'Gruhapravesham', verdict: [1,3,4,5].includes(day) ? 'yes' : 'no', text: [1,3,4,5].includes(day) ? 'Good day' : 'Avoid today' },
+        { icon: '🚗', name: 'New Vehicle', verdict: [3,5].includes(day) ? 'yes' : 'ok', text: [3,5].includes(day) ? 'Best day' : 'Acceptable' },
+        { icon: '📚', name: 'Education Start', verdict: [1,3,4].includes(day) ? 'yes' : 'ok', text: [1,3,4].includes(day) ? 'Excellent' : 'Fair' }
+      ];
+      document.getElementById('muhurtham-grid').innerHTML = muhurthams.map(m => `
+        <div class="muh-card">
+          <div class="muh-icon">${m.icon}</div>
+          <h4>${m.name}</h4>
+          <p>${m.text}</p>
+          <span class="muh-verdict ${m.verdict}">${m.verdict === 'yes' ? 'Suitable' : m.verdict === 'no' ? 'Not Suitable' : 'Moderate'}</span>
+        </div>
+      `).join('');
+
+      // Panchangam
+      const nak = nakshatrams[doy % 27];
+      const tithi = tithis[doy % 30];
+      const yoga = yogas[doy % 27];
+      const karana = karanas[doy % 11];
+      const paksha = (doy % 30) < 15 ? 'Shukla Paksha' : 'Krishna Paksha';
+
+      document.getElementById('panchangam-details').innerHTML = `
+        <div class="pc-row"><span class="pc-label">Tithi</span><span class="pc-value">${tithi} (${paksha})</span></div>
+        <div class="pc-row"><span class="pc-label">Nakshatram</span><span class="pc-value">${nak}</span></div>
+        <div class="pc-row"><span class="pc-label">Yoga</span><span class="pc-value">${yoga}</span></div>
+        <div class="pc-row"><span class="pc-label">Karana</span><span class="pc-value">${karana}</span></div>
+        <div class="pc-row"><span class="pc-label">Vaaram</span><span class="pc-value">${tamilDayNames[day]} (${dayNames[day]})</span></div>
+        <div class="pc-row"><span class="pc-label">Tamil Month</span><span class="pc-value">${tamilMonth}</span></div>
+      `;
+
+      // Sun & Moon
+      const sunrise = `06:${(10 + (doy % 15)).toString().padStart(2,'0')} AM`;
+      const sunset = `06:${(15 + (doy % 20)).toString().padStart(2,'0')} PM`;
+      const moonrise = `${6 + (doy % 6)}:${(doy % 50).toString().padStart(2,'0')} PM`;
+      const moonPhases = ['New Moon','Waxing Crescent','First Quarter','Waxing Gibbous','Full Moon','Waning Gibbous','Last Quarter','Waning Crescent'];
+      const moonPhase = moonPhases[Math.floor((doy % 30) / 3.75)];
+
+      document.getElementById('sun-moon-details').innerHTML = `
+        <div class="pc-row"><span class="pc-label">Sunrise</span><span class="pc-value">${sunrise}</span></div>
+        <div class="pc-row"><span class="pc-label">Sunset</span><span class="pc-value">${sunset}</span></div>
+        <div class="pc-row"><span class="pc-label">Moonrise</span><span class="pc-value">${moonrise}</span></div>
+        <div class="pc-row"><span class="pc-label">Moon Phase</span><span class="pc-value">${moonPhase}</span></div>
+      `;
+    }
+
+    function formatTime24(h) {
+      const hours = Math.floor(h);
+      const mins = Math.round((h - hours) * 60);
+      return `${hours.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}`;
+    }
+
+    function changeDate(delta) {
+      currentDate = new Date(currentDate.getTime() + delta * 86400000);
+      renderPage();
+    }
+
+    document.addEventListener('DOMContentLoaded', renderPage);
+    // Auto-refresh every minute to update "NOW" indicators
+    setInterval(() => {
+      if (currentDate.toDateString() === new Date().toDateString()) renderPage();
+    }, 60000);
+  </script>
+</body>
+</html>

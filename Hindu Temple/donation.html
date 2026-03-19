@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">←</button>
+      <h2 data-lang="temple_donation">Temple Donation</h2>
+    </div>
+
+    <!-- Temple Info Banner -->
+    <div id="donation-temple-banner" style="display:none;"></div>
+
+    <form class="section" onsubmit="handleDonation(event)">
+      <!-- Temple Selection (shown when no temple selected) -->
+      <div id="temple-select-group" class="form-group" style="display:none;">
+        <label style="font-weight:700; font-size:0.95rem;">🛕 Select Temple <span style="color:#e53935;font-size:0.75rem;">*</span></label>
+        <select id="donation-temple-select" onchange="onTempleSelectChange()" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.9rem; background:var(--card-bg);">
+          <option value="">-- Choose a Temple --</option>
+        </select>
+        <div class="divider" style="margin-top:1rem;"></div>
+      </div>
+
+      <!-- Amount Selection -->
+      <div class="section-title" data-lang="select_amount">Select Amount</div>
+      <div class="amount-grid">
+        <button type="button" class="amount-btn" onclick="selectAmount(this, 100)">₹100</button>
+        <button type="button" class="amount-btn" onclick="selectAmount(this, 250)">₹250</button>
+        <button type="button" class="amount-btn" onclick="selectAmount(this, 500)">₹500</button>
+        <button type="button" class="amount-btn" onclick="selectAmount(this, 1000)">₹1,000</button>
+        <button type="button" class="amount-btn" onclick="selectAmount(this, 2500)">₹2,500</button>
+        <button type="button" class="amount-btn" onclick="selectAmount(this, 5000)">₹5,000</button>
+      </div>
+
+      <div class="form-group">
+        <label data-lang="or_enter_custom">Or Enter Custom Amount</label>
+        <input type="number" id="custom-amount" data-lang-placeholder="enter_amount" placeholder="Enter amount in ₹" min="1">
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Donation Type -->
+      <div class="section-title" data-lang="donation_type">Donation Type</div>
+      <div class="donation-type-list">
+        <div class="donation-type" onclick="selectDonationType(this, 'Annadhanam')">
+          <span class="dtype-icon">🍚</span>
+          <div class="dtype-info">
+            <h3 data-lang="annadhanam_donate">Annadhanam</h3>
+            <p data-lang="serve_free_food">Serve free food to devotees</p>
+          </div>
+        </div>
+        <div class="donation-type" onclick="selectDonationType(this, 'Temple Maintenance')">
+          <span class="dtype-icon">🏛️</span>
+          <div class="dtype-info">
+            <h3 data-lang="temple_maintenance">Temple Maintenance</h3>
+            <p data-lang="support_upkeep">Support temple upkeep & renovation</p>
+          </div>
+        </div>
+        <div class="donation-type" onclick="selectDonationType(this, 'Flower Decoration')">
+          <span class="dtype-icon">🌺</span>
+          <div class="dtype-info">
+            <h3 data-lang="flower_decoration">Flower Decoration</h3>
+            <p data-lang="daily_flower">Daily flower offerings to deity</p>
+          </div>
+        </div>
+        <div class="donation-type" onclick="selectDonationType(this, 'Cow Shelter')">
+          <span class="dtype-icon">🐄</span>
+          <div class="dtype-info">
+            <h3 data-lang="cow_shelter">Go Seva (Cow Shelter)</h3>
+            <p data-lang="support_cow">Support the temple cow shelter</p>
+          </div>
+        </div>
+        <div class="donation-type" onclick="selectDonationType(this, 'General Hundi')">
+          <span class="dtype-icon">💰</span>
+          <div class="dtype-info">
+            <h3 data-lang="general_hundi">General Hundi</h3>
+            <p data-lang="general_donation">General temple donation</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Donor Details -->
+      <div class="section-title" data-lang="donor_details">Donor Details</div>
+      <div class="form-group">
+        <label data-lang="name">Name</label>
+        <input type="text" id="donor-name" data-lang-placeholder="enter_name" placeholder="Enter your name">
+      </div>
+      <div class="form-group">
+        <label><span data-lang="phone">Phone</span> <span style="color:#e53935;font-size:0.75rem;">*</span></label>
+        <input type="tel" id="donor-phone" data-lang-placeholder="enter_10digit" placeholder="Enter 10-digit mobile number" maxlength="10" required
+          oninput="this.value = this.value.replace(/[^0-9]/g, ''); validatePhone()">
+        <span id="phone-error" style="display:none; color:#e53935; font-size:0.75rem; margin-top:4px;" data-lang="phone_error">Please enter a valid 10-digit mobile number</span>
+      </div>
+      <div class="form-group">
+        <label><span data-lang="email">Email</span> <span style="font-size:0.72rem; color:var(--text-light);">(<span data-lang="email_receipt">for receipt</span>)</span></label>
+        <input type="email" id="donor-email" data-lang-placeholder="enter_email_receipt" placeholder="Enter email for donation receipt">
+      </div>
+
+      <button type="submit" class="btn btn-success" style="margin-top:0.5rem;">🙏 <span data-lang="donate_now">Donate Now</span></button>
+      <p class="text-center mt-1" style="font-size:0.8rem; color:var(--text-light);" data-lang="secure_payment">
+        Secure payment via Razorpay. Tax-exempt under 80G.
+      </p>
+    </form>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="receipt-modal" style="display:none;">
+      <div class="modal" style="max-width:340px; text-align:left;">
+        <div id="receipt-content"></div>
+        <div style="display:flex; gap:8px; margin-top:14px;">
+          <button class="btn btn-primary" style="flex:1; font-size:0.82rem;" onclick="sendReceiptWhatsApp()">📱 WhatsApp</button>
+          <button class="btn btn-primary" style="flex:1; font-size:0.82rem; background:#4CAF50;" onclick="sendReceiptSMS()">💬 SMS</button>
+        </div>
+        <button class="btn btn-primary" id="email-receipt-btn" style="width:100%; margin-top:8px; background:#1976D2; font-size:0.82rem; display:none;" onclick="sendReceiptEmail()">📧 Send Email Receipt</button>
+        <button class="btn" style="width:100%; margin-top:8px; background:#f5f5f5; color:var(--text); font-size:0.82rem;" onclick="closeReceipt()">Done</button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span data-lang="nav_home">Home</span>
+      </a>
+      <a href="temple-list.html" class="nav-item">
+        <span class="nav-icon">🛕</span>
+        <span data-lang="nav_temples">Temples</span>
+      </a>
+      <a href="community.html" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Community</span>
+      </a>
+      <a href="feed.html" class="nav-item">
+        <span class="nav-icon">📰</span>
+        <span data-lang="nav_feed">Feed</span>
+      </a>
+      <a href="profile.html" class="nav-item">
+        <span class="nav-icon">👤</span>
+        <span data-lang="nav_profile">Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Store last donation for receipt
+    var lastDonationReceipt = null;
+    var donationTemple = null; // The temple this donation is for
+
+    // Known temples for the dropdown
+    var donationTempleList = [
+      'Meenakshi Amman Temple, Madurai',
+      'Brihadeeswarar Temple, Thanjavur',
+      'Chidambaram Nataraja Temple',
+      'Tirumala Venkateswara Temple, Tirupati',
+      'Arunachaleswarar Temple, Thiruvannamalai',
+      'Ekambareswarar Temple, Kanchipuram',
+      'Kapaleeshwarar Temple, Chennai',
+      'Ramanathaswamy Temple, Rameswaram',
+      'Kamakshi Amman Temple, Kanchipuram',
+      'Palani Murugan Temple, Palani',
+      'Ranganathaswamy Temple, Srirangam',
+      'Siddhivinayak Temple, Mumbai',
+      'Hanuman Garhi, Ayodhya',
+      'Jambukeswarar Temple, Thiruvanaikaval',
+      'Thillai Kali Amman Temple, Chidambaram'
+    ];
+
+    // Initialize - check for selected temple and pre-fill donor
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for selected temple
+      try {
+        var selTemple = JSON.parse(localStorage.getItem('selected_temple'));
+        if (selTemple && selTemple.name) {
+          donationTemple = selTemple.name;
+          // Show temple banner
+          var banner = document.getElementById('donation-temple-banner');
+          banner.style.display = 'flex';
+          banner.style.cssText = 'display:flex; align-items:center; gap:12px; padding:12px 20px; background:linear-gradient(135deg,#fff3e0,#ffe0b2); border-bottom:1px solid #ffcc80;';
+          banner.innerHTML =
+            '<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:white;flex-shrink:0;">🛕</div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="font-size:0.88rem;font-weight:700;color:#e65100;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + selTemple.name + '</div>' +
+              '<div style="font-size:0.72rem;color:#bf360c;">📍 ' + (selTemple.location || '') + '</div>' +
+            '</div>' +
+            '<button type="button" onclick="changeTemple()" style="background:rgba(230,81,0,0.1);border:1px solid #e65100;color:#e65100;border-radius:8px;padding:5px 10px;font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;">Change</button>';
+          // Hide dropdown
+          document.getElementById('temple-select-group').style.display = 'none';
+        } else {
+          showTempleDropdown();
+        }
+      } catch(e) {
+        showTempleDropdown();
+      }
+
+      // Pre-fill donor details from profile
+      try {
+        var user = JSON.parse(localStorage.getItem('temple_user'));
+        if (user) {
+          if (user.name && document.getElementById('donor-name'))
+            document.getElementById('donor-name').value = user.name;
+          if (user.phone && document.getElementById('donor-phone'))
+            document.getElementById('donor-phone').value = user.phone;
+          if (user.email && document.getElementById('donor-email'))
+            document.getElementById('donor-email').value = user.email;
+        }
+      } catch(e) {}
+    });
+
+    function showTempleDropdown() {
+      donationTemple = null;
+      document.getElementById('donation-temple-banner').style.display = 'none';
+      var group = document.getElementById('temple-select-group');
+      group.style.display = 'block';
+      var sel = document.getElementById('donation-temple-select');
+      sel.innerHTML = '<option value="">-- Choose a Temple --</option>';
+      for (var i = 0; i < donationTempleList.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = donationTempleList[i];
+        opt.textContent = donationTempleList[i];
+        sel.appendChild(opt);
+      }
+    }
+
+    function onTempleSelectChange() {
+      var sel = document.getElementById('donation-temple-select');
+      donationTemple = sel.value || null;
+    }
+
+    function changeTemple() {
+      showTempleDropdown();
+    }
+
+    // Phone validation
+    function validatePhone() {
+      var phone = document.getElementById('donor-phone');
+      var err = document.getElementById('phone-error');
+      if (!phone || !err) return false;
+      var val = phone.value.trim();
+      if (val.length === 0) {
+        err.style.display = 'none';
+        phone.style.borderColor = '';
+        return false;
+      }
+      if (val.length !== 10 || !/^[6-9][0-9]{9}$/.test(val)) {
+        err.style.display = 'block';
+        phone.style.borderColor = '#e53935';
+        return false;
+      }
+      err.style.display = 'none';
+      phone.style.borderColor = '#4CAF50';
+      return true;
+    }
+
+    // Override handleDonation from app.js
+    var _origHandleDonation = typeof handleDonation === 'function' ? handleDonation : null;
+    handleDonation = function(e) {
+      e.preventDefault();
+
+      // Validate temple selection
+      if (!donationTemple) {
+        showToast('Please select a temple', 'error');
+        var sel = document.getElementById('donation-temple-select');
+        if (sel) { sel.focus(); sel.style.borderColor = '#e53935'; }
+        return;
+      }
+
+      var amount = document.getElementById('custom-amount')?.value || selectedAmount;
+      if (!amount || amount <= 0) {
+        showToast(t('valid_amount_error', 'Please enter a valid amount'), 'error');
+        return;
+      }
+      if (!selectedDonationType) {
+        showToast(t('select_donation_type', 'Please select donation type'), 'error');
+        return;
+      }
+
+      var phone = document.getElementById('donor-phone').value.trim();
+      if (!phone || phone.length !== 10 || !/^[6-9][0-9]{9}$/.test(phone)) {
+        document.getElementById('phone-error').style.display = 'block';
+        document.getElementById('donor-phone').style.borderColor = '#e53935';
+        document.getElementById('donor-phone').focus();
+        showToast(t('phone_error', 'Please enter a valid 10-digit mobile number'), 'error');
+        return;
+      }
+
+      var donorName = document.getElementById('donor-name')?.value.trim() || 'Anonymous';
+      var donorEmail = document.getElementById('donor-email')?.value.trim() || '';
+      var receiptNo = 'TD' + Date.now().toString().slice(-8);
+      var donationDate = new Date();
+      var dateStr = donationDate.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+      var timeStr = donationDate.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+      // Save donation
+      var donations = JSON.parse(localStorage.getItem('temple_donations') || '[]');
+      var donationRecord = {
+        id: Date.now(),
+        receiptNo: receiptNo,
+        amount: Number(amount),
+        type: selectedDonationType,
+        temple: donationTemple,
+        date: dateStr,
+        time: timeStr,
+        donorName: donorName,
+        donorPhone: phone,
+        donorEmail: donorEmail
+      };
+      donations.push(donationRecord);
+      localStorage.setItem('temple_donations', JSON.stringify(donations));
+
+      // Store for receipt
+      lastDonationReceipt = donationRecord;
+
+      // Show receipt modal
+      showReceiptModal(donationRecord);
+    };
+
+    function showReceiptModal(d) {
+      var html = '';
+      html += '<div style="text-align:center; margin-bottom:12px;">';
+      html += '<div style="font-size:2.2rem;">🙏</div>';
+      html += '<h3 style="font-size:1.05rem; color:#2E7D32; margin:6px 0 2px;">' + t('donation_successful', 'Donation Successful!') + '</h3>';
+      html += '<p style="font-size:0.75rem; color:var(--text-light);">' + t('thank_contribution', 'Thank you for your generous contribution') + '</p>';
+      html += '</div>';
+
+      html += '<div style="background:#f9f5f0; border:1px solid var(--border); border-radius:10px; padding:14px; font-size:0.82rem;">';
+      html += '<div style="text-align:center; font-weight:700; font-size:0.88rem; margin-bottom:10px; color:var(--primary-dark);">' + t('donation_receipt', 'Donation Receipt') + '</div>';
+      html += '<div style="border-bottom:1px dashed var(--border); padding-bottom:8px; margin-bottom:8px;">';
+      html += '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:var(--text-light);">' + t('receipt_no', 'Receipt No') + '</span><span style="font-weight:600;">' + d.receiptNo + '</span></div>';
+      html += '<div style="display:flex; justify-content:space-between;"><span style="color:var(--text-light);">' + t('date_time', 'Date & Time') + '</span><span>' + d.date + ', ' + d.time + '</span></div>';
+      html += '</div>';
+      html += '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:var(--text-light);">' + t('donor', 'Donor') + '</span><span>' + d.donorName + '</span></div>';
+      html += '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:var(--text-light);">' + t('phone', 'Phone') + '</span><span>' + d.donorPhone + '</span></div>';
+      if (d.donorEmail) {
+        html += '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:var(--text-light);">' + t('email', 'Email') + '</span><span style="font-size:0.78rem;">' + d.donorEmail + '</span></div>';
+      }
+      if (d.temple) {
+        html += '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:var(--text-light);">Temple</span><span style="font-size:0.78rem; text-align:right; max-width:55%;">' + d.temple + '</span></div>';
+      }
+      html += '<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="color:var(--text-light);">' + t('type', 'Type') + '</span><span>' + d.type + '</span></div>';
+      html += '<div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border); padding-top:8px; margin-top:8px; font-weight:700; font-size:0.95rem; color:var(--primary-dark);"><span>' + t('amount', 'Amount') + '</span><span>₹' + Number(d.amount).toLocaleString() + '</span></div>';
+      html += '</div>';
+
+      html += '<p style="text-align:center; font-size:0.72rem; color:var(--text-light); margin-top:10px;">' + t('tax_exempt', 'Tax exemption under Section 80G of Income Tax Act') + '</p>';
+
+      document.getElementById('receipt-content').innerHTML = html;
+
+      // Show/hide email button
+      var emailBtn = document.getElementById('email-receipt-btn');
+      if (d.donorEmail) {
+        emailBtn.style.display = 'block';
+      } else {
+        emailBtn.style.display = 'none';
+      }
+
+      document.getElementById('receipt-modal').style.display = 'flex';
+    }
+
+    function getReceiptText(d) {
+      var text = '🙏 TEMPLE DIGITAL - DONATION RECEIPT\n';
+      text += '━━━━━━━━━━━━━━━━━━━━\n';
+      text += 'Receipt No: ' + d.receiptNo + '\n';
+      text += 'Date: ' + d.date + ' ' + d.time + '\n';
+      text += 'Donor: ' + d.donorName + '\n';
+      text += 'Phone: ' + d.donorPhone + '\n';
+      if (d.donorEmail) text += 'Email: ' + d.donorEmail + '\n';
+      if (d.temple) text += 'Temple: ' + d.temple + '\n';
+      text += 'Donation Type: ' + d.type + '\n';
+      text += 'Amount: ₹' + Number(d.amount).toLocaleString() + '\n';
+      text += '━━━━━━━━━━━━━━━━━━━━\n';
+      text += 'Tax exempt under 80G.\n';
+      text += 'Thank you for your contribution! 🙏';
+      return text;
+    }
+
+    function sendReceiptWhatsApp() {
+      if (!lastDonationReceipt) return;
+      var text = getReceiptText(lastDonationReceipt);
+      var phone = '91' + lastDonationReceipt.donorPhone;
+      var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+      showToast('Opening WhatsApp...', 'success');
+    }
+
+    function sendReceiptSMS() {
+      if (!lastDonationReceipt) return;
+      var text = getReceiptText(lastDonationReceipt);
+      var url = 'sms:' + lastDonationReceipt.donorPhone + '?body=' + encodeURIComponent(text);
+      window.open(url, '_blank');
+      showToast('Opening SMS...', 'success');
+    }
+
+    function sendReceiptEmail() {
+      if (!lastDonationReceipt || !lastDonationReceipt.donorEmail) return;
+      var subject = 'Temple Digital - Donation Receipt ' + lastDonationReceipt.receiptNo;
+      var body = getReceiptText(lastDonationReceipt);
+      var url = 'mailto:' + lastDonationReceipt.donorEmail + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+      window.open(url, '_blank');
+      showToast('Opening email client...', 'success');
+    }
+
+    function closeReceipt() {
+      document.getElementById('receipt-modal').style.display = 'none';
+      navigateTo('home.html');
+    }
+  </script>
+</body>
+</html>

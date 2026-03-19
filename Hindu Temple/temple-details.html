@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temple Details - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .details-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .details-header .back-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      margin-right: 12px;
+    }
+    .details-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .detail-hero {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background: #1a0f0a;
+    }
+    .detail-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .detail-body { padding: 0 0 1rem; }
+
+    .detail-name-section {
+      padding: 20px 16px 16px;
+      background: white;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .detail-name-section h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .detail-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.82rem;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+    .detail-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #fff8e1;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e65100;
+    }
+    .detail-deity {
+      font-size: 0.88rem;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .info-card {
+      background: white;
+      margin: 10px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    .info-card-header .ic-icon {
+      font-size: 1.1rem;
+    }
+    .info-card-body { padding: 14px 16px; }
+
+    .timing-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f9f9f9;
+    }
+    .timing-row:last-child { border-bottom: none; }
+    .timing-row .t-label { font-size: 0.85rem; color: var(--text-light); }
+    .timing-row .t-value { font-size: 0.85rem; font-weight: 600; }
+
+    .description-text {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .contact-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f9f9f9;
+    }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row .cr-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #fff3e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+    .contact-row .cr-label { font-size: 0.75rem; color: var(--text-light); }
+    .contact-row .cr-value { font-size: 0.88rem; font-weight: 600; }
+
+    .services-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .service-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: #fff3e0;
+      color: var(--primary-dark);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav" id="detail-root">
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function() {
+      var temple = null;
+      try { temple = JSON.parse(localStorage.getItem('selected_temple')); } catch(e) {}
+      var root = document.getElementById('detail-root');
+
+      if (!temple) {
+        root.innerHTML =
+          '<div class="details-header"><button class="back-btn" onclick="history.back()">&larr;</button><h2>Temple Details</h2></div>' +
+          '<div style="text-align:center;padding:60px 20px;"><div style="font-size:3rem;margin-bottom:16px;">🛕</div>' +
+          '<h2>No Temple Selected</h2><p style="color:#999;margin-bottom:20px;">Go back and select a temple first.</p>' +
+          '<a href="temple-list.html" style="padding:12px 32px;background:var(--primary);color:white;border-radius:12px;text-decoration:none;font-weight:600;">Browse Temples</a></div>';
+        return;
+      }
+
+      document.title = temple.name + ' - Details';
+
+      var html = '';
+
+      // Header
+      html +=
+        '<div class="details-header">' +
+          '<button class="back-btn" onclick="window.location.href=\'temple-home.html\'">&larr;</button>' +
+          '<h2>' + esc(temple.name) + '</h2>' +
+        '</div>';
+
+      // Hero Image
+      html +=
+        '<div class="detail-hero">' +
+          '<img src="' + esc(temple.image) + '" alt="' + esc(temple.name) + '">' +
+        '</div>';
+
+      // Name Section
+      html +=
+        '<div class="detail-name-section">' +
+          '<h1>' + esc(temple.name) + '</h1>' +
+          '<div class="detail-meta">' +
+            '<span>📍 ' + esc(temple.location) + '</span>' +
+            '<span class="detail-rating">⭐ ' + esc(temple.rating) + ' (' + esc(temple.reviews) + ')</span>' +
+          '</div>' +
+          '<div class="detail-deity">🙏 ' + esc(temple.deity) + '</div>' +
+        '</div>';
+
+      // Timings Card
+      html +=
+        '<div class="info-card">' +
+          '<div class="info-card-header"><span class="ic-icon">🕐</span> Temple Timings</div>' +
+          '<div class="info-card-body">' +
+            '<div class="timing-row"><span class="t-label">Morning Darshan</span><span class="t-value">' + esc(temple.timings.morning) + '</span></div>' +
+            '<div class="timing-row"><span class="t-label">Evening Darshan</span><span class="t-value">' + esc(temple.timings.evening) + '</span></div>' +
+          '</div>' +
+        '</div>';
+
+      // About / History Card
+      html +=
+        '<div class="info-card">' +
+          '<div class="info-card-header"><span class="ic-icon">📜</span> About This Temple</div>' +
+          '<div class="info-card-body">' +
+            '<div class="description-text">' + esc(temple.description) + '</div>' +
+          '</div>' +
+        '</div>';
+
+      // Available Services
+      if (temple.services && temple.services.length > 0) {
+        html +=
+          '<div class="info-card">' +
+            '<div class="info-card-header"><span class="ic-icon">🪔</span> Available Services</div>' +
+            '<div class="info-card-body"><div class="services-list">';
+        temple.services.forEach(function(s) {
+          html += '<span class="service-badge">' + esc(s) + '</span>';
+        });
+        html += '</div></div></div>';
+      }
+
+      // Contact Card
+      html +=
+        '<div class="info-card">' +
+          '<div class="info-card-header"><span class="ic-icon">📞</span> Contact Information</div>' +
+          '<div class="info-card-body">' +
+            '<div class="contact-row"><div class="cr-icon">📱</div><div><div class="cr-label">Phone</div><div class="cr-value">' + esc(temple.phone) + '</div></div></div>' +
+            '<div class="contact-row"><div class="cr-icon">📧</div><div><div class="cr-label">Email</div><div class="cr-value">' + esc(temple.email) + '</div></div></div>' +
+            '<div class="contact-row"><div class="cr-icon">📍</div><div><div class="cr-label">Address</div><div class="cr-value">' + esc(temple.location) + '</div></div></div>' +
+          '</div>' +
+        '</div>';
+
+      // Bottom Nav
+      html +=
+        '<nav class="bottom-nav">' +
+          '<a href="home.html" class="nav-item active"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>' +
+          '<a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>' +
+          '<a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>' +
+          '<a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>' +
+          '<a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>' +
+        '</nav>';
+
+      root.innerHTML = html;
+
+      function esc(str) {
+        if (!str) return '';
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>

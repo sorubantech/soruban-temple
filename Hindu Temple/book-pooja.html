@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Pooja - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .pooja-form-area {
+      display: none;
+      margin-top: 1rem;
+      animation: fadeSlideIn 0.4s ease;
+    }
+    .pooja-form-area.show { display: block; }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .pf-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .pf-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pf-header .pfh-icon { font-size: 1.5rem; }
+    .pf-header h3 { font-size: 0.95rem; font-weight: 700; }
+    .pf-header p { font-size: 0.72rem; opacity: 0.85; margin-top: 1px; }
+    .pf-body { padding: 16px; }
+
+    .pf-body .form-group {
+      margin-bottom: 14px;
+    }
+    .pf-body .form-group:last-of-type { margin-bottom: 14px; }
+    .pf-body label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+    .pf-body label .opt {
+      font-weight: 400;
+      color: var(--text-light);
+      font-size: 0.7rem;
+    }
+    .pf-body input,
+    .pf-body select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      outline: none;
+      background: #fffaf5;
+      color: var(--text);
+      transition: border-color 0.3s;
+    }
+    .pf-body input:focus,
+    .pf-body select:focus {
+      border-color: var(--primary);
+      background: white;
+    }
+    .pf-body select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23795548' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6.5 6.5 6.5-6.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+    .pf-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .pf-info-note {
+      background: #fff3e0;
+      border: 1px solid #ffcc80;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: #bf360c;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .pf-info-note span:first-child { font-size: 1rem; }
+
+    .booking-summary {
+      background: #f9f5f0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .booking-summary h3 {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      padding: 4px 0;
+    }
+    .summary-row .label { color: var(--text-light); }
+    .summary-row.total {
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-top: 4px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--primary-dark);
+    }
+
+    .pf-submit {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .pf-submit:hover { opacity: 0.9; }
+    .pf-pay-note {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-light);
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Header -->
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">←</button>
+      <h2>Book Pooja</h2>
+    </div>
+
+    <div class="section">
+      <!-- Pooja Selection -->
+      <div class="section-title">Select Pooja Type</div>
+      <div class="pooja-list">
+        <div class="pooja-option" onclick="showPoojaForm('abhishekam')">
+          <span class="pooja-name">🔱 Abhishekam</span>
+          <span class="pooja-price">₹500</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('archana')">
+          <span class="pooja-name">🌸 Archana</span>
+          <span class="pooja-price">₹100</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('sahasranama')">
+          <span class="pooja-name">📿 Sahasranama Pooja</span>
+          <span class="pooja-price">₹1,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('kalyanam')">
+          <span class="pooja-name">💍 Kalyanam</span>
+          <span class="pooja-price">₹2,500</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('homam')">
+          <span class="pooja-name">🔥 Homam</span>
+          <span class="pooja-price">₹1,500</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('darshan')">
+          <span class="pooja-name">🙏 Special Darshan</span>
+          <span class="pooja-price">₹300</span>
+        </div>
+      </div>
+
+      <!-- Parikarams & Special Services -->
+      <div class="section-title" style="margin-top:18px;">Parikarams & Special Services</div>
+      <div class="pooja-list">
+        <div class="pooja-option" onclick="showPoojaForm('vivaha_parikaram')">
+          <span class="pooja-name">💒 Vivaha Parikaram</span>
+          <span class="pooja-price">₹3,500</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('dosha_parikaram')">
+          <span class="pooja-name">🔮 Dosha Parikaram</span>
+          <span class="pooja-price">₹2,500</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('vahanam_pooja')">
+          <span class="pooja-name">🚗 Vahanam Pooja</span>
+          <span class="pooja-price">₹1,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('shashtiapthapoorthi')">
+          <span class="pooja-name">🎊 Shashtiapthapoorthi</span>
+          <span class="pooja-price">₹15,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('navagraha_pooja')">
+          <span class="pooja-name">🪐 Navagraha Pooja</span>
+          <span class="pooja-price">₹2,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('graha_shanti')">
+          <span class="pooja-name">⭐ Graha Shanti</span>
+          <span class="pooja-price">₹3,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('annadhanam')">
+          <span class="pooja-name">🍚 Annadhanam</span>
+          <span class="pooja-price">₹5,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('seemantham')">
+          <span class="pooja-name">🤰 Seemantham</span>
+          <span class="pooja-price">₹5,000</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('ayush_homam')">
+          <span class="pooja-name">👶 Ayush Homam</span>
+          <span class="pooja-price">₹2,500</span>
+        </div>
+        <div class="pooja-option" onclick="showPoojaForm('thila_homam')">
+          <span class="pooja-name">🙏 Thila Homam</span>
+          <span class="pooja-price">₹3,500</span>
+        </div>
+      </div>
+
+      <!-- Dynamic Form Area -->
+      <div class="pooja-form-area" id="pooja-form-area"></div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="modal-icon"></div>
+        <h3></h3>
+        <p></p>
+        <button class="btn btn-primary"></button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // ===== Pooja Form Config =====
+    var poojaConfig = {
+      abhishekam: {
+        name: 'Abhishekam', price: 500, icon: '🔱',
+        desc: 'Sacred bathing ritual of the deity with holy substances',
+        note: 'Abhishekam is performed during morning hours (6 AM - 10 AM). Please arrive 30 minutes early.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Select Date', type: 'date', required: true },
+          { id: 'pooja-temple', label: 'Select Temple', type: 'temple', required: true },
+          { id: 'abhi-deity', label: 'Deity for Abhishekam', type: 'select', required: true,
+            options: ['Select Deity', 'Main Deity', 'Lord Shiva', 'Lord Vishnu', 'Goddess Amman', 'Lord Ganesha', 'Lord Murugan', 'Navagraha'] },
+          { id: 'abhi-type', label: 'Abhishekam Type', type: 'select', required: true,
+            options: ['Select Type', 'Milk (Paal)', 'Honey (Thaen)', 'Sandalwood Paste (Chandanam)', 'Panchamrit', 'Tender Coconut (Ilaneer)', 'Curd (Thayir)', 'Rose Water', 'All Items (Maha Abhishekam) (+₹300)'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: false },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: false, optional: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: false, optional: true }
+        ]
+      },
+      archana: {
+        name: 'Archana', price: 100, icon: '🌸',
+        desc: 'Chanting of divine names with flower offerings',
+        note: 'Archana can be performed during all darshan hours. Flowers will be provided by the temple.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Select Date', type: 'date', required: true },
+          { id: 'pooja-temple', label: 'Select Temple', type: 'temple', required: true },
+          { id: 'archana-type', label: 'Archana Type', type: 'select', required: true,
+            options: ['Select Type', 'Ashtothram (108 Names) - ₹100', 'Sahasranamam (1000 Names) - ₹250', 'Lalitha Sahasranamam - ₹300', 'Vishnu Sahasranamam - ₹300'] },
+          { id: 'archana-count', label: 'Number of Archanas', type: 'select', required: true,
+            options: ['1', '2', '3', '5', '11'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: false },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: false, optional: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: false, optional: true }
+        ]
+      },
+      sahasranama: {
+        name: 'Sahasranama Pooja', price: 1000, icon: '📿',
+        desc: 'Chanting of 1000 divine names with elaborate rituals',
+        note: 'Sahasranama Pooja takes approximately 2-3 hours. Performed in the morning session only.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Select Date', type: 'date', required: true },
+          { id: 'pooja-temple', label: 'Select Temple', type: 'temple', required: true },
+          { id: 'saha-type', label: 'Select Sahasranamam', type: 'select', required: true,
+            options: ['Select Sahasranamam', 'Vishnu Sahasranamam', 'Lalitha Sahasranamam', 'Shiva Sahasranamam', 'Ganesha Sahasranamam', 'Lakshmi Sahasranamam'] },
+          { id: 'saha-purpose', label: 'Purpose / Sankalpa', type: 'select', required: false,
+            options: ['Select Purpose (Optional)', 'General Well-being', 'Health & Recovery', 'Marriage & Family', 'Education & Career', 'Business & Wealth', 'Removal of Dosham', 'Graha Shanti'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true }
+        ]
+      },
+      kalyanam: {
+        name: 'Kalyanam', price: 2500, icon: '💍',
+        desc: 'Divine wedding ceremony of the deities performed on your behalf',
+        note: 'Kalyanam is performed between 8 AM - 11 AM. Both bride and groom details are required. Traditional dress code is mandatory.',
+        fields: [
+          { id: 'devotee-name', label: 'Bride Name', type: 'text', placeholder: 'Enter bride name', required: true },
+          { id: 'groom-name', label: 'Groom Name', type: 'text', placeholder: 'Enter groom name', required: true },
+          { id: 'pooja-date', label: 'Select Date', type: 'date', required: true },
+          { id: 'pooja-temple', label: 'Select Temple', type: 'temple', required: true },
+          { id: 'kal-muhurtham', label: 'Preferred Muhurtham Time', type: 'select', required: true,
+            options: ['Select Time', '6:00 AM - 7:00 AM', '7:00 AM - 8:00 AM', '8:00 AM - 9:00 AM', '9:00 AM - 10:00 AM', '10:00 AM - 11:00 AM'] },
+          { id: 'pooja-rasi', label: 'Rasi (Bride)', type: 'rasi', required: true },
+          { id: 'groom-rasi', label: 'Rasi (Groom)', type: 'rasi', required: true, idSuffix: '-groom' },
+          { id: 'nakshatram', label: 'Nakshatram (Bride)', type: 'nakshatram', required: true },
+          { id: 'groom-naksh', label: 'Nakshatram (Groom)', type: 'nakshatram', required: false, optional: true, idSuffix: '-groom' },
+          { id: 'gothram', label: 'Gothram (Bride)', type: 'text', placeholder: 'Bride gothram', required: true },
+          { id: 'groom-gothram', label: 'Gothram (Groom)', type: 'text', placeholder: 'Groom gothram', required: true },
+          { id: 'kal-guests', label: 'Number of Guests', type: 'select', required: true,
+            options: ['Select', '1-10', '11-25', '26-50', '51-100', '100+'] }
+        ]
+      },
+      homam: {
+        name: 'Homam', price: 1500, icon: '🔥',
+        desc: 'Sacred fire ritual invoking divine blessings',
+        note: 'Homam takes 1.5 - 3 hours depending on type. Please bring the required offerings as instructed after booking.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Select Date', type: 'date', required: true },
+          { id: 'pooja-temple', label: 'Select Temple', type: 'temple', required: true },
+          { id: 'homam-type', label: 'Homam Type', type: 'select', required: true,
+            options: ['Select Homam Type', 'Ganapathi Homam - ₹1,500', 'Navagraha Homam - ₹2,500', 'Sudarshana Homam - ₹2,000', 'Lakshmi Kubera Homam - ₹3,000', 'Mrityunjaya Homam - ₹2,500', 'Ayush Homam - ₹2,000', 'Chandi Homam - ₹5,000', 'Rudra Homam - ₹3,500'] },
+          { id: 'homam-purpose', label: 'Purpose', type: 'select', required: true,
+            options: ['Select Purpose', 'General Prosperity', 'Health & Longevity', 'Removal of Obstacles', 'Marriage / Family', 'Graha Dosham Nivarana', 'Business Growth', 'Child Blessing'] },
+          { id: 'homam-priests', label: 'Number of Priests', type: 'select', required: false,
+            options: ['1 Priest (Default)', '2 Priests (+₹500)', '4 Priests (+₹1,500)', '8 Priests (+₹3,500)'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true }
+        ]
+      },
+      darshan: {
+        name: 'Special Darshan', price: 300, icon: '🙏',
+        desc: 'Priority darshan with shorter queue and closer view of the deity',
+        note: 'Special darshan ticket is valid only for the selected date and time slot. Carry a valid photo ID.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Select Date', type: 'date', required: true },
+          { id: 'pooja-temple', label: 'Select Temple', type: 'temple', required: true },
+          { id: 'darshan-slot', label: 'Time Slot', type: 'select', required: true,
+            options: ['Select Time Slot', '6:00 AM - 7:00 AM (Morning)', '7:00 AM - 8:00 AM', '8:00 AM - 9:00 AM', '9:00 AM - 10:00 AM', '10:00 AM - 11:00 AM', '4:00 PM - 5:00 PM (Evening)', '5:00 PM - 6:00 PM', '6:00 PM - 7:00 PM', '7:00 PM - 8:00 PM'] },
+          { id: 'darshan-persons', label: 'Number of Persons', type: 'select', required: true,
+            options: ['1 Person - ₹300', '2 Persons - ₹600', '3 Persons - ₹900', '4 Persons - ₹1,200', '5 Persons - ₹1,500'] },
+          { id: 'darshan-phone', label: 'Mobile Number', type: 'tel', placeholder: 'Enter mobile number', required: true },
+          { id: 'darshan-idtype', label: 'ID Proof Type', type: 'select', required: true,
+            options: ['Select ID Type', 'Aadhaar Card', 'PAN Card', 'Driving License', 'Voter ID', 'Passport'] }
+        ]
+      },
+
+      // ===== PARIKARAMS & SPECIAL SERVICES =====
+
+      vivaha_parikaram: {
+        name: 'Vivaha Parikaram', price: 3500, icon: '💒',
+        desc: 'Special pooja for unmarried devotees seeking marriage blessing',
+        note: 'This parikaram is traditionally performed at temples known for granting marriage blessings. Recommended temples: Oppiliappan Temple (Vishnu), Meenakshi Amman Temple (Devi), Kamakshi Amman Temple (Devi). Performed on auspicious days (Fridays & Full Moon days).',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'viv-gender', label: 'Gender', type: 'select', required: true,
+            options: ['Select Gender', 'Male', 'Female'] },
+          { id: 'viv-age', label: 'Age', type: 'text', placeholder: 'Enter age', required: true },
+          { id: 'viv-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Oppiliappan Temple, Kumbakonam', 'Meenakshi Amman Temple, Madurai', 'Kamakshi Amman Temple, Kanchipuram', 'Ranganathaswamy Temple, Srirangam', 'Varadaraja Perumal Temple, Kanchipuram', 'Siruvapuri Murugan Temple', 'Thirupparankundram Murugan Temple, Madurai', 'Srivilliputhur Andal Temple', 'Kapaleeswarar Temple, Mylapore'] },
+          { id: 'viv-type', label: 'Parikaram Type', type: 'select', required: true,
+            options: ['Select Parikaram', 'Kalyana Pooja (Basic) - ₹3,500', 'Swayamvara Parvathi Homam - ₹5,000', 'Kalathra Dosham Nivarana - ₹4,500', 'Mangalya Dharanam Pooja - ₹6,000'] },
+          { id: 'viv-dosham', label: 'Known Dosham (if any)', type: 'select', required: false,
+            options: ['Select (Optional)', 'None', 'Mangal Dosham (Chevvai)', 'Naga Dosham', 'Kalathra Dosham', 'Rahu-Ketu Dosham', 'Shani Dosham', 'Other'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true },
+          { id: 'viv-father', label: 'Father\'s Name', type: 'text', placeholder: 'Enter father\'s name', required: true }
+        ]
+      },
+
+      dosha_parikaram: {
+        name: 'Dosha Parikaram', price: 2500, icon: '🔮',
+        desc: 'Remedial pooja for lifelong problems, planetary afflictions & dosham removal',
+        note: 'Recommended for devotees facing persistent health, financial, or relationship issues due to planetary dosham. Performed at temples with Navagraha shrines. Best temples: Suryanar Kovil, Brihadeeswarar Temple, Arunachaleswarar Temple.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'dosha-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Thirunallar Saniswaran Temple, Karaikal', 'Suryanar Kovil, Kumbakonam', 'Naganathaswamy Temple, Thirunageswaram', 'Vaitheeswaran Koil, Nagapattinam', 'Brihadeeswarar Temple, Thanjavur', 'Arunachaleswarar Temple, Tiruvannamalai', 'Ramanathaswamy Temple, Rameswaram', 'Ekambareswarar Temple, Kanchipuram', 'Chidambaram Nataraja Temple'] },
+          { id: 'dosha-type', label: 'Type of Dosham / Problem', type: 'select', required: true,
+            options: ['Select Dosham Type', 'Naga Dosham (Serpent curse)', 'Mangal Dosham (Chevvai)', 'Shani Dosham (Saturn affliction)', 'Rahu-Ketu Dosham', 'Pitru Dosham (Ancestral)', 'Kala Sarpa Dosham', 'Vastu Dosham', 'General Life Obstacles & Misfortune'] },
+          { id: 'dosha-parikaram', label: 'Parikaram Type', type: 'select', required: true,
+            options: ['Select Parikaram', 'Navagraha Shanti Pooja - ₹2,500', 'Rahu-Ketu Parihara Pooja - ₹3,000', 'Shani Parihara Pooja - ₹2,500', 'Naga Prathishta - ₹5,000', 'Pitru Tharpanam - ₹2,000', 'Kala Sarpa Dosha Nivarana - ₹4,500', 'Maha Mrityunjaya Japa - ₹3,500', 'Sudarshana Homam - ₹3,000'] },
+          { id: 'dosha-details', label: 'Brief Description of Problems', type: 'text', placeholder: 'Describe your issues briefly', required: false, optional: true },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true }
+        ]
+      },
+
+      vahanam_pooja: {
+        name: 'Vahanam Pooja', price: 1000, icon: '🚗',
+        desc: 'Blessing pooja for newly purchased vehicles (car, bike, etc.)',
+        note: 'Vehicle pooja is performed to seek divine protection for safe travel. Available at most temples. Popular choices: Pillayarpatti Temple (Ganesh), Siddhivinayak Temple, Palani Murugan Temple. Bring the vehicle to the temple entrance.',
+        fields: [
+          { id: 'devotee-name', label: 'Owner Name', type: 'text', placeholder: 'Enter vehicle owner name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'vah-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Eachanari Vinayagar Temple, Coimbatore', 'Pillayarpatti Ganesh Temple', 'Ucchi Pillayar Temple, Trichy', 'Siddhivinayak Temple, Mumbai', 'Palani Murugan Temple', 'Vadapalani Andavar Temple, Chennai', 'Kapaleeswarar Temple, Mylapore', 'Namakkal Anjaneyar Temple', 'Any Nearby Temple'] },
+          { id: 'vah-type', label: 'Vehicle Type', type: 'select', required: true,
+            options: ['Select Vehicle Type', 'Two Wheeler (Bike/Scooter)', 'Car / SUV', 'Auto Rickshaw', 'Van / Mini Bus', 'Truck / Lorry', 'Bus', 'Other'] },
+          { id: 'vah-brand', label: 'Vehicle Brand & Model', type: 'text', placeholder: 'e.g. Maruti Swift, Honda Activa', required: true },
+          { id: 'vah-reg', label: 'Registration Number', type: 'text', placeholder: 'e.g. TN 01 AB 1234', required: false, optional: true },
+          { id: 'vah-color', label: 'Vehicle Colour', type: 'text', placeholder: 'e.g. White, Red', required: false, optional: true },
+          { id: 'vah-pooja-type', label: 'Pooja Package', type: 'select', required: true,
+            options: ['Select Package', 'Basic Pooja (Coconut + Archana) - ₹1,000', 'Standard Pooja (with Abhishekam) - ₹2,000', 'Premium Pooja (with Homam) - ₹3,500'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: false },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: false, optional: true }
+        ]
+      },
+
+      shashtiapthapoorthi: {
+        name: 'Shashtiapthapoorthi', price: 15000, icon: '🎊',
+        desc: '60th birthday / diamond wedding celebration - a sacred remarriage ceremony',
+        note: 'Shashtiapthapoorthi is performed when a couple completes 60 years of the husband\'s birth. This is a grand re-marriage ceremony. Best temples: Meenakshi Amman Temple, Ramanathaswamy Temple, Ranganathaswamy Temple. Booking must be done at least 2 weeks in advance.',
+        fields: [
+          { id: 'devotee-name', label: 'Husband Name', type: 'text', placeholder: 'Enter husband\'s name', required: true },
+          { id: 'sash-wife', label: 'Wife Name', type: 'text', placeholder: 'Enter wife\'s name', required: true },
+          { id: 'pooja-date', label: 'Ceremony Date', type: 'date', required: true },
+          { id: 'sash-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Meenakshi Amman Temple, Madurai', 'Ramanathaswamy Temple, Rameswaram', 'Ranganathaswamy Temple, Srirangam', 'Brihadeeswarar Temple, Thanjavur', 'Ekambareswarar Temple, Kanchipuram', 'Kamakshi Amman Temple, Kanchipuram', 'Chidambaram Nataraja Temple'] },
+          { id: 'sash-muhurtham', label: 'Preferred Muhurtham Time', type: 'select', required: true,
+            options: ['Select Time', '6:00 AM - 7:30 AM', '7:30 AM - 9:00 AM', '9:00 AM - 10:30 AM', '10:30 AM - 12:00 PM'] },
+          { id: 'sash-package', label: 'Ceremony Package', type: 'select', required: true,
+            options: ['Select Package', 'Standard Ceremony - ₹15,000', 'Grand Ceremony (with Homam) - ₹25,000', 'Royal Ceremony (Full Day) - ₹50,000'] },
+          { id: 'pooja-rasi', label: 'Rasi (Husband)', type: 'rasi', required: true },
+          { id: 'sash-wife-rasi', label: 'Rasi (Wife)', type: 'rasi', required: true, idSuffix: '-wife' },
+          { id: 'nakshatram', label: 'Nakshatram (Husband)', type: 'nakshatram', required: true },
+          { id: 'sash-wife-naksh', label: 'Nakshatram (Wife)', type: 'nakshatram', required: false, optional: true, idSuffix: '-wife' },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter family gothram', required: true },
+          { id: 'sash-guests', label: 'Expected Guests', type: 'select', required: true,
+            options: ['Select', '1-25', '26-50', '51-100', '101-200', '200+'] },
+          { id: 'sash-phone', label: 'Contact Number', type: 'tel', placeholder: 'Mobile number', required: true }
+        ]
+      },
+
+      navagraha_pooja: {
+        name: 'Navagraha Pooja', price: 2000, icon: '🪐',
+        desc: 'Pooja to all nine planets for planetary harmony and dosham removal',
+        note: 'Navagraha Pooja is most effective when performed at temples with dedicated Navagraha shrines. Top temples: Brihadeeswarar Temple (Thanjavur), Arunachaleswarar Temple, Chidambaram Nataraja Temple. Each planet has a specific day for best results.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'nav-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Suryanar Kovil, Kumbakonam', 'Thirunallar Saniswaran Temple, Karaikal', 'Naganathaswamy Temple, Thirunageswaram', 'Brihadeeswarar Temple, Thanjavur', 'Arunachaleswarar Temple, Tiruvannamalai', 'Chidambaram Nataraja Temple', 'Ekambareswarar Temple, Kanchipuram'] },
+          { id: 'nav-type', label: 'Pooja Type', type: 'select', required: true,
+            options: ['Select Pooja Type', 'All 9 Planets Pooja - ₹2,000', 'Specific Planet Shanti - ₹1,200', 'Navagraha Homam - ₹3,500', 'Navagraha Abhishekam - ₹2,500'] },
+          { id: 'nav-planet', label: 'Specific Planet (if applicable)', type: 'select', required: false,
+            options: ['Select Planet (Optional)', 'Surya (Sun) - Sunday', 'Chandra (Moon) - Monday', 'Mangal (Mars) - Tuesday', 'Budha (Mercury) - Wednesday', 'Guru (Jupiter) - Thursday', 'Shukra (Venus) - Friday', 'Shani (Saturn) - Saturday', 'Rahu - Saturday', 'Ketu - Tuesday'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true }
+        ]
+      },
+
+      graha_shanti: {
+        name: 'Graha Shanti', price: 3000, icon: '⭐',
+        desc: 'Elaborate planetary pacification ritual for specific graha dosham',
+        note: 'Graha Shanti is a powerful remedy for severe planetary afflictions identified through horoscope analysis. Performed at temples known for graha shanti: Arunachaleswarar (Shiva), Brihadeeswarar, Ramanathaswamy Temple.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'graha-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Suryanar Kovil, Kumbakonam', 'Thirunallar Saniswaran Temple, Karaikal', 'Naganathaswamy Temple, Thirunageswaram', 'Vaitheeswaran Koil, Nagapattinam', 'Arunachaleswarar Temple, Tiruvannamalai', 'Brihadeeswarar Temple, Thanjavur', 'Ramanathaswamy Temple, Rameswaram'] },
+          { id: 'graha-planet', label: 'Afflicted Graha (Planet)', type: 'select', required: true,
+            options: ['Select Planet', 'Surya (Sun)', 'Chandra (Moon)', 'Mangal (Mars / Chevvai)', 'Budha (Mercury)', 'Guru (Jupiter / Brihaspati)', 'Shukra (Venus)', 'Shani (Saturn)', 'Rahu', 'Ketu'] },
+          { id: 'graha-remedy', label: 'Remedy Type', type: 'select', required: true,
+            options: ['Select Remedy', 'Graha Shanti Homam - ₹3,000', 'Graha Shanti Pooja + Archana - ₹2,000', 'Japam (10,000 chants) - ₹3,500', 'Japam (28,000 chants) - ₹7,000', 'Full Shanti Package (Homam + Japam + Daanam) - ₹10,000'] },
+          { id: 'graha-dasha', label: 'Current Dasha Period', type: 'text', placeholder: 'e.g. Shani Dasha, Rahu Bhukti', required: false, optional: true },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true }
+        ]
+      },
+
+      annadhanam: {
+        name: 'Annadhanam', price: 5000, icon: '🍚',
+        desc: 'Sponsoring free food distribution to devotees at the temple',
+        note: 'Annadhanam (mass feeding) is one of the highest forms of charity. Available at all major temples. Popular choices: Tirumala Venkateswara Temple, Palani Murugan Temple, Ranganathaswamy Temple. Serves 100-1000 devotees.',
+        fields: [
+          { id: 'devotee-name', label: 'Sponsor Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'anna-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Tirumala Venkateswara Temple', 'Palani Murugan Temple', 'Ranganathaswamy Temple, Srirangam', 'Meenakshi Amman Temple, Madurai', 'Ramanathaswamy Temple, Rameswaram', 'Brihadeeswarar Temple, Thanjavur', 'Any Temple'] },
+          { id: 'anna-type', label: 'Annadhanam Type', type: 'select', required: true,
+            options: ['Select Type', 'Lunch for 100 devotees - ₹5,000', 'Lunch for 250 devotees - ₹12,000', 'Lunch for 500 devotees - ₹22,000', 'Lunch for 1000 devotees - ₹40,000', 'Breakfast Sponsorship - ₹3,000', 'Dinner Sponsorship - ₹5,000'] },
+          { id: 'anna-occasion', label: 'Occasion', type: 'select', required: false,
+            options: ['Select Occasion (Optional)', 'Birthday', 'Marriage Anniversary', 'Memorial / Death Anniversary', 'Festival Day', 'General Charity', 'Recovery / Thanksgiving', 'Other'] },
+          { id: 'anna-phone', label: 'Contact Number', type: 'tel', placeholder: 'Mobile number', required: true },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: false },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: false, optional: true }
+        ]
+      },
+
+      seemantham: {
+        name: 'Seemantham', price: 5000, icon: '🤰',
+        desc: 'Baby shower ceremony blessing for pregnant women (7th or 9th month)',
+        note: 'Seemantham is a sacred ceremony for the well-being of the expecting mother and unborn child. Best performed at Devi temples: Kamakshi Amman, Meenakshi Amman, Samayapuram Mariamman. Usually done in 7th or 9th month of pregnancy.',
+        fields: [
+          { id: 'devotee-name', label: 'Mother\'s Name', type: 'text', placeholder: 'Enter mother\'s name', required: true },
+          { id: 'seem-husband', label: 'Husband\'s Name', type: 'text', placeholder: 'Enter husband\'s name', required: true },
+          { id: 'pooja-date', label: 'Ceremony Date', type: 'date', required: true },
+          { id: 'seem-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Kamakshi Amman Temple, Kanchipuram', 'Meenakshi Amman Temple, Madurai', 'Samayapuram Mariamman Temple', 'Mookambika Temple, Kollur', 'Kanyakumari Amman Temple', 'Mundakakanni Amman Temple, Mylapore', 'Koniamman Temple, Coimbatore', 'Ashtalakshmi Temple, Besant Nagar'] },
+          { id: 'seem-month', label: 'Pregnancy Month', type: 'select', required: true,
+            options: ['Select Month', '7th Month', '8th Month', '9th Month'] },
+          { id: 'seem-package', label: 'Ceremony Package', type: 'select', required: true,
+            options: ['Select Package', 'Simple Pooja - ₹5,000', 'Traditional Ceremony - ₹10,000', 'Grand Ceremony (with Homam) - ₹15,000'] },
+          { id: 'pooja-rasi', label: 'Rasi (Mother)', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram (Mother)', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter family gothram', required: true },
+          { id: 'seem-phone', label: 'Contact Number', type: 'tel', placeholder: 'Mobile number', required: true }
+        ]
+      },
+
+      ayush_homam: {
+        name: 'Ayush Homam', price: 2500, icon: '👶',
+        desc: 'Sacred fire ritual for the longevity and health of a child',
+        note: 'Ayush Homam is performed for children (usually in the first year) to pray for long life and good health. Best temples: Pillayarpatti Ganesh Temple, Palani Murugan Temple, Tiruchendur Murugan Temple.',
+        fields: [
+          { id: 'devotee-name', label: 'Child\'s Name', type: 'text', placeholder: 'Enter child\'s name', required: true },
+          { id: 'ayush-parent', label: 'Parent\'s Name', type: 'text', placeholder: 'Father / Mother name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'ayush-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Pillayarpatti Ganesh Temple', 'Palani Murugan Temple', 'Tiruchendur Murugan Temple', 'Ucchi Pillayar Temple, Trichy', 'Swamimalai Murugan Temple', 'Eachanari Vinayagar Temple, Coimbatore', 'Marudhamalai Murugan Temple, Coimbatore', 'Vadapalani Andavar Temple, Chennai'] },
+          { id: 'ayush-age', label: 'Child\'s Age', type: 'select', required: true,
+            options: ['Select Age', '0-6 Months', '6-12 Months', '1 Year', '1-2 Years', '2-5 Years', '5+ Years'] },
+          { id: 'ayush-type', label: 'Homam Type', type: 'select', required: true,
+            options: ['Select Type', 'Ayush Homam - ₹2,500', 'Ayush Homam + Archana - ₹3,500', 'Ayush Homam + Annaprasanam (First Rice) - ₹5,000'] },
+          { id: 'pooja-rasi', label: 'Rasi (Child)', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram (Child)', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter family gothram', required: true }
+        ]
+      },
+
+      thila_homam: {
+        name: 'Thila Homam', price: 3500, icon: '🙏',
+        desc: 'Sacred ritual for ancestral peace and Pitru Dosham removal',
+        note: 'Thila Homam is performed to bring peace to departed ancestors and remove Pitru Dosham. Best performed at Rameswaram (Ramanathaswamy Temple) or Varanasi. Amavasya (New Moon) days are most auspicious.',
+        fields: [
+          { id: 'devotee-name', label: 'Devotee Name', type: 'text', placeholder: 'Enter your name', required: true },
+          { id: 'pooja-date', label: 'Preferred Date', type: 'date', required: true },
+          { id: 'thila-temple', label: 'Preferred Temple', type: 'select', required: true,
+            options: ['Select Temple', 'Ramanathaswamy Temple, Rameswaram', 'Brihadeeswarar Temple, Thanjavur', 'Arunachaleswarar Temple, Tiruvannamalai', 'Ekambareswarar Temple, Kanchipuram'] },
+          { id: 'thila-type', label: 'Ritual Type', type: 'select', required: true,
+            options: ['Select Ritual', 'Thila Homam - ₹3,500', 'Thila Homam + Tharpanam - ₹5,000', 'Pitru Dosham Full Package (Homam + Tharpanam + Pinda Pradanam) - ₹8,000', 'Annual Shraddham Ceremony - ₹4,000'] },
+          { id: 'thila-for', label: 'Performed for', type: 'select', required: true,
+            options: ['Select', 'Father', 'Mother', 'Both Parents', 'Grandparents', 'Other Ancestors', 'General Pitru Shanti'] },
+          { id: 'pooja-rasi', label: 'Rasi', type: 'rasi', required: true },
+          { id: 'nakshatram', label: 'Nakshatram', type: 'nakshatram', required: true },
+          { id: 'gothram', label: 'Gothram', type: 'text', placeholder: 'Enter gothram', required: true }
+        ]
+      }
+    };
+
+    // Rasi options shared across forms
+    var rasiOptions = [
+      { val: '', label: 'Select Rasi' },
+      { val: 'Mesham', label: '♈ Mesham (Aries)' },
+      { val: 'Rishabam', label: '♉ Rishabam (Taurus)' },
+      { val: 'Mithunam', label: '♊ Mithunam (Gemini)' },
+      { val: 'Kadagam', label: '♋ Kadagam (Cancer)' },
+      { val: 'Simmam', label: '♌ Simmam (Leo)' },
+      { val: 'Kanni', label: '♍ Kanni (Virgo)' },
+      { val: 'Thulam', label: '♎ Thulam (Libra)' },
+      { val: 'Viruchigam', label: '♏ Viruchigam (Scorpio)' },
+      { val: 'Dhanusu', label: '♐ Dhanusu (Sagittarius)' },
+      { val: 'Magaram', label: '♑ Magaram (Capricorn)' },
+      { val: 'Kumbam', label: '♒ Kumbam (Aquarius)' },
+      { val: 'Meenam', label: '♓ Meenam (Pisces)' }
+    ];
+
+    var nakshatramOptions = ['', 'Ashwini','Bharani','Krittika','Rohini','Mrigashira','Ardra','Punarvasu','Pushya','Ashlesha','Magha','Purva Phalguni','Uttara Phalguni','Hasta','Chitra','Swati','Vishakha','Anuradha','Jyeshtha','Mula','Purva Ashadha','Uttara Ashadha','Shravana','Dhanishta','Shatabhisha','Purva Bhadrapada','Uttara Bhadrapada','Revati'];
+
+    // All temples grouped by category for temple selection
+    var templeOptions = [
+      { group: 'Shiva Temples', temples: [
+        'Chidambaram Nataraja Temple', 'Brihadeeswarar Temple, Thanjavur', 'Ekambareswarar Temple, Kanchipuram',
+        'Arunachaleswarar Temple, Tiruvannamalai', 'Ramanathaswamy Temple, Rameswaram'
+      ]},
+      { group: 'Vishnu Temples', temples: [
+        'Tirumala Venkateswara Temple', 'Ranganathaswamy Temple, Srirangam', 'Oppiliappan Temple, Kumbakonam',
+        'Varadaraja Perumal Temple, Kanchipuram', 'Parthasarathy Temple, Chennai'
+      ]},
+      { group: 'Devi Temples', temples: [
+        'Meenakshi Amman Temple, Madurai', 'Kamakshi Amman Temple, Kanchipuram', 'Samayapuram Mariamman Temple',
+        'Mookambika Temple, Kollur', 'Kanyakumari Amman Temple'
+      ]},
+      { group: 'Ganesh Temples', temples: [
+        'Pillayarpatti Ganesh Temple', 'Ucchi Pillayar Temple, Trichy', 'Siddhivinayak Temple, Mumbai',
+        'Manakula Vinayagar Temple, Puducherry', 'Dodda Ganapathi Temple, Bangalore'
+      ]},
+      { group: 'Murugan Temples', temples: [
+        'Palani Murugan Temple', 'Tiruchendur Murugan Temple', 'Swamimalai Murugan Temple',
+        'Thiruttani Murugan Temple', 'Pazhamudircholai Temple'
+      ]},
+      { group: 'Hanuman Temples', temples: [
+        'Namakkal Anjaneyar Temple', 'Nanganallur Anjaneyar Temple', 'Hanuman Garhi, Ayodhya',
+        'Jakhu Temple, Shimla', 'Salasar Balaji Temple, Rajasthan'
+      ]},
+      { group: 'Chennai Local Temples', temples: [
+        'Kapaleeswarar Temple, Mylapore', 'Ashtalakshmi Temple, Besant Nagar', 'Vadapalani Andavar Temple',
+        'Marundeeswarar Temple, Thiruvanmiyur', 'Mundakakanni Amman Temple, Mylapore'
+      ]},
+      { group: 'Coimbatore Local Temples', temples: [
+        'Perur Pateeswarar Temple', 'Marudhamalai Murugan Temple', 'Eachanari Vinayagar Temple',
+        'Koniamman Temple, Coimbatore'
+      ]},
+      { group: 'Other Popular Temples', temples: [
+        'Siruvapuri Murugan Temple, Thiruvallur', 'Thirunallar Saniswaran Temple, Karaikal',
+        'Thirupparankundram Murugan Temple, Madurai', 'Srivilliputhur Andal Temple',
+        'Vaitheeswaran Koil, Nagapattinam', 'Suryanar Kovil, Kumbakonam',
+        'Naganathaswamy Temple, Thirunageswaram', 'Karaikal Ammaiyar Temple'
+      ]}
+    ];
+
+    var currentPoojaKey = null;
+
+    function showPoojaForm(key) {
+      var cfg = poojaConfig[key];
+      if (!cfg) return;
+
+      currentPoojaKey = key;
+
+      // Highlight selected pooja across all sections
+      var allOptions = document.querySelectorAll('.pooja-option');
+      var allKeys = [
+        'abhishekam','archana','sahasranama','kalyanam','homam','darshan',
+        'vivaha_parikaram','dosha_parikaram','vahanam_pooja','shashtiapthapoorthi',
+        'navagraha_pooja','graha_shanti','annadhanam','seemantham','ayush_homam','thila_homam'
+      ];
+      allOptions.forEach(function(o, i) {
+        o.classList.toggle('selected', allKeys[i] === key);
+      });
+
+      // Build form HTML
+      var html = '<div class="pf-card">';
+      html += '<div class="pf-header">';
+      html += '<span class="pfh-icon">' + cfg.icon + '</span>';
+      html += '<div><h3>' + cfg.name + '</h3><p>' + cfg.desc + '</p></div>';
+      html += '</div>';
+      html += '<div class="pf-body">';
+      html += '<form id="dynamic-pooja-form" onsubmit="handleDynamicBooking(event)">';
+
+      // Info note
+      html += '<div class="pf-info-note"><span>ℹ️</span><span>' + cfg.note + '</span></div>';
+
+      // Render fields
+      cfg.fields.forEach(function(f) {
+        var fieldId = f.idSuffix ? f.id + f.idSuffix : f.id;
+        var optLabel = f.optional ? ' <span class="opt">(Optional)</span>' : '';
+        var reqAttr = f.required ? ' required' : '';
+
+        html += '<div class="form-group">';
+        html += '<label for="' + fieldId + '">' + f.label + optLabel + '</label>';
+
+        if (f.type === 'text') {
+          html += '<input type="text" id="' + fieldId + '" placeholder="' + (f.placeholder || '') + '"' + reqAttr + '>';
+        } else if (f.type === 'tel') {
+          html += '<input type="tel" id="' + fieldId + '" placeholder="' + (f.placeholder || '') + '" pattern="[0-9]{10}" maxlength="10"' + reqAttr + '>';
+        } else if (f.type === 'date') {
+          html += '<input type="date" id="' + fieldId + '"' + reqAttr + '>';
+        } else if (f.type === 'select') {
+          html += '<select id="' + fieldId + '"' + reqAttr + '>';
+          f.options.forEach(function(opt, i) {
+            html += '<option value="' + (i === 0 && opt.indexOf('Select') === 0 ? '' : opt) + '">' + opt + '</option>';
+          });
+          html += '</select>';
+        } else if (f.type === 'rasi') {
+          html += '<select id="' + fieldId + '"' + reqAttr + '>';
+          rasiOptions.forEach(function(r) {
+            html += '<option value="' + r.val + '">' + r.label + '</option>';
+          });
+          html += '</select>';
+        } else if (f.type === 'nakshatram') {
+          html += '<select id="' + fieldId + '"' + reqAttr + '>';
+          html += '<option value="">Select Nakshatram</option>';
+          nakshatramOptions.forEach(function(n) {
+            if (n) html += '<option value="' + n + '">' + n + '</option>';
+          });
+          html += '</select>';
+        } else if (f.type === 'temple') {
+          html += '<select id="' + fieldId + '"' + reqAttr + '>';
+          html += '<option value="">Select Temple</option>';
+          templeOptions.forEach(function(g) {
+            html += '<optgroup label="' + g.group + '">';
+            g.temples.forEach(function(t) {
+              html += '<option value="' + t + '">' + t + '</option>';
+            });
+            html += '</optgroup>';
+          });
+          html += '</select>';
+        }
+
+        html += '</div>';
+      });
+
+      // Summary
+      html += '<div class="booking-summary">';
+      html += '<h3>Booking Summary</h3>';
+      html += '<div class="summary-row"><span class="label">Pooja</span><span>' + cfg.icon + ' ' + cfg.name + '</span></div>';
+      html += '<div class="summary-row"><span class="label">Base Price</span><span>₹' + cfg.price.toLocaleString() + '</span></div>';
+      html += '<div class="summary-row total"><span>Total</span><span>₹' + cfg.price.toLocaleString() + '</span></div>';
+      html += '</div>';
+
+      html += '<button type="submit" class="pf-submit">Book ' + cfg.name + ' & Pay</button>';
+      html += '<p class="pf-pay-note">Secure payment powered by Razorpay</p>';
+
+      html += '</form>';
+      html += '</div></div>';
+
+      var area = document.getElementById('pooja-form-area');
+      area.innerHTML = html;
+      area.className = 'pooja-form-area show';
+
+      // Set defaults
+      var dateInput = document.getElementById('pooja-date');
+      if (dateInput) {
+        var today = new Date();
+        dateInput.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+        // Set min date to today
+        dateInput.min = dateInput.value;
+      }
+
+      // Pre-fill name
+      var nameInput = document.getElementById('devotee-name');
+      if (nameInput) {
+        try {
+          var user = JSON.parse(localStorage.getItem('temple_user'));
+          if (user && user.name) nameInput.value = user.name;
+        } catch(e) {}
+      }
+
+      // Pre-fill temple from localStorage (if user came from a specific temple page)
+      var templeSelect = document.getElementById('pooja-temple');
+      if (templeSelect) {
+        try {
+          var selTemple = JSON.parse(localStorage.getItem('selected_temple'));
+          if (selTemple && selTemple.name) {
+            // Try exact match first
+            var opts = templeSelect.options;
+            for (var ti = 0; ti < opts.length; ti++) {
+              if (opts[ti].value && selTemple.name.indexOf(opts[ti].value.split(',')[0]) !== -1) {
+                templeSelect.value = opts[ti].value;
+                break;
+              }
+            }
+          }
+        } catch(e) {}
+      }
+
+      // Pre-fill rasi
+      var rasiSelect = document.getElementById('pooja-rasi');
+      if (rasiSelect) {
+        var savedRasi = localStorage.getItem('temple_user_rasi');
+        if (savedRasi !== null) {
+          var rasiNames = ['Mesham','Rishabam','Mithunam','Kadagam','Simmam','Kanni','Thulam','Viruchigam','Dhanusu','Magaram','Kumbam','Meenam'];
+          rasiSelect.value = rasiNames[parseInt(savedRasi)] || '';
+        }
+      }
+
+      // Scroll to form
+      setTimeout(function() {
+        area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+
+    function handleDynamicBooking(e) {
+      e.preventDefault();
+      var cfg = poojaConfig[currentPoojaKey];
+      if (!cfg) return;
+
+      var name = document.getElementById('devotee-name')?.value || document.getElementById('groom-name')?.value || 'Devotee';
+      var date = document.getElementById('pooja-date')?.value || '';
+      var temple = document.getElementById('pooja-temple')?.value || '';
+
+      if (!date) {
+        showToast('Please select a date', 'error');
+        return;
+      }
+
+      // Collect all field values
+      var bookingData = {
+        id: Date.now(),
+        pooja: cfg.name,
+        price: cfg.price,
+        name: name,
+        date: date,
+        temple: temple,
+        status: 'Confirmed',
+        poojaType: currentPoojaKey,
+        details: {}
+      };
+
+      cfg.fields.forEach(function(f) {
+        var fieldId = f.idSuffix ? f.id + f.idSuffix : f.id;
+        var el = document.getElementById(fieldId);
+        if (el && el.value) {
+          bookingData.details[f.label] = el.value;
+        }
+      });
+
+      // Save booking
+      var bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+      bookings.push(bookingData);
+      localStorage.setItem('temple_bookings', JSON.stringify(bookings));
+
+      showModal('✅', 'Booking Confirmed!',
+        cfg.icon + ' ' + cfg.name + ' has been booked for ' + name + ' on ' + date + '. Payment of ₹' + cfg.price.toLocaleString() + ' will be collected via Razorpay.',
+        'Done', function() { navigateTo('home.html'); });
+    }
+  </script>
+</body>
+</html>

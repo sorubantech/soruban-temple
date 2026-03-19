@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="avatar" id="profile-avatar">🙏</div>
+      <h2 id="profile-name">Devotee</h2>
+      <p id="profile-email"></p>
+      <button onclick="openEditProfile()" style="margin-top:8px; padding:4px 16px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); border-radius:20px; color:white; font-size:0.75rem; font-weight:600; cursor:pointer; backdrop-filter:blur(4px);" data-lang="edit_profile">Edit Profile</button>
+      <div class="profile-stats">
+        <div class="stat">
+          <div class="stat-num" id="booking-count">0</div>
+          <div class="stat-label" data-lang="bookings">Bookings</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="donation-count">0</div>
+          <div class="stat-label" data-lang="donations">Donations</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="following-count">0</div>
+          <div class="stat-label" data-lang="liked_temples">Liked</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center;">
+      <div style="background:white; width:90%; max-width:400px; border-radius:16px; padding:24px; margin:auto;">
+        <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:16px; text-align:center;" data-lang="edit_profile">Edit Profile</h3>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label data-lang="full_name">Full Name</label>
+          <input type="text" id="edit-name" placeholder="Enter your name" style="width:100%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; font-size:0.9rem;">
+        </div>
+        <div class="form-group" style="margin-bottom:12px;">
+          <label data-lang="email">Email</label>
+          <input type="email" id="edit-email" placeholder="Enter your email" style="width:100%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; font-size:0.9rem;">
+        </div>
+        <div class="form-group" style="margin-bottom:16px;">
+          <label data-lang="phone_number">Phone Number</label>
+          <input type="tel" id="edit-phone" placeholder="Enter phone number" style="width:100%; padding:10px 12px; border:2px solid #e0e0e0; border-radius:10px; font-size:0.9rem;">
+        </div>
+        <button onclick="saveProfile()" class="btn btn-primary" style="width:100%; margin-bottom:8px;" data-lang="save_profile">Save Profile</button>
+        <button onclick="closeEditProfile()" style="width:100%; padding:10px; border:none; background:none; color:#999; font-size:0.85rem; cursor:pointer;" data-lang="cancel">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Menu -->
+    <div class="profile-menu">
+      <a href="my-bookings.html" class="menu-item">
+        <span class="mi-icon">🛕</span>
+        <div class="mi-info">
+          <h3 data-lang="my_bookings_donations">My Bookings & Donations</h3>
+          <p data-lang="view_booking_history">View all your booking & donation history</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="order-history.html" class="menu-item">
+        <span class="mi-icon">🛒</span>
+        <div class="mi-info">
+          <h3>My Orders</h3>
+          <p>Track your prasadam & shop orders</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="daily-pooja.html" class="menu-item">
+        <span class="mi-icon">🪔</span>
+        <div class="mi-info">
+          <h3 data-lang="daily_pooja">Daily Pooja</h3>
+          <p data-lang="daily_pooja_desc">Archana, Abhishekam & daily sevas</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="homam-booking.html" class="menu-item">
+        <span class="mi-icon">🔥</span>
+        <div class="mi-info">
+          <h3 data-lang="homam_services">Homam Services</h3>
+          <p data-lang="homam_desc">Book sacred fire rituals</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="family-booking.html" class="menu-item">
+        <span class="mi-icon">👨‍👩‍👧‍👦</span>
+        <div class="mi-info">
+          <h3 data-lang="family_functions">Family Functions</h3>
+          <p data-lang="family_desc">Wedding, naming, upanayanam</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="motta-booking.html" class="menu-item">
+        <span class="mi-icon">✂️</span>
+        <div class="mi-info">
+          <h3 data-lang="motta_booking">Motta Booking</h3>
+          <p data-lang="motta_desc">Book tonsure seva</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="donation.html" class="menu-item">
+        <span class="mi-icon">💰</span>
+        <div class="mi-info">
+          <h3 data-lang="my_donations">My Donations</h3>
+          <p data-lang="my_donations_desc">View donation receipts</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="annadhanam.html" class="menu-item">
+        <span class="mi-icon">🍚</span>
+        <div class="mi-info">
+          <h3 data-lang="annadhanam">Annadhanam</h3>
+          <p data-lang="annadhanam_desc">Sponsor free food for devotees</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="nalla-neram.html" class="menu-item">
+        <span class="mi-icon">🕐</span>
+        <div class="mi-info">
+          <h3 data-lang="nalla_neram">Nalla Neram</h3>
+          <p data-lang="nalla_neram_desc">Daily auspicious timings & panchangam</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="rasi-palan.html" class="menu-item">
+        <span class="mi-icon">🔮</span>
+        <div class="mi-info">
+          <h3 data-lang="rasi_palan">Rasi Palan</h3>
+          <p data-lang="rasi_palan_desc">Daily horoscope for all 12 rasis</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="darshan-token.html" class="menu-item">
+        <span class="mi-icon">🎫</span>
+        <div class="mi-info">
+          <h3 data-lang="darshan_token">Darshan Token</h3>
+          <p data-lang="darshan_token_desc">Book virtual queue token</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="prasadam-shop.html" class="menu-item">
+        <span class="mi-icon">🛒</span>
+        <div class="mi-info">
+          <h3 data-lang="prasadam_shop">Prasadam & Shop</h3>
+          <p data-lang="prasadam_desc">Order prasadam & pooja items</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="temple-list.html" class="menu-item">
+        <span class="mi-icon">🏛️</span>
+        <div class="mi-info">
+          <h3 data-lang="followed_temples">Followed Temples</h3>
+          <p data-lang="followed_desc">Temples you are following</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="community.html" class="menu-item">
+        <span class="mi-icon">👥</span>
+        <div class="mi-info">
+          <h3>Temple Community</h3>
+          <p>Share photos, videos & temple experiences</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <a href="feed.html" class="menu-item">
+        <span class="mi-icon">📰</span>
+        <div class="mi-info">
+          <h3 data-lang="updates_feed">Updates Feed</h3>
+          <p data-lang="updates_desc">Latest temple news & updates</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </a>
+
+      <div class="menu-item" onclick="showToast(t('notifications_enabled'), 'success')">
+        <span class="mi-icon">🔔</span>
+        <div class="mi-info">
+          <h3 data-lang="notifications">Notifications</h3>
+          <p data-lang="notifications_desc">Manage alerts & reminders</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </div>
+
+      <div class="menu-item" onclick="LANG.showLanguageModal()">
+        <span class="mi-icon">🌐</span>
+        <div class="mi-info">
+          <h3 data-lang="language">Language</h3>
+          <p data-lang="language_desc">English, Tamil, Hindi, Telugu</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </div>
+
+      <div class="menu-item" onclick="showToast('Support: Contact us via app', 'info')">
+        <span class="mi-icon">📞</span>
+        <div class="mi-info">
+          <h3 data-lang="help_support">Help & Support</h3>
+          <p data-lang="help_desc">Contact temple administration</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </div>
+
+      <div class="menu-item" onclick="showToast('App Version 1.0.0', 'info')">
+        <span class="mi-icon">ℹ️</span>
+        <div class="mi-info">
+          <h3 data-lang="about">About</h3>
+          <p data-lang="about_desc">App version & terms</p>
+        </div>
+        <span class="mi-arrow">→</span>
+      </div>
+    </div>
+
+    <!-- Logout -->
+    <button class="btn btn-outline logout-btn" onclick="handleLogout()" style="color:var(--danger); border-color:var(--danger);" data-lang="logout">
+      Logout
+    </button>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item">
+        <span class="nav-icon">🏠</span>
+        <span data-lang="nav_home">Home</span>
+      </a>
+      <a href="temple-list.html" class="nav-item">
+        <span class="nav-icon">🛕</span>
+        <span data-lang="nav_temples">Temples</span>
+      </a>
+      <a href="community.html" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Community</span>
+      </a>
+      <a href="feed.html" class="nav-item">
+        <span class="nav-icon">📰</span>
+        <span data-lang="nav_feed">Feed</span>
+      </a>
+      <a href="profile.html" class="nav-item active">
+        <span class="nav-icon">👤</span>
+        <span data-lang="nav_profile">Profile</span>
+      </a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

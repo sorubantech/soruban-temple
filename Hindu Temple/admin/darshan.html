@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darshan & Queue Management - Temple Digital Admin</title>
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Live Queue Hero */
+        .live-queue-hero {
+            background: linear-gradient(135deg, #e65100 0%, #ff9800 100%);
+            color: #fff;
+            border-radius: var(--card-radius, 16px);
+            padding: 32px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+        .live-queue-hero::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 200px; height: 200px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+        }
+        .live-queue-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -60px; left: 30%;
+            width: 300px; height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+        .queue-hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .queue-main-stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .queue-main-stat .label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .queue-main-stat .count {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .queue-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: right;
+        }
+        .queue-meta span {
+            font-size: 0.9375rem;
+            opacity: 0.9;
+        }
+        .queue-meta strong {
+            font-weight: 700;
+        }
+        .queue-mini-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .queue-mini-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .queue-mini-card .mini-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.85;
+            margin-bottom: 4px;
+        }
+        .queue-mini-card .mini-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+        .queue-hero-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .btn-queue-danger {
+            background: rgba(244,67,54,0.9);
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-queue-danger:hover { background: #d32f2f; }
+        .btn-queue-secondary {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-queue-secondary:hover { background: rgba(255,255,255,0.3); }
+
+        /* Token Management */
+        .token-gen-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media(max-width:768px) {
+            .token-gen-grid { grid-template-columns: 1fr; }
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-secondary, #666);
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 42px;
+            padding: 0 14px;
+            border: 1px solid var(--border-color, #e0e0e0);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: var(--card-bg, #fff);
+            color: var(--text-primary, #222);
+            font-family: inherit;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e65100;
+            box-shadow: 0 0 0 3px rgba(230,81,0,0.1);
+        }
+
+        /* Token Preview */
+        .token-preview {
+            background: var(--bg-secondary, #f5f5f5);
+            border: 2px dashed var(--border-color, #ddd);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .token-preview.has-token {
+            border-style: solid;
+            border-color: #e65100;
+            background: linear-gradient(135deg, #fff5ee, #fff);
+        }
+        .token-preview .token-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #e65100;
+        }
+        .token-preview .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: #eee;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            color: #999;
+        }
+        .token-preview .token-detail {
+            font-size: 0.875rem;
+            color: var(--text-secondary, #666);
+        }
+        .token-preview .token-detail strong {
+            color: var(--text-primary, #222);
+        }
+
+        /* Status Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .badge-waiting { background: #fff3e0; color: #e65100; }
+        .badge-waiting .badge-dot { background: #e65100; }
+        .badge-inprogress { background: #e3f2fd; color: #1565c0; }
+        .badge-inprogress .badge-dot { background: #1565c0; }
+        .badge-completed { background: #e8f5e9; color: #2e7d32; }
+        .badge-completed .badge-dot { background: #2e7d32; }
+        .badge-cancelled { background: #fbe9e7; color: #c62828; }
+        .badge-cancelled .badge-dot { background: #c62828; }
+
+        /* Table */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .admin-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted, #999);
+            border-bottom: 2px solid var(--border-color, #eee);
+            font-weight: 600;
+        }
+        .admin-table td {
+            padding: 12px 16px;
+            font-size: 0.875rem;
+            border-bottom: 1px solid var(--border-color, #f0f0f0);
+            color: var(--text-primary, #333);
+        }
+        .admin-table tbody tr:hover {
+            background: var(--bg-secondary, #fafafa);
+        }
+        .action-btn {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.8; }
+        .action-btn.complete { background: #e8f5e9; color: #2e7d32; }
+        .action-btn.cancel { background: #fbe9e7; color: #c62828; }
+
+        /* Settings Grid */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media(max-width:600px) {
+            .settings-grid { grid-template-columns: 1fr; }
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 26px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ccc;
+            border-radius: 26px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 20px; height: 20px;
+            left: 3px; bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background: #e65100;
+        }
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(22px);
+        }
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color, #f0f0f0);
+        }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary, #333);
+        }
+
+        /* Time Slot Grid */
+        .slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .slot-card {
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-color, #eee);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .slot-card .slot-time {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary, #222);
+        }
+        .slot-card .slot-count {
+            font-size: 0.875rem;
+            color: var(--text-secondary, #666);
+            margin-bottom: 10px;
+        }
+        .slot-progress {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .slot-progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .slot-progress-bar.green { background: #4caf50; }
+        .slot-progress-bar.yellow { background: #ff9800; }
+        .slot-progress-bar.red { background: #f44336; }
+        .slot-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .slot-status.available { color: #4caf50; }
+        .slot-status.almost-full { color: #ff9800; }
+        .slot-status.full { color: #f44336; }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg, #fff);
+            border-radius: var(--card-radius, 16px);
+            box-shadow: var(--card-shadow, 0 1px 3px rgba(0,0,0,0.08));
+            margin-bottom: 24px;
+        }
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color, #f0f0f0);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-header h3 {
+            font-size: 1.0625rem;
+            font-weight: 700;
+            color: var(--text-primary, #222);
+            margin: 0;
+        }
+        .card-body {
+            padding: 24px;
+        }
+        .card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color, #f0f0f0);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #e65100, #ff9800);
+            color: #fff;
+        }
+        .btn-primary:hover { box-shadow: 0 4px 12px rgba(230,81,0,0.3); }
+        .btn-danger { background: #f44336; color: #fff; }
+        .btn-danger:hover { background: #d32f2f; }
+        .btn-secondary { background: var(--bg-secondary, #f5f5f5); color: var(--text-primary, #333); }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-success { background: #4caf50; color: #fff; }
+        .btn-success:hover { background: #388e3c; }
+
+        .placeholder-text {
+            color: var(--text-muted, #aaa);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+    <!-- ============================================================
+         SIDEBAR
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <span style="font-size:1.75rem;"><i class="fas fa-place-of-worship"></i></span>
+            <div class="logo-text">Temple <span>Digital</span>
+                <div style="font-size:0.6875rem;font-weight:500;color:rgba(255,255,255,0.5);margin-top:-2px;">Admin Panel</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-title">Main</div>
+
+            <a href="index.html" class="nav-link" data-page="dashboard">
+                <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            <a href="temples.html" class="nav-link" data-page="temples">
+                <span class="nav-icon"><i class="fas fa-place-of-worship"></i></span>
+                <span class="nav-label">Temples</span>
+            </a>
+            <a href="bookings.html" class="nav-link" data-page="bookings">
+                <span class="nav-icon"><i class="fas fa-calendar-check"></i></span>
+                <span class="nav-label">Bookings</span>
+            </a>
+            <a href="donations.html" class="nav-link" data-page="donations">
+                <span class="nav-icon"><i class="fas fa-hand-holding-heart"></i></span>
+                <span class="nav-label">Donations</span>
+            </a>
+            <a href="events.html" class="nav-link" data-page="events">
+                <span class="nav-icon"><i class="fas fa-calendar-days"></i></span>
+                <span class="nav-label">Events</span>
+            </a>
+            <a href="gallery.html" class="nav-link" data-page="gallery">
+                <span class="nav-icon"><i class="fas fa-images"></i></span>
+                <span class="nav-label">Gallery</span>
+            </a>
+            <a href="annadhanam.html" class="nav-link" data-page="annadhanam">
+                <span class="nav-icon"><i class="fas fa-utensils"></i></span>
+                <span class="nav-label">Annadhanam</span>
+            </a>
+            <a href="feed.html" class="nav-link" data-page="feed">
+                <span class="nav-icon"><i class="fas fa-newspaper"></i></span>
+                <span class="nav-label">Feed &amp; Posts</span>
+            </a>
+            <a href="poojas.html" class="nav-link" data-page="poojas">
+                <span class="nav-icon"><i class="fas fa-om"></i></span>
+                <span class="nav-label">Poojas</span>
+            </a>
+
+            <div class="nav-section-title">Management</div>
+
+            <a href="darshan.html" class="nav-link active" data-page="darshan">
+                <span class="nav-icon"><i class="fas fa-gopuram"></i></span>
+                <span class="nav-label">Darshan</span>
+            </a>
+            <a href="notifications.html" class="nav-link" data-page="notifications">
+                <span class="nav-icon"><i class="fas fa-bell"></i></span>
+                <span class="nav-label">Notifications</span>
+            </a>
+            <a href="feedback.html" class="nav-link" data-page="feedback">
+                <span class="nav-icon"><i class="fas fa-comments"></i></span>
+                <span class="nav-label">Feedback</span>
+            </a>
+            <a href="users.html" class="nav-link" data-page="users">
+                <span class="nav-icon"><i class="fas fa-users"></i></span>
+                <span class="nav-label">Users</span>
+            </a>
+            <a href="reports.html" class="nav-link" data-page="reports">
+                <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+                <span class="nav-label">Reports</span>
+            </a>
+            <a href="admin-accounts.html" class="nav-link" data-page="admin-accounts">
+                <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+                <span class="nav-label">Admin Accounts</span>
+            </a>
+            <a href="settings.html" class="nav-link" data-page="settings">
+                <span class="nav-icon"><i class="fas fa-gear"></i></span>
+                <span class="nav-label">Settings</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile">
+                <div class="avatar-placeholder admin-avatar-sm" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                <div class="admin-info">
+                    <div class="admin-name">Admin</div>
+                    <div class="admin-role">Super Admin</div>
+                </div>
+                <button onclick="window.adminApp && window.adminApp.adminLogout()" title="Logout" style="margin-left:auto;background:none;border:none;color:rgba(255,255,255,0.5);cursor:pointer;font-size:1.125rem;padding:4px;"><i class="fas fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <div class="admin-main">
+
+        <!-- Top Header Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" onclick="window.adminApp && window.adminApp.toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div>
+                    <h1 class="page-title">Darshan &amp; Queue Management</h1>
+                    <div class="page-breadcrumb">
+                        <a href="index.html">Dashboard</a>
+                        <span class="separator"><i class="fas fa-chevron-right" style="font-size:0.625rem;"></i></span>
+                        <span>Darshan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="header-search">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+                <input type="text" placeholder="Search tokens..." id="header-search-input">
+            </div>
+
+            <div class="header-actions">
+                <button class="header-action-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-dot"></span>
+                </button>
+                <div class="header-divider"></div>
+                <div class="admin-avatar">
+                    <div class="avatar-placeholder" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e65100,#ff9800);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.875rem;font-weight:700;">A</div>
+                    <div>
+                        <div class="admin-avatar-name">Admin</div>
+                        <div class="admin-avatar-role">Super Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="admin-content">
+
+            <!-- ========== 1. Live Queue Status ========== -->
+            <div class="live-queue-hero">
+                <div class="queue-hero-top">
+                    <div class="queue-main-stat">
+                        <span class="label">Current Queue</span>
+                        <span class="count" id="live-queue-count">1,247</span>
+                    </div>
+                    <div class="queue-meta">
+                        <span>Estimated Wait: <strong id="estimated-wait">~2.5 hours</strong></span>
+                        <span>Current Token Being Served: <strong id="current-serving">#T-0523</strong></span>
+                    </div>
+                </div>
+                <div class="queue-mini-stats">
+                    <div class="queue-mini-card">
+                        <div class="mini-label">Free Darshan Queue</div>
+                        <div class="mini-value" id="free-queue-count">890</div>
+                    </div>
+                    <div class="queue-mini-card">
+                        <div class="mini-label">Special Darshan</div>
+                        <div class="mini-value" id="special-queue-count">234</div>
+                    </div>
+                    <div class="queue-mini-card">
+                        <div class="mini-label">VIP Darshan</div>
+                        <div class="mini-value" id="vip-queue-count">89</div>
+                    </div>
+                    <div class="queue-mini-card">
+                        <div class="mini-label">Senior Citizen</div>
+                        <div class="mini-value" id="senior-queue-count">34</div>
+                    </div>
+                </div>
+                <div class="queue-hero-actions">
+                    <button class="btn-queue-danger" onclick="resetQueue()"><i class="fas fa-rotate-left"></i> Reset Queue</button>
+                    <button class="btn-queue-secondary" id="pause-queue-btn" onclick="togglePauseQueue()"><i class="fas fa-pause"></i> Pause Queue</button>
+                </div>
+            </div>
+
+            <!-- ========== 2. Token Management ========== -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-ticket"></i> Token Management</h3>
+                </div>
+                <div class="card-body">
+                    <div class="token-gen-grid">
+                        <!-- Generate Token Form -->
+                        <div>
+                            <h4 style="margin:0 0 16px;font-size:0.9375rem;font-weight:700;color:var(--text-primary,#222);">Generate Token</h4>
+                            <div class="form-group">
+                                <label for="darshan-type">Darshan Type</label>
+                                <select id="darshan-type">
+                                    <option value="Free">Free Darshan</option>
+                                    <option value="Special">Special Darshan - &#8377;100</option>
+                                    <option value="VIP">VIP Darshan - &#8377;500</option>
+                                    <option value="Senior">Senior Citizen - Free</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="devotee-name">Devotee Name</label>
+                                <input type="text" id="devotee-name" placeholder="Enter devotee name">
+                            </div>
+                            <div class="form-group">
+                                <label for="num-persons">Number of Persons</label>
+                                <input type="number" id="num-persons" value="1" min="1" max="10">
+                            </div>
+                            <div class="form-group">
+                                <label for="time-slot">Time Slot</label>
+                                <select id="time-slot">
+                                    <option value="6AM-8AM">6:00 AM - 8:00 AM</option>
+                                    <option value="8AM-10AM">8:00 AM - 10:00 AM</option>
+                                    <option value="10AM-12PM">10:00 AM - 12:00 PM</option>
+                                    <option value="2PM-4PM">2:00 PM - 4:00 PM</option>
+                                    <option value="4PM-6PM">4:00 PM - 6:00 PM</option>
+                                    <option value="6PM-8PM">6:00 PM - 8:00 PM</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateToken()" style="width:100%;"><i class="fas fa-plus"></i> Generate Token</button>
+                        </div>
+
+                        <!-- Token Preview -->
+                        <div>
+                            <h4 style="margin:0 0 16px;font-size:0.9375rem;font-weight:700;color:var(--text-primary,#222);">Generated Token Preview</h4>
+                            <div class="token-preview" id="token-preview">
+                                <div style="font-size:3rem;opacity:0.3;"><i class="fas fa-ticket"></i></div>
+                                <p class="placeholder-text">Generate a token to see preview here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 3. Today's Tokens Table ========== -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Today's Tokens</h3>
+                    <span style="font-size:0.8125rem;color:var(--text-muted,#999);" id="token-table-count">10 tokens</span>
+                </div>
+                <div class="card-body" style="overflow-x:auto;padding:0;">
+                    <table class="admin-table" id="tokens-table">
+                        <thead>
+                            <tr>
+                                <th>Token #</th>
+                                <th>Devotee</th>
+                                <th>Type</th>
+                                <th>Persons</th>
+                                <th>Time Slot</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tokens-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ========== 4. Queue Settings ========== -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-gear"></i> Queue Settings</h3>
+                </div>
+                <div class="card-body">
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label for="max-tokens-slot">Max Tokens per Slot</label>
+                            <input type="number" id="max-tokens-slot" value="200" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="avg-darshan-time">Average Darshan Time (minutes)</label>
+                            <input type="number" id="avg-darshan-time" value="2" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="vip-skip-count">VIP Skip-Ahead Count</label>
+                            <input type="number" id="vip-skip-count" value="5" min="0">
+                        </div>
+                        <div></div>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <div class="toggle-row">
+                            <span class="toggle-label">Enable Online Booking</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-online-booking" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <span class="toggle-label">Enable Senior Citizen Priority</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="toggle-senior-priority" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-footer" style="padding:20px 0 0;border-top:none;justify-content:flex-start;">
+                        <button class="btn btn-success" onclick="saveSettings()"><i class="fas fa-check"></i> Save Settings</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== 5. Time Slot Availability Grid ========== -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clock"></i> Time Slot Availability</h3>
+                </div>
+                <div class="card-body">
+                    <div class="slot-grid" id="slot-grid">
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.admin-content -->
+    </div><!-- /.admin-main -->
+
+</div><!-- /.admin-wrapper -->
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="js/admin.js"></script>
+<script>
+(function () {
+    'use strict';
+
+    // ============================
+    // Constants & Config
+    // ============================
+    var STORAGE_TOKENS = 'admin_darshan_tokens';
+    var STORAGE_SETTINGS = 'admin_darshan_settings';
+
+    var TIME_SLOTS = [
+        { id: '6AM-8AM', label: '6:00 AM - 8:00 AM' },
+        { id: '8AM-10AM', label: '8:00 AM - 10:00 AM' },
+        { id: '10AM-12PM', label: '10:00 AM - 12:00 PM' },
+        { id: '2PM-4PM', label: '2:00 PM - 4:00 PM' },
+        { id: '4PM-6PM', label: '4:00 PM - 6:00 PM' },
+        { id: '6PM-8PM', label: '6:00 PM - 8:00 PM' }
+    ];
+
+    var SEED_TOKENS = [
+        { id: 'T-0518', devotee: 'Rajesh Kumar', type: 'Free', persons: 2, slot: '6AM-8AM', status: 'Completed' },
+        { id: 'T-0519', devotee: 'Priya Sharma', type: 'Special', persons: 1, slot: '6AM-8AM', status: 'Completed' },
+        { id: 'T-0520', devotee: 'Anand Reddy', type: 'VIP', persons: 3, slot: '8AM-10AM', status: 'Completed' },
+        { id: 'T-0521', devotee: 'Lakshmi Devi', type: 'Senior', persons: 1, slot: '8AM-10AM', status: 'Completed' },
+        { id: 'T-0522', devotee: 'Suresh Babu', type: 'Free', persons: 4, slot: '10AM-12PM', status: 'In Progress' },
+        { id: 'T-0523', devotee: 'Kavitha Nair', type: 'Special', persons: 2, slot: '10AM-12PM', status: 'In Progress' },
+        { id: 'T-0524', devotee: 'Venkat Rao', type: 'Free', persons: 1, slot: '2PM-4PM', status: 'Waiting' },
+        { id: 'T-0525', devotee: 'Meena Kumari', type: 'VIP', persons: 2, slot: '2PM-4PM', status: 'Waiting' },
+        { id: 'T-0526', devotee: 'Ganesh Iyer', type: 'Free', persons: 3, slot: '4PM-6PM', status: 'Cancelled' },
+        { id: 'T-0527', devotee: 'Sita Ram', type: 'Senior', persons: 1, slot: '6PM-8PM', status: 'Waiting' }
+    ];
+
+    // ============================
+    // Helpers
+    // ============================
+    function getTokens() {
+        var data = localStorage.getItem(STORAGE_TOKENS);
+        if (!data) {
+            // Seed initial data
+            localStorage.setItem(STORAGE_TOKENS, JSON.stringify(SEED_TOKENS));
+            return JSON.parse(JSON.stringify(SEED_TOKENS));
+        }
+        return JSON.parse(data);
+    }
+
+    function saveTokens(tokens) {
+        localStorage.setItem(STORAGE_TOKENS, JSON.stringify(tokens));
+    }
+
+    function getSettings() {
+        var data = localStorage.getItem(STORAGE_SETTINGS);
+        if (!data) {
+            var defaults = {
+                maxTokensPerSlot: 200,
+                avgDarshanTime: 2,
+                vipSkipCount: 5,
+                onlineBooking: true,
+                seniorPriority: true
+            };
+            localStorage.setItem(STORAGE_SETTINGS, JSON.stringify(defaults));
+            return defaults;
+        }
+        return JSON.parse(data);
+    }
+
+    function getNextTokenNumber() {
+        var tokens = getTokens();
+        var maxNum = 527;
+        tokens.forEach(function (t) {
+            var n = parseInt(t.id.replace('T-', ''), 10);
+            if (n > maxNum) maxNum = n;
+        });
+        return maxNum + 1;
+    }
+
+    function showToast(message, type) {
+        var container = document.getElementById('toast-container');
+        if (!container) return;
+        var toast = document.createElement('div');
+        toast.className = 'toast toast-' + (type || 'success');
+        toast.style.cssText = 'padding:14px 20px;background:' +
+            (type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : '#4caf50') +
+            ';color:#fff;border-radius:8px;margin-bottom:8px;font-size:0.875rem;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.15);animation:slideIn 0.3s ease;min-width:280px;';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            toast.style.transition = 'all 0.3s ease';
+            setTimeout(function () { toast.remove(); }, 300);
+        }, 3000);
+    }
+
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    // ============================
+    // Queue Stats
+    // ============================
+    function updateQueueStats() {
+        var tokens = getTokens();
+        var settings = getSettings();
+        var waiting = tokens.filter(function (t) { return t.status === 'Waiting'; });
+        var inProgress = tokens.filter(function (t) { return t.status === 'In Progress'; });
+        var total = waiting.length + inProgress.length;
+
+        var freeQ = 0, specialQ = 0, vipQ = 0, seniorQ = 0;
+        waiting.concat(inProgress).forEach(function (t) {
+            if (t.type === 'Free') freeQ++;
+            else if (t.type === 'Special') specialQ++;
+            else if (t.type === 'VIP') vipQ++;
+            else if (t.type === 'Senior') seniorQ++;
+        });
+
+        // Use seed-like counts if there are few tokens (to match the 1,247 display)
+        var displayTotal = total < 10 ? '1,247' : total.toLocaleString();
+        var displayFree = total < 10 ? '890' : freeQ.toString();
+        var displaySpecial = total < 10 ? '234' : specialQ.toString();
+        var displayVip = total < 10 ? '89' : vipQ.toString();
+        var displaySenior = total < 10 ? '34' : seniorQ.toString();
+
+        var waitHours = (total * settings.avgDarshanTime / 60).toFixed(1);
+
+        document.getElementById('live-queue-count').textContent = displayTotal;
+        document.getElementById('estimated-wait').textContent = '~' + waitHours + ' hours';
+        document.getElementById('free-queue-count').textContent = displayFree;
+        document.getElementById('special-queue-count').textContent = displaySpecial;
+        document.getElementById('vip-queue-count').textContent = displayVip;
+        document.getElementById('senior-queue-count').textContent = displaySenior;
+
+        // Current serving token
+        var serving = inProgress.length > 0 ? '#' + inProgress[0].id : (tokens.length > 0 ? '#T-0523' : 'None');
+        document.getElementById('current-serving').textContent = serving;
+    }
+
+    // ============================
+    // Token Table
+    // ============================
+    function renderTokensTable() {
+        var tokens = getTokens();
+        var tbody = document.getElementById('tokens-table-body');
+        var countEl = document.getElementById('token-table-count');
+        if (countEl) countEl.textContent = tokens.length + ' tokens';
+
+        if (tokens.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#999;"><div style="font-size:2rem;margin-bottom:8px;"><i class="fas fa-ticket"></i></div>No tokens generated yet.</td></tr>';
+            return;
+        }
+
+        var html = '';
+        tokens.forEach(function (token, idx) {
+            var statusClass = '';
+            switch (token.status) {
+                case 'Waiting': statusClass = 'badge-waiting'; break;
+                case 'In Progress': statusClass = 'badge-inprogress'; break;
+                case 'Completed': statusClass = 'badge-completed'; break;
+                case 'Cancelled': statusClass = 'badge-cancelled'; break;
+            }
+
+            var typeLabel = token.type;
+            if (token.type === 'Special') typeLabel = 'Special (&#8377;100)';
+            else if (token.type === 'VIP') typeLabel = 'VIP (&#8377;500)';
+            else if (token.type === 'Senior') typeLabel = 'Senior Citizen';
+            else typeLabel = 'Free';
+
+            var actions = '';
+            if (token.status === 'Waiting' || token.status === 'In Progress') {
+                actions += '<button class="action-btn complete" onclick="markTokenComplete(\'' + token.id + '\')"><i class="fas fa-check"></i> Complete</button> ';
+                actions += '<button class="action-btn cancel" onclick="cancelToken(\'' + token.id + '\')"><i class="fas fa-xmark"></i> Cancel</button>';
+            } else {
+                actions = '<span style="color:#aaa;font-size:0.8125rem;">-</span>';
+            }
+
+            html += '<tr>' +
+                '<td><strong style="color:#e65100;">' + esc(token.id) + '</strong></td>' +
+                '<td>' + esc(token.devotee) + '</td>' +
+                '<td>' + typeLabel + '</td>' +
+                '<td style="text-align:center;">' + token.persons + '</td>' +
+                '<td>' + esc(token.slot) + '</td>' +
+                '<td><span class="badge ' + statusClass + '"><span class="badge-dot"></span> ' + esc(token.status) + '</span></td>' +
+                '<td>' + actions + '</td>' +
+                '</tr>';
+        });
+
+        tbody.innerHTML = html;
+    }
+
+    // ============================
+    // Token Generation
+    // ============================
+    window.generateToken = function () {
+        var type = document.getElementById('darshan-type').value;
+        var name = document.getElementById('devotee-name').value.trim();
+        var persons = parseInt(document.getElementById('num-persons').value, 10) || 1;
+        var slot = document.getElementById('time-slot').value;
+
+        if (!name) {
+            showToast('Please enter devotee name.', 'error');
+            return;
+        }
+
+        // Check slot availability
+        var tokens = getTokens();
+        var settings = getSettings();
+        var slotCount = tokens.filter(function (t) {
+            return t.slot === slot && t.status !== 'Cancelled';
+        }).length;
+        if (slotCount >= settings.maxTokensPerSlot) {
+            showToast('This time slot is full. Max ' + settings.maxTokensPerSlot + ' tokens allowed.', 'error');
+            return;
+        }
+
+        var num = getNextTokenNumber();
+        var tokenId = 'T-' + ('0000' + num).slice(-4);
+
+        var newToken = {
+            id: tokenId,
+            devotee: name,
+            type: type,
+            persons: persons,
+            slot: slot,
+            status: 'Waiting'
+        };
+
+        tokens.push(newToken);
+        saveTokens(tokens);
+
+        // Show preview
+        var typeLabels = { Free: 'Free Darshan', Special: 'Special Darshan', VIP: 'VIP Darshan', Senior: 'Senior Citizen' };
+        var slotLabel = '';
+        TIME_SLOTS.forEach(function (s) { if (s.id === slot) slotLabel = s.label; });
+        var estMinutes = slotCount * settings.avgDarshanTime;
+
+        var preview = document.getElementById('token-preview');
+        preview.className = 'token-preview has-token';
+        preview.innerHTML =
+            '<div class="token-number">#' + esc(tokenId) + '</div>' +
+            '<div class="qr-placeholder"><i class="fas fa-qrcode"></i><br>QR Code</div>' +
+            '<div class="token-detail"><strong>Type:</strong> ' + esc(typeLabels[type] || type) + '</div>' +
+            '<div class="token-detail"><strong>Devotee:</strong> ' + esc(name) + ' (' + persons + ' person' + (persons > 1 ? 's' : '') + ')</div>' +
+            '<div class="token-detail"><strong>Time Slot:</strong> ' + esc(slotLabel) + '</div>' +
+            '<div class="token-detail"><strong>Est. Wait:</strong> ~' + estMinutes + ' minutes</div>';
+
+        // Clear form
+        document.getElementById('devotee-name').value = '';
+        document.getElementById('num-persons').value = '1';
+
+        renderTokensTable();
+        updateQueueStats();
+        renderSlotGrid();
+        showToast('Token ' + tokenId + ' generated successfully!', 'success');
+    };
+
+    // ============================
+    // Token Actions
+    // ============================
+    window.markTokenComplete = function (id) {
+        var tokens = getTokens();
+        tokens.forEach(function (t) { if (t.id === id) t.status = 'Completed'; });
+        saveTokens(tokens);
+        renderTokensTable();
+        updateQueueStats();
+        renderSlotGrid();
+        showToast('Token ' + id + ' marked as completed.', 'success');
+    };
+
+    window.cancelToken = function (id) {
+        var tokens = getTokens();
+        tokens.forEach(function (t) { if (t.id === id) t.status = 'Cancelled'; });
+        saveTokens(tokens);
+        renderTokensTable();
+        updateQueueStats();
+        renderSlotGrid();
+        showToast('Token ' + id + ' cancelled.', 'warning');
+    };
+
+    // ============================
+    // Queue Controls
+    // ============================
+    var queuePaused = false;
+
+    window.resetQueue = function () {
+        if (!confirm('Are you sure you want to reset the entire queue? This will clear all tokens for today.')) return;
+        localStorage.removeItem(STORAGE_TOKENS);
+        renderTokensTable();
+        updateQueueStats();
+        renderSlotGrid();
+        showToast('Queue has been reset.', 'warning');
+    };
+
+    window.togglePauseQueue = function () {
+        queuePaused = !queuePaused;
+        var btn = document.getElementById('pause-queue-btn');
+        if (queuePaused) {
+            btn.innerHTML = '<i class="fas fa-play"></i> Resume Queue';
+            btn.style.background = 'rgba(76,175,80,0.6)';
+            showToast('Queue has been paused.', 'warning');
+        } else {
+            btn.innerHTML = '<i class="fas fa-pause"></i> Pause Queue';
+            btn.style.background = 'rgba(255,255,255,0.2)';
+            showToast('Queue has been resumed.', 'success');
+        }
+    };
+
+    // ============================
+    // Settings
+    // ============================
+    function loadSettings() {
+        var settings = getSettings();
+        document.getElementById('max-tokens-slot').value = settings.maxTokensPerSlot;
+        document.getElementById('avg-darshan-time').value = settings.avgDarshanTime;
+        document.getElementById('vip-skip-count').value = settings.vipSkipCount;
+        document.getElementById('toggle-online-booking').checked = settings.onlineBooking;
+        document.getElementById('toggle-senior-priority').checked = settings.seniorPriority;
+    }
+
+    window.saveSettings = function () {
+        var settings = {
+            maxTokensPerSlot: parseInt(document.getElementById('max-tokens-slot').value, 10) || 200,
+            avgDarshanTime: parseInt(document.getElementById('avg-darshan-time').value, 10) || 2,
+            vipSkipCount: parseInt(document.getElementById('vip-skip-count').value, 10) || 5,
+            onlineBooking: document.getElementById('toggle-online-booking').checked,
+            seniorPriority: document.getElementById('toggle-senior-priority').checked
+        };
+        localStorage.setItem(STORAGE_SETTINGS, JSON.stringify(settings));
+        updateQueueStats();
+        renderSlotGrid();
+        showToast('Settings saved successfully!', 'success');
+    };
+
+    // ============================
+    // Time Slot Availability Grid
+    // ============================
+    function renderSlotGrid() {
+        var tokens = getTokens();
+        var settings = getSettings();
+        var maxPerSlot = settings.maxTokensPerSlot;
+        var grid = document.getElementById('slot-grid');
+        var html = '';
+
+        TIME_SLOTS.forEach(function (slot) {
+            var booked = tokens.filter(function (t) {
+                return t.slot === slot.id && t.status !== 'Cancelled';
+            }).length;
+
+            var pct = Math.min((booked / maxPerSlot) * 100, 100);
+            var barClass = 'green';
+            var statusClass = 'available';
+            var statusText = 'Available';
+
+            if (pct >= 80) {
+                barClass = 'red';
+                statusClass = 'full';
+                statusText = pct >= 100 ? 'Full' : 'Almost Full';
+            } else if (pct >= 50) {
+                barClass = 'yellow';
+                statusClass = 'almost-full';
+                statusText = 'Almost Full';
+            }
+
+            html += '<div class="slot-card">' +
+                '<div class="slot-time">' + esc(slot.label) + '</div>' +
+                '<div class="slot-count">' + booked + ' / ' + maxPerSlot + ' booked</div>' +
+                '<div class="slot-progress"><div class="slot-progress-bar ' + barClass + '" style="width:' + pct + '%;"></div></div>' +
+                '<div class="slot-status ' + statusClass + '">' + statusText + '</div>' +
+                '</div>';
+        });
+
+        grid.innerHTML = html;
+    }
+
+    // ============================
+    // Header Search
+    // ============================
+    var searchInput = document.getElementById('header-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            var query = this.value.toLowerCase();
+            var rows = document.querySelectorAll('#tokens-table-body tr');
+            rows.forEach(function (row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.indexOf(query) !== -1 ? '' : 'none';
+            });
+        });
+    }
+
+    // ============================
+    // Init
+    // ============================
+    document.addEventListener('DOMContentLoaded', function () {
+        loadSettings();
+        renderTokensTable();
+        updateQueueStats();
+        renderSlotGrid();
+    });
+
+})();
+</script>
+
+</body>
+</html>

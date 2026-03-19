@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soruban Temple — Prototype Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Tamil:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="landing-page">
+
+    <!-- Header -->
+    <header class="landing-header">
+      <div class="landing-logo">
+        <div class="logo-icon flame-flicker"><i class="fa-solid fa-place-of-worship"></i></div>
+        <div class="logo-text">
+          <h1>Soruban Temple</h1>
+          <p>Your Divine Connection</p>
+        </div>
+      </div>
+      <button class="theme-toggle" onclick="toggleLandingTheme()" aria-label="Toggle theme">
+        <i class="fa-solid fa-moon" id="theme-icon"></i>
+      </button>
+    </header>
+
+    <!-- Hero -->
+    <div class="landing-hero">
+      <h2>Prototype Demo</h2>
+      <p>Explore the complete platform — 4 apps, 9 user types</p>
+    </div>
+
+    <!-- App Cards Grid -->
+    <div class="app-cards">
+
+      <!-- Devotee App -->
+      <a href="../devotee-app/common/splash.html" class="app-card app-card-devotee">
+        <div class="ac-icon"><i class="fa-solid fa-place-of-worship"></i></div>
+        <div class="ac-content">
+          <h3>Devotee App</h3>
+          <p>Browse temples, book pooja with QR archana, donate, live darshan, community, and more</p>
+          <div class="ac-meta">
+            <span class="badge badge-solid-primary"><i class="fa-solid fa-users"></i> 3 user types</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-mobile-screen"></i> Mobile</span>
+          </div>
+        </div>
+        <div class="ac-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="ac-users">
+          <span>D1: Regular Devotee</span>
+          <span>D2: Family Manager</span>
+          <span>D3: Pilgrim</span>
+        </div>
+      </a>
+
+      <!-- Provider App -->
+      <a href="../provider-app/common/login.html" class="app-card app-card-provider">
+        <div class="ac-icon"><i class="fa-solid fa-person-praying"></i></div>
+        <div class="ac-content">
+          <h3>Service Provider App</h3>
+          <p>Priests manage bookings & scan QR. Astrologers manage consultations & tools</p>
+          <div class="ac-meta">
+            <span class="badge badge-solid-danger"><i class="fa-solid fa-users"></i> 2 user types</span>
+            <span class="badge badge-gold"><i class="fa-solid fa-mobile-screen"></i> Mobile</span>
+          </div>
+        </div>
+        <div class="ac-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="ac-users">
+          <span>P1: Temple Priest (Iyyer)</span>
+          <span>P2: Astrologer (Josiyar)</span>
+        </div>
+      </a>
+
+      <!-- Temple Admin -->
+      <a href="../temple-admin/index.html" class="app-card app-card-admin">
+        <div class="ac-icon"><i class="fa-solid fa-gauge-high"></i></div>
+        <div class="ac-content">
+          <h3>Temple Admin Panel</h3>
+          <p>Manage bookings, donations, events, services, darshan queue, reports — responsive web</p>
+          <div class="ac-meta">
+            <span class="badge badge-solid-gold"><i class="fa-solid fa-users"></i> 3 user types</span>
+            <span class="badge badge-info"><i class="fa-solid fa-desktop"></i> Web + Mobile</span>
+          </div>
+        </div>
+        <div class="ac-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="ac-users">
+          <span>T1: Temple Manager</span>
+          <span>T2: Temple Staff</span>
+          <span>T3: Accountant</span>
+        </div>
+      </a>
+
+      <!-- Super Admin -->
+      <a href="../super-admin/index.html" class="app-card app-card-super">
+        <div class="ac-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="ac-content">
+          <h3>Super Admin Panel</h3>
+          <p>Platform management — temple onboarding, revenue, users, content moderation, support</p>
+          <div class="ac-meta">
+            <span class="badge" style="background:rgba(255,255,255,0.15);color:white"><i class="fa-solid fa-users"></i> 2 user types</span>
+            <span class="badge badge-info"><i class="fa-solid fa-desktop"></i> Web + Mobile</span>
+          </div>
+        </div>
+        <div class="ac-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="ac-users">
+          <span>S1: Platform Owner</span>
+          <span>S2: Support Staff</span>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+      <p><i class="fa-solid fa-code"></i> Soruban Temple Prototype v1.0 — March 2026</p>
+      <p class="text-muted">4 Apps &middot; 9 User Types &middot; 50+ Screens</p>
+    </footer>
+
+  </div>
+
+  <script>
+    function toggleLandingTheme() {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('st_theme', next);
+      const icon = document.getElementById('theme-icon');
+      icon.className = next === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+
+    // Init theme
+    const saved = localStorage.getItem('st_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+    if (saved === 'dark') {
+      document.getElementById('theme-icon').className = 'fa-solid fa-sun';
+    }
+  </script>
+</body>
+</html>

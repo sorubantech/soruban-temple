@@ -1,0 +1,134 @@
+/* Temple Admin — Dashboard Styles */
+.admin-layout { display: flex; min-height: 100vh; background: var(--bg-body); }
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+.sidebar-brand {
+  padding: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border-light);
+}
+.sidebar-brand i { font-size: 1.3rem; }
+.sidebar-nav { flex: 1; padding: var(--space-3); overflow-y: auto; }
+.sidebar-footer { padding: var(--space-4); border-top: 1px solid var(--border-light); }
+
+.nav-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  margin-bottom: 2px;
+}
+.nav-menu-item:hover { background: var(--primary-bg); color: var(--primary); }
+.nav-menu-item.active { background: var(--primary); color: white; font-weight: 600; }
+.nav-menu-item i { width: 20px; text-align: center; font-size: 0.9rem; }
+
+/* Main */
+.admin-main { flex: 1; margin-left: 260px; display: flex; flex-direction: column; min-height: 100vh; }
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.admin-topbar h1 { font-size: var(--text-lg); font-weight: 700; flex: 1; }
+.sidebar-toggle { display: none; background: none; border: none; font-size: 1.2rem; color: var(--text-secondary); cursor: pointer; }
+.admin-content { flex: 1; padding: var(--space-6); }
+
+/* KPI Cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-6); }
+.kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card .kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3);
+}
+.kpi-card .kpi-value { font-size: var(--text-2xl); font-weight: 800; color: var(--text-primary); }
+.kpi-card .kpi-label { font-size: var(--text-sm); color: var(--text-light); margin-top: 2px; }
+.kpi-card .kpi-change { font-size: var(--text-xs); font-weight: 600; margin-top: var(--space-2); }
+.kpi-change.up { color: var(--sacred-green); }
+.kpi-change.down { color: var(--sacred-red); }
+
+/* Chart Container */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+.chart-card h3 { font-size: var(--text-md); font-weight: 700; margin-bottom: var(--space-4); }
+
+/* Admin Table */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.admin-table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-inset);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+.admin-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--divider);
+  color: var(--text-secondary);
+}
+.admin-table tr:hover td { background: var(--primary-bg); }
+.admin-table .td-bold { font-weight: 600; color: var(--text-primary); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: var(--shadow-xl); }
+  .admin-main { margin-left: 0; }
+  .sidebar-toggle { display: block; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-content { padding: var(--space-4); }
+}

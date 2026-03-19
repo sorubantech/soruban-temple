@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tabs {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 52px;
+      z-index: 99;
+    }
+    .tab {
+      flex: 1;
+      padding: 0.75rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-light);
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .booking-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.15rem;
+      margin: 0.75rem 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .bi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    .bi-header h3 { font-size: 0.95rem; font-weight: 700; }
+    .bi-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+    }
+    .bi-status.confirmed { background: #e8f5e9; color: #2e7d32; }
+    .bi-status.pending { background: #fff3e0; color: #e65100; }
+    .bi-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+    .bi-details span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .bi-amount {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--text-light);
+    }
+    .empty-state .es-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .empty-state h3 { color: var(--text); margin-bottom: 0.35rem; }
+    .empty-state p { font-size: 0.85rem; margin-bottom: 1.25rem; }
+    .donation-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      margin: 0.75rem 1.25rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .di-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #e8f5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .di-info { flex: 1; }
+    .di-info h4 { font-size: 0.9rem; font-weight: 600; }
+    .di-info p { font-size: 0.75rem; color: var(--text-light); }
+    .di-amount {
+      font-weight: 700;
+      color: var(--success);
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav">
+    <div class="header">
+      <button class="back-btn" onclick="history.back()">&#8592;</button>
+      <h2 data-lang="my_activity">My Activity</h2>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(this, 'bookings')" data-lang="bookings">Bookings</button>
+      <button class="tab" onclick="switchTab(this, 'donations')" data-lang="donations">Donations</button>
+    </div>
+
+    <!-- Bookings Tab -->
+    <div id="bookings-tab">
+      <div id="bookings-list"></div>
+      <div class="empty-state" id="no-bookings" style="display:none;">
+        <div class="es-icon">🛕</div>
+        <h3 data-lang="no_bookings">No Bookings Yet</h3>
+        <p data-lang="no_bookings_desc">Your pooja, homam, and motta bookings will appear here.</p>
+        <a href="daily-pooja.html" class="btn btn-primary" style="max-width:200px; margin:0 auto;" data-lang="browse_poojas">Browse Poojas</a>
+      </div>
+    </div>
+
+    <!-- Donations Tab -->
+    <div id="donations-tab" style="display:none;">
+      <div id="donations-list"></div>
+      <div class="empty-state" id="no-donations" style="display:none;">
+        <div class="es-icon">💰</div>
+        <h3 data-lang="no_donations">No Donations Yet</h3>
+        <p data-lang="no_donations_desc">Your donations and annadhanam sponsorships will appear here.</p>
+        <a href="donation.html" class="btn btn-success" style="max-width:200px; margin:0 auto;" data-lang="make_donation">Make a Donation</a>
+      </div>
+    </div>
+
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function switchTab(btn, tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('bookings-tab').style.display = tab === 'bookings' ? '' : 'none';
+      document.getElementById('donations-tab').style.display = tab === 'donations' ? '' : 'none';
+    }
+
+    function loadBookings() {
+      const bookings = JSON.parse(localStorage.getItem('temple_bookings') || '[]');
+      const list = document.getElementById('bookings-list');
+      const empty = document.getElementById('no-bookings');
+
+      if (bookings.length === 0) {
+        empty.style.display = '';
+        return;
+      }
+
+      list.innerHTML = bookings.reverse().map(b => `
+        <div class="booking-item">
+          <div class="bi-header">
+            <h3>${b.pooja || b.type}</h3>
+            <span class="bi-status ${b.status === 'Confirmed' ? 'confirmed' : 'pending'}">${b.status}</span>
+          </div>
+          <div class="bi-details">
+            ${b.name ? `<span>👤 ${b.name}</span>` : ''}
+            ${b.date ? `<span>📅 ${b.date}</span>` : ''}
+            ${b.slot ? `<span>🕐 ${b.slot}</span>` : ''}
+            ${b.persons ? `<span>👥 ${b.persons} person(s)</span>` : ''}
+            ${b.type ? `<span>📋 ${b.type}</span>` : ''}
+          </div>
+          <div class="bi-amount">₹${b.price}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadDonations() {
+      const donations = JSON.parse(localStorage.getItem('temple_donations') || '[]');
+      const list = document.getElementById('donations-list');
+      const empty = document.getElementById('no-donations');
+
+      if (donations.length === 0) {
+        empty.style.display = '';
+        return;
+      }
+
+      list.innerHTML = donations.reverse().map(d => `
+        <div class="donation-item">
+          <div class="di-icon">${d.type === 'Annadhanam' ? '🍚' : '💰'}</div>
+          <div class="di-info">
+            <h4>${d.type}</h4>
+            <p>${d.date}${d.meals ? ' · ' + d.meals + ' meals' : ''}</p>
+          </div>
+          <span class="di-amount">₹${d.amount}</span>
+        </div>
+      `).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBookings();
+      loadDonations();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Temple Digital</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== Home Header ===== */
+    .home-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 18px 20px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .home-header .hh-left h1 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: white;
+    }
+    .home-header .hh-left p {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.75);
+      margin-top: 1px;
+    }
+    .home-header .hh-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .home-header .hh-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    /* ===== Hero Banner ===== */
+    .home-hero {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+      background: #1a0f0a;
+    }
+    .home-hero img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .home-hero .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 30%, rgba(0,0,0,0.75));
+    }
+    .home-hero .hero-text {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      color: white;
+      z-index: 2;
+    }
+    .home-hero .hero-text h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+    .home-hero .hero-text p {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    /* ===== Quick Services ===== */
+    .section { padding: 1rem 1.25rem; }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .section-title .see-all {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .services-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .svc-item {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .svc-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    .svc-item .svc-icon {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+    .svc-item .svc-name {
+      font-size: 0.72rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    /* ===== Categories ===== */
+    .categories-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .cat-item {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      height: 100px;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      transition: transform 0.3s;
+    }
+    .cat-item:hover { transform: translateY(-2px); }
+    .cat-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .cat-item .cat-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(transparent 20%, rgba(0,0,0,0.7));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 10px 6px;
+    }
+    .cat-item .cat-icon { font-size: 1.4rem; margin-bottom: 2px; }
+    .cat-item .cat-name { font-size: 0.72rem; font-weight: 700; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+    /* ===== District Grid ===== */
+    .district-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .dist-item {
+      padding: 10px 6px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: white;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .dist-item:hover {
+      border-color: var(--primary);
+      background: #fff8f0;
+      transform: translateY(-2px);
+    }
+    .dist-item.hidden-dist { display: none; }
+    .dist-item .di-icon { font-size: 1.3rem; display: block; margin-bottom: 3px; }
+    .dist-item .di-name { font-size: 0.68rem; font-weight: 700; }
+    .dist-item .di-count { font-size: 0.58rem; color: var(--text-light); }
+    .district-toggle {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px;
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border: 1.5px solid #ffcc80;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    .district-toggle:hover { background: linear-gradient(135deg, #ffe0b2, #ffcc80); }
+
+    /* ===== Featured Temples ===== */
+    .featured-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    .featured-scroll::-webkit-scrollbar { display: none; }
+    .feat-card {
+      min-width: 200px;
+      max-width: 200px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .feat-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    .feat-card-img {
+      height: 120px;
+      overflow: hidden;
+      position: relative;
+    }
+    .feat-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .feat-card-body { padding: 10px 12px; }
+    .feat-card-body h4 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .feat-card-body .fc-loc {
+      font-size: 0.72rem;
+      color: var(--text-light);
+      margin-bottom: 4px;
+    }
+    .feat-card-body .fc-rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #e65100;
+      background: #fff8e1;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* ===== Updates ===== */
+    .update-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: all 0.3s;
+    }
+    .update-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .update-tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .update-tag.announcement { background: #e3f2fd; color: #1565c0; }
+    .update-tag.update { background: #e8f5e9; color: #2e7d32; }
+    .update-tag.alert { background: #fce4ec; color: #c62828; }
+    .update-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 3px; }
+    .update-card p { font-size: 0.78rem; color: var(--text-light); margin: 0; line-height: 1.4; }
+
+    /* ===== Today's Special ===== */
+    .today-card {
+      background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+      border: 1px solid #ffcc80;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .today-card .tc-icon {
+      font-size: 2.5rem;
+      min-width: 50px;
+      text-align: center;
+    }
+    .today-card .tc-content h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 3px;
+    }
+    .today-card .tc-content p {
+      font-size: 0.78rem;
+      color: #795548;
+      line-height: 1.4;
+    }
+
+    /* ===== Footer ===== */
+    .app-footer {
+      background: linear-gradient(135deg, #3e2723, #4e342e);
+      color: white;
+      text-align: center;
+      padding: 1.75rem 1.25rem 1.25rem;
+    }
+    .footer-brand { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .app-footer > p { font-size: 0.78rem; opacity: 0.7; margin-bottom: 1rem; }
+    .footer-links { display: flex; justify-content: center; gap: 1.25rem; margin-bottom: 1rem; }
+    .footer-links a { color: rgba(255,255,255,0.8); font-size: 0.8rem; font-weight: 500; text-decoration: none; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-size: 0.7rem; opacity: 0.5; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="app has-bottom-nav" id="app-root">
+
+    <!-- Home Header -->
+    <div class="home-header">
+      <div class="hh-left">
+        <h1>🛕 <span data-lang="app_name">Temple Digital</span></h1>
+        <p data-lang="app_tagline">Your Divine Connection Online</p>
+      </div>
+      <div class="hh-right">
+        <a href="feed.html" class="hh-icon">📰</a>
+        <a href="profile.html" class="hh-icon">👤</a>
+      </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="home-hero">
+      <img src="images/meenakshi-amman-temple.jpg" alt="Temple Digital">
+      <div class="hero-overlay"></div>
+      <div class="hero-text">
+        <h2 data-lang="explore_sacred">Explore Sacred Temples of India</h2>
+        <p data-lang="discover_worship">Discover, worship, and book services at 30+ temples</p>
+      </div>
+    </div>
+
+    <!-- Quick Services -->
+    <div class="section">
+      <div class="section-title" data-lang="quick_services">Quick Services</div>
+      <div class="services-row">
+        <a href="temple-list.html" class="svc-item">
+          <div class="svc-icon" style="background:#fff3e0">🛕</div>
+          <div class="svc-name" data-lang="browse_temples">Browse Temples</div>
+        </a>
+        <a href="book-pooja.html" class="svc-item">
+          <div class="svc-icon" style="background:#fce4ec">🪔</div>
+          <div class="svc-name" data-lang="book_pooja">Book Pooja</div>
+        </a>
+        <a href="donation.html" class="svc-item">
+          <div class="svc-icon" style="background:#e8f5e9">💰</div>
+          <div class="svc-name" data-lang="donate_label">Donate</div>
+        </a>
+        <a href="darshan-token.html" class="svc-item">
+          <div class="svc-icon" style="background:#e3f2fd">🎫</div>
+          <div class="svc-name" data-lang="darshan_token">Darshan Token</div>
+        </a>
+        <a href="live-darshan.html" class="svc-item">
+          <div class="svc-icon" style="background:#e0f7fa">📺</div>
+          <div class="svc-name" data-lang="live_darshan">Live Darshan</div>
+        </a>
+        <a href="annadhanam.html" class="svc-item">
+          <div class="svc-icon" style="background:#e0f2f1">🍚</div>
+          <div class="svc-name" data-lang="annadhanam">Annadhanam</div>
+        </a>
+        <a href="nalla-neram.html" class="svc-item">
+          <div class="svc-icon" style="background:#e8eaf6">🕐</div>
+          <div class="svc-name" data-lang="nalla_neram">Nalla Neram</div>
+        </a>
+        <a href="rasi-palan.html" class="svc-item">
+          <div class="svc-icon" style="background:#fce4ec">🔮</div>
+          <div class="svc-name" data-lang="rasi_palan">Rasi Palan</div>
+        </a>
+        <a href="kula-theivam.html" class="svc-item">
+          <div class="svc-icon" style="background:#f3e5f9">🏛️</div>
+          <div class="svc-name">Kula Theivam</div>
+        </a>
+        <a href="events.html" class="svc-item">
+          <div class="svc-icon" style="background:#e0f7fa">🎊</div>
+          <div class="svc-name" data-lang="events">Events</div>
+        </a>
+        <a href="prasadam-shop.html" class="svc-item">
+          <div class="svc-icon" style="background:#e8f5e9">🛒</div>
+          <div class="svc-name">Prasadam Shop</div>
+        </a>
+        <a href="community.html" class="svc-item">
+          <div class="svc-icon" style="background:#e3f2fd">👥</div>
+          <div class="svc-name">Community</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Today's Special -->
+    <div class="section" style="padding-top:0">
+      <div class="today-card">
+        <div class="tc-icon">🙏</div>
+        <div class="tc-content">
+          <h4 data-lang="todays_panchang">Today's Panchang</h4>
+          <p id="today-panchang">Pradosham Day - Special Shiva Abhishekam at all Shiva temples. Auspicious time for prayers and offerings.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Temple Categories -->
+    <div class="section">
+      <div class="section-title"><span data-lang="temple_categories">Temple Categories</span> <a href="temple-list.html" class="see-all"><span data-lang="see_all">See All</span> &rarr;</a></div>
+      <div class="categories-row" id="categories-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Browse by District -->
+    <div class="section">
+      <div class="section-title"><span data-lang="browse_by_district">Browse by District</span> <a href="temple-list.html" class="see-all"><span data-lang="all_temples">All Temples</span> &rarr;</a></div>
+      <div class="district-row" id="district-grid">
+        <!-- Rendered by JS -->
+      </div>
+      <button class="district-toggle" id="district-toggle" onclick="toggleDistricts()" data-lang="show_all_districts">Show All Districts ▾</button>
+    </div>
+
+    <!-- Featured Temples -->
+    <div class="section">
+      <div class="section-title" data-lang="featured_temples">Featured Temples</div>
+      <div class="featured-scroll" id="featured-temples">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Latest Updates -->
+    <div class="section">
+      <div class="section-title" data-lang="latest_updates">Latest Updates</div>
+      <div class="update-card">
+        <span class="update-tag announcement" data-lang="announcement">Announcement</span>
+        <h4 data-lang="online_pooja_title">Online Pooja Booking Available</h4>
+        <p data-lang="online_pooja_desc">Now book special pooja, darshan tokens, and homam services online through Temple Digital platform.</p>
+      </div>
+      <div class="update-card">
+        <span class="update-tag update" data-lang="new_feature">New Feature</span>
+        <h4 data-lang="temples_tn_title">49 Temples Across Tamil Nadu</h4>
+        <p data-lang="temples_tn_desc">Explore temples by deity category or browse by district - Chennai, Madurai, Thanjavur, Trichy, Coimbatore & more.</p>
+      </div>
+      <div class="update-card">
+        <span class="update-tag alert" data-lang="festival_alert">Festival Alert</span>
+        <h4 data-lang="panguni_title">Panguni Uthiram Coming Soon</h4>
+        <p data-lang="panguni_desc">Grand celebrations planned at major temples. Special darshan and pooja arrangements available for booking.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="app-footer">
+      <div class="footer-brand">🛕 <span data-lang="app_name">Temple Digital</span></div>
+      <p data-lang="app_tagline">Your Divine Connection Online</p>
+      <div class="footer-links">
+        <a href="temple-list.html" data-lang="nav_temples">Temples</a>
+        <a href="feed.html" data-lang="nav_feed">Feed</a>
+        <a href="donation.html" data-lang="donate_label">Donate</a>
+        <a href="profile.html" data-lang="nav_profile">Profile</a>
+      </div>
+      <div class="footer-copy" data-lang="footer_copy">&copy; 2026 Temple Digital. All rights reserved.</div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="home.html" class="nav-item active"><span class="nav-icon">🏠</span><span data-lang="nav_home">Home</span></a>
+      <a href="temple-list.html" class="nav-item"><span class="nav-icon">🛕</span><span data-lang="nav_temples">Temples</span></a>
+      <a href="community.html" class="nav-item"><span class="nav-icon">👥</span><span>Community</span></a>
+      <a href="feed.html" class="nav-item"><span class="nav-icon">📰</span><span data-lang="nav_feed">Feed</span></a>
+      <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span><span data-lang="nav_profile">Profile</span></a>
+    </nav>
+
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    (function() {
+      // Categories data
+      var categories = [
+        { key: 'shiva', name: 'Shiva', icon: '🔱', img: 'images/chidambaram-nataraja-temple.jpg' },
+        { key: 'vishnu', name: 'Vishnu', icon: '🕉', img: 'images/tirumala-venkateswara-temple.jpg' },
+        { key: 'devi', name: 'Devi', icon: '🪷', img: 'images/meenakshi-amman-temple.jpg' },
+        { key: 'ganesh', name: 'Ganesh', icon: '🐘', img: 'images/pillayarpatti-temple.jpg' },
+        { key: 'murugan', name: 'Murugan', icon: '🗡', img: 'images/palani-murugan-temple.jpg' },
+        { key: 'hanuman', name: 'Hanuman', icon: '🐒', img: 'images/hanuman-garhi-temple.jpg' }
+      ];
+
+      // Featured temples data
+      var featured = [
+        { name: 'Meenakshi Amman Temple', loc: 'Madurai, TN', img: 'images/meenakshi-amman-temple.jpg', rating: '4.8', id: 'meenakshi' },
+        { name: 'Tirumala Venkateswara', loc: 'Tirupati, AP', img: 'images/tirumala-venkateswara-temple.jpg', rating: '4.9', id: 'tirumala' },
+        { name: 'Brihadeeswarar Temple', loc: 'Thanjavur, TN', img: 'images/brihadeeswarar-temple.jpg', rating: '4.7', id: 'brihadeeswarar' },
+        { name: 'Chidambaram Nataraja', loc: 'Chidambaram, TN', img: 'images/chidambaram-nataraja-temple.jpg', rating: '4.8', id: 'chidambaram' },
+        { name: 'Palani Murugan Temple', loc: 'Palani, TN', img: 'images/palani-murugan-temple.jpg', rating: '4.7', id: 'palani' },
+        { name: 'Ranganathaswamy Temple', loc: 'Srirangam, TN', img: 'images/ranganathaswamy-temple.jpg', rating: '4.8', id: 'ranganatha' },
+        { name: 'Siddhivinayak Temple', loc: 'Mumbai, MH', img: 'images/siddhivinayak-temple.jpg', rating: '4.7', id: 'siddhivinayak' },
+        { name: 'Hanuman Garhi', loc: 'Ayodhya, UP', img: 'images/hanuman-garhi-temple.jpg', rating: '4.6', id: 'hanumangarhi' }
+      ];
+
+      // District data for home page
+      var districts = [
+        { id: 'chennai', name: 'Chennai', icon: '🏙️', count: 5 },
+        { id: 'madurai', name: 'Madurai', icon: '🏛️', count: 3 },
+        { id: 'kanchipuram', name: 'Kanchi', icon: '🛕', count: 3 },
+        { id: 'thanjavur', name: 'Thanjavur', icon: '🏰', count: 4 },
+        { id: 'tiruchirappalli', name: 'Trichy', icon: '🪨', count: 3 },
+        { id: 'coimbatore', name: 'Coimbatore', icon: '⛰️', count: 4 },
+        { id: 'tiruvannamalai', name: 'T.malai', icon: '🔥', count: 1 },
+        { id: 'dindigul', name: 'Dindigul', icon: '🗡️', count: 1 },
+        { id: 'thoothukudi', name: 'Tuticorin', icon: '🌊', count: 2 },
+        { id: 'ramanathapuram', name: 'Ramnad', icon: '🌉', count: 1 },
+        { id: 'tiruvallur', name: 'Tiruvallur', icon: '📍', count: 2 },
+        { id: 'nagapattinam', name: 'N.patnam', icon: '💊', count: 1 },
+        { id: 'cuddalore', name: 'Cuddalore', icon: '💃', count: 1 },
+        { id: 'kanniyakumari', name: 'K.kumari', icon: '🌅', count: 1 }
+      ];
+
+      // Render districts - first 8 visible, rest hidden
+      var distGrid = document.getElementById('district-grid');
+      var distHtml = '';
+      var templeSuffix = t('temples_suffix', 'temples');
+      districts.forEach(function(d, idx) {
+        distHtml +=
+          '<a href="temple-list.html?district=' + d.id + '" class="dist-item' + (idx >= 8 ? ' hidden-dist' : '') + '">' +
+            '<span class="di-icon">' + d.icon + '</span>' +
+            '<span class="di-name">' + d.name + '</span>' +
+            '<span class="di-count">' + d.count + ' ' + templeSuffix + '</span>' +
+          '</a>';
+      });
+      distGrid.innerHTML = distHtml;
+
+      // Hide toggle if 8 or fewer districts
+      if (districts.length <= 8) {
+        document.getElementById('district-toggle').style.display = 'none';
+      }
+
+      // Render categories with translations
+      var catGrid = document.getElementById('categories-grid');
+      var catHtml = '';
+      categories.forEach(function(c) {
+        var catName = t('cat_' + c.key, c.name);
+        catHtml +=
+          '<a href="temple-list.html?cat=' + c.key + '" class="cat-item">' +
+            '<img src="' + c.img + '" alt="' + catName + '">' +
+            '<div class="cat-overlay">' +
+              '<div class="cat-icon">' + c.icon + '</div>' +
+              '<div class="cat-name">' + catName + '</div>' +
+            '</div>' +
+          '</a>';
+      });
+      catGrid.innerHTML = catHtml;
+
+      // Render featured temples
+      var featEl = document.getElementById('featured-temples');
+      var featHtml = '';
+      featured.forEach(function(t) {
+        featHtml +=
+          '<div class="feat-card" onclick="goToTemple(\'' + t.id + '\')">' +
+            '<div class="feat-card-img"><img src="' + t.img + '" alt="' + t.name + '"></div>' +
+            '<div class="feat-card-body">' +
+              '<h4>' + t.name + '</h4>' +
+              '<div class="fc-loc">📍 ' + t.loc + '</div>' +
+              '<span class="fc-rating">⭐ ' + t.rating + '</span>' +
+            '</div>' +
+          '</div>';
+      });
+      featEl.innerHTML = featHtml;
+
+      // Auto-scroll featured temples
+      (function() {
+        var scrollEl = featEl;
+        var scrollSpeed = 3000; // 3 seconds per scroll
+        var autoScrollTimer = null;
+        var userInteracted = false;
+
+        function autoScroll() {
+          if (userInteracted) return;
+          var cardWidth = 212; // card 200px + gap 12px
+          var maxScroll = scrollEl.scrollWidth - scrollEl.clientWidth;
+
+          if (scrollEl.scrollLeft >= maxScroll - 5) {
+            // Reset to start smoothly
+            scrollEl.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            scrollEl.scrollBy({ left: cardWidth, behavior: 'smooth' });
+          }
+        }
+
+        autoScrollTimer = setInterval(autoScroll, scrollSpeed);
+
+        // Pause on user interaction, resume after 5s
+        var resumeTimer = null;
+        scrollEl.addEventListener('touchstart', function() {
+          userInteracted = true;
+          clearTimeout(resumeTimer);
+          resumeTimer = setTimeout(function() { userInteracted = false; }, 5000);
+        });
+        scrollEl.addEventListener('mousedown', function() {
+          userInteracted = true;
+          clearTimeout(resumeTimer);
+          resumeTimer = setTimeout(function() { userInteracted = false; }, 5000);
+        });
+      })();
+
+      // Greeting based on time with translations
+      var hour = new Date().getHours();
+      var greeting = hour < 12 ? t('greeting_morning', 'Good Morning') : hour < 17 ? t('greeting_afternoon', 'Good Afternoon') : t('greeting_evening', 'Good Evening');
+      var user = null;
+      try { user = JSON.parse(localStorage.getItem('temple_user')); } catch(e) {}
+      var userName = (user && user.name) ? user.name : t('devotee', 'Devotee');
+      var headerLeft = document.querySelector('.hh-left');
+      if (headerLeft) {
+        headerLeft.querySelector('p').textContent = greeting + ', ' + userName + '!';
+      }
+    })();
+
+    function goToTemple(templeId) {
+      // Navigate to temple-list page which will handle the temple selection
+      window.location.href = 'temple-list.html?highlight=' + templeId;
+    }
+
+    var districtsExpanded = false;
+    function toggleDistricts() {
+      districtsExpanded = !districtsExpanded;
+      var items = document.querySelectorAll('.dist-item.hidden-dist');
+      var btn = document.getElementById('district-toggle');
+      if (districtsExpanded) {
+        items.forEach(function(el) { el.style.display = ''; });
+        btn.textContent = t('show_less', 'Show Less') + ' \u25B4';
+      } else {
+        items.forEach(function(el) { el.style.display = 'none'; });
+        btn.textContent = t('show_all_districts', 'Show All Districts') + ' \u25BE';
+      }
+    }
+  </script>
+</body>
+</html>

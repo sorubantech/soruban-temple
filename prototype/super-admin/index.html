@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Admin — Soruban Temple</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <link rel="stylesheet" href="../shared/components.css">
+  <link rel="stylesheet" href="../shared/animations.css">
+  <link rel="stylesheet" href="../temple-admin/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand" style="color:var(--text-primary)">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Super Admin</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+      <div class="sidebar-footer">
+        <div class="flex items-center gap-2">
+          <div class="avatar avatar-sm" style="background:var(--gradient-dark)">SA</div>
+          <div><div style="font-size:var(--text-sm);font-weight:600">Soruban Admin</div><div style="font-size:var(--text-xs);color:var(--text-light)">Platform Owner</div></div>
+        </div>
+      </div>
+    </aside>
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <button class="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')"><i class="fa-solid fa-bars"></i></button>
+        <h1 id="page-title">Platform Dashboard</h1>
+        <div class="flex items-center gap-3">
+          <button class="header-icon-btn btn-subtle"><i class="fa-solid fa-bell"></i></button>
+          <button class="header-icon-btn btn-subtle" onclick="toggleTheme()"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
+        </div>
+      </header>
+      <div class="admin-content" id="admin-content"></div>
+    </main>
+  </div>
+  <script>
+const MENU = [
+  { id: 'dashboard', icon: 'fa-gauge-high', label: 'Platform Dashboard' },
+  { id: 'temples', icon: 'fa-place-of-worship', label: 'Temple Management' },
+  { id: 'admins', icon: 'fa-user-shield', label: 'Temple Admins' },
+  { id: 'users', icon: 'fa-users', label: 'Devotees' },
+  { id: 'providers', icon: 'fa-person-praying', label: 'Providers' },
+  { id: 'bookings', icon: 'fa-calendar-check', label: 'All Bookings' },
+  { id: 'finance', icon: 'fa-chart-line', label: 'Finance & Revenue' },
+  { id: 'content', icon: 'fa-newspaper', label: 'Content Moderation' },
+  { id: 'support', icon: 'fa-headset', label: 'Support Tickets' },
+  { id: 'notifications', icon: 'fa-bell', label: 'Notifications' },
+  { id: 'reports', icon: 'fa-file-chart-line', label: 'Reports' },
+  { id: 'settings', icon: 'fa-gear', label: 'Platform Settings' },
+];
+
+let currentView = 'dashboard';
+
+function init() {
+  renderSidebar();
+  showView('dashboard');
+  const saved = localStorage.getItem('st_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+}
+
+function renderSidebar() {
+  document.getElementById('sidebar-nav').innerHTML = MENU.map(m => `
+    <div class="nav-menu-item ${m.id===currentView?'active':''}" onclick="showView('${m.id}')">
+      <i class="fa-solid ${m.icon}"></i> ${m.label}
+    </div>
+  `).join('');
+}
+
+function showView(id) {
+  currentView = id;
+  renderSidebar();
+  document.getElementById('page-title').textContent = MENU.find(m=>m.id===id)?.label||'Dashboard';
+  const el = document.getElementById('admin-content');
+  el.innerHTML = views[id] ? views[id]() : placeholder(MENU.find(m=>m.id===id)?.label||id);
+  el.scrollTop = 0;
+  if (id === 'dashboard') setTimeout(initSACharts, 100);
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleTheme() {
+  const c = document.documentElement.getAttribute('data-theme');
+  const n = c==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme', n);
+  localStorage.setItem('st_theme', n);
+  document.getElementById('theme-icon').className = n==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';
+}
+
+function placeholder(title) {
+  return `<div class="empty-state" style="padding:80px"><i class="fa-solid fa-wrench" style="font-size:3rem;color:var(--text-muted)"></i><h3>${title}</h3><p>Full module with CRUD operations coming soon.</p></div>`;
+}
+
+const views = {
+  dashboard: () => `
+    <div class="kpi-grid stagger-children">
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--primary-bg);color:var(--primary)"><i class="fa-solid fa-place-of-worship"></i></div>
+        <div class="kpi-value">142</div>
+        <div class="kpi-label">Total Temples</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> 8 pending approval</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-users"></i></div>
+        <div class="kpi-value">12,450</div>
+        <div class="kpi-label">Total Devotees</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> 340 this week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+        <div class="kpi-value">₹18.5L</div>
+        <div class="kpi-label">Monthly GMV</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> 22% vs last month</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-coins"></i></div>
+        <div class="kpi-value">₹1.85L</div>
+        <div class="kpi-label">Platform Commission</div>
+        <div class="kpi-change up"><i class="fa-solid fa-arrow-up"></i> 10% margin</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:var(--space-4);margin-bottom:var(--space-6)">
+      <div class="chart-card"><h3><i class="fa-solid fa-chart-line" style="color:var(--primary)"></i> Platform Growth — Last 6 Months</h3><canvas id="growthChart" height="200"></canvas></div>
+      <div class="chart-card">
+        <h3><i class="fa-solid fa-hourglass-half" style="color:var(--accent-dark)"></i> Temple Pipeline</h3>
+        <div style="padding:var(--space-4) 0">
+          ${[
+            ['Approved & Live','120','var(--sacred-green)','84%'],
+            ['Pending Approval','8','var(--accent)','6%'],
+            ['Under Review','10','var(--sacred-blue)','7%'],
+            ['Suspended','4','var(--sacred-red)','3%'],
+          ].map(([label,count,color,pct]) => `
+            <div class="flex items-center gap-3 mb-3">
+              <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0"></div>
+              <span style="font-size:var(--text-sm);flex:1">${label}</span>
+              <span style="font-size:var(--text-sm);font-weight:700">${count}</span>
+              <span style="font-size:var(--text-xs);color:var(--text-light);width:35px;text-align:right">${pct}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="flex items-center justify-between mb-3"><h3 style="margin:0"><i class="fa-solid fa-clock" style="color:var(--sacred-blue)"></i> Recent Activity</h3></div>
+      <table class="admin-table">
+        <thead><tr><th>Event</th><th>Details</th><th>Time</th><th>Status</th></tr></thead>
+        <tbody>
+          ${[
+            ['New Temple Application','Sri Kasi Viswanathar, Salem','10 min ago','badge-gold|Pending'],
+            ['Devotee Registered','Meera S (+91 87654...)','25 min ago','badge-success|New User'],
+            ['Priest Verified','Sri Ganesh Bhattar','1 hour ago','badge-success|Approved'],
+            ['Booking Spike Alert','Kapaleeshwarar — 200% increase','2 hours ago','badge-danger|Alert'],
+            ['Donation Milestone','₹10L total this month','3 hours ago','badge-info|Milestone'],
+          ].map(([event,detail,time,badgeInfo]) => {
+            const [badgeClass, badgeText] = badgeInfo.split('|');
+            return `<tr><td class="td-bold">${event}</td><td>${detail}</td><td style="color:var(--text-light)">${time}</td><td><span class="badge ${badgeClass}">${badgeText}</span></td></tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `,
+
+  temples: () => `
+    <div class="flex items-center justify-between mb-4">
+      <div class="chip-row"><button class="chip active">All (142)</button><button class="chip">Pending (8)</button><button class="chip">Active (120)</button><button class="chip">Suspended (4)</button></div>
+      <button class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Add Temple</button>
+    </div>
+    <div class="chart-card">
+      <table class="admin-table">
+        <thead><tr><th>Temple</th><th>Location</th><th>Deity</th><th>Admin</th><th>Bookings</th><th>Revenue</th><th>Status</th></tr></thead>
+        <tbody>
+          ${[
+            ['Kapaleeshwarar','Chennai','Shiva','Rajesh K','1,240','₹3.2L','Active'],
+            ['Meenakshi Amman','Madurai','Devi','Sundar M','2,450','₹8.5L','Active'],
+            ['Palani Murugan','Palani','Murugan','Vel Kumar','1,800','₹5.1L','Active'],
+            ['Sri Kasi Viswanathar','Salem','Shiva','—','—','—','Pending'],
+            ['Vinayagar Temple','Pillaiyarpatti','Ganesh','Ganesan R','620','₹1.8L','Active'],
+          ].map(([name,loc,deity,admin,bookings,rev,status]) => `
+            <tr>
+              <td class="td-bold">${name}</td><td>${loc}</td><td><span class="badge badge-primary">${deity}</span></td><td>${admin}</td><td>${bookings}</td><td class="td-bold">${rev}</td>
+              <td><span class="badge ${status==='Active'?'badge-success':status==='Pending'?'badge-gold':'badge-danger'}">${status}</span></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `,
+
+  support: () => `
+    <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:var(--space-5)">
+      <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-red-bg);color:var(--sacred-red)"><i class="fa-solid fa-circle-exclamation"></i></div><div class="kpi-value">12</div><div class="kpi-label">Open Tickets</div></div>
+      <div class="kpi-card"><div class="kpi-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-clock"></i></div><div class="kpi-value">5</div><div class="kpi-label">Pending</div></div>
+      <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-check-circle"></i></div><div class="kpi-value">89</div><div class="kpi-label">Resolved (Month)</div></div>
+      <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-stopwatch"></i></div><div class="kpi-value">2.4h</div><div class="kpi-label">Avg Resolution</div></div>
+    </div>
+    <div class="chart-card">
+      <h3><i class="fa-solid fa-headset" style="color:var(--sacred-blue)"></i> Recent Tickets</h3>
+      <table class="admin-table">
+        <thead><tr><th>ID</th><th>User</th><th>Issue</th><th>Priority</th><th>Status</th></tr></thead>
+        <tbody>
+          ${[
+            ['TK-089','Ramesh K','Payment failed for booking','High','Open'],
+            ['TK-088','Lakshmi D','Wrong temple shown in nearby','Medium','Open'],
+            ['TK-087','Temple Admin','Cannot upload gallery photos','Low','Pending'],
+            ['TK-086','Karthik S','Refund not received','High','In Progress'],
+          ].map(([id,user,issue,priority,status]) => `
+            <tr><td class="td-bold">${id}</td><td>${user}</td><td>${issue}</td>
+            <td><span class="badge ${priority==='High'?'badge-danger':priority==='Medium'?'badge-gold':'badge-info'}">${priority}</span></td>
+            <td><span class="badge ${status==='Open'?'badge-danger':status==='In Progress'?'badge-gold':'badge-info'}">${status}</span></td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `,
+};
+
+// ===== TEMPLE ADMINS =====
+views.admins = () => `
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:var(--space-5)">
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--primary-bg);color:var(--primary)"><i class="fa-solid fa-user-shield"></i></div><div class="kpi-value">45</div><div class="kpi-label">Total Admins</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-check-circle"></i></div><div class="kpi-value">38</div><div class="kpi-label">Active</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-clock"></i></div><div class="kpi-value">5</div><div class="kpi-label">Pending Verification</div></div>
+  </div>
+  <div class="flex items-center justify-between mb-4">
+    <div class="chip-row"><button class="chip active">All</button><button class="chip">Active</button><button class="chip">Pending</button><button class="chip">Suspended</button></div>
+    <button class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i> Invite Admin</button>
+  </div>
+  <div class="chart-card">
+    <table class="admin-table">
+      <thead><tr><th>Name</th><th>Temple</th><th>Email</th><th>Phone</th><th>Last Login</th><th>Status</th></tr></thead>
+      <tbody>
+        ${[
+          ['Rajesh Kumar','Kapaleeshwarar Temple','rajesh@email.com','+91 98765 43210','2 hours ago','Active'],
+          ['Sundar M','Meenakshi Amman Temple','sundar@email.com','+91 87654 32109','5 hours ago','Active'],
+          ['Vel Kumar','Palani Murugan Temple','vel@email.com','+91 76543 21098','1 day ago','Active'],
+          ['Ganesan R','Vinayagar Temple','ganesan@email.com','+91 65432 10987','3 days ago','Active'],
+          ['New Temple Admin','Sri Kasi Viswanathar','—','+91 54321 09876','Never','Pending'],
+          ['Murugan S','Srirangam Temple','—','+91 43210 98765','Never','Pending'],
+        ].map(([name,temple,email,phone,login,status]) => `
+          <tr>
+            <td class="td-bold">${name}</td><td>${temple}</td><td>${email}</td><td>${phone}</td>
+            <td style="color:var(--text-light)">${login}</td>
+            <td><span class="badge ${status==='Active'?'badge-success':status==='Pending'?'badge-gold':'badge-danger'}">${status}</span></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
+// ===== DEVOTEES =====
+views.users = () => `
+  <div class="kpi-grid" style="margin-bottom:var(--space-5)">
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-users"></i></div><div class="kpi-value">12,450</div><div class="kpi-label">Total Users</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-user-plus"></i></div><div class="kpi-value">340</div><div class="kpi-label">This Month New</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--primary-bg);color:var(--primary)"><i class="fa-solid fa-user-check"></i></div><div class="kpi-value">8,200</div><div class="kpi-label">Active (30d)</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-purple-bg);color:var(--sacred-purple)"><i class="fa-solid fa-plane-departure"></i></div><div class="kpi-value">580</div><div class="kpi-label">NRI Users</div></div>
+  </div>
+  <div class="chart-card">
+    <div class="flex items-center justify-between mb-3"><h3 style="margin:0">All Devotees</h3><button class="btn btn-sm btn-outline"><i class="fa-solid fa-download"></i> Export</button></div>
+    <table class="admin-table">
+      <thead><tr><th>Name</th><th>Location</th><th>Phone</th><th>Bookings</th><th>Donated</th><th>Joined</th><th>Status</th></tr></thead>
+      <tbody>
+        ${[
+          ['Ramesh Kumar','Chennai','+91 98765...','23','₹8.5K','Jan 2026','Active'],
+          ['Lakshmi Devi','Chennai','+91 87654...','18','₹12.5K','Jan 2026','Active'],
+          ['Karthik S','Madurai','+91 76543...','12','₹3.2K','Feb 2026','Active'],
+          ['Priya R','Coimbatore','+91 65432...','8','₹2.5K','Feb 2026','Active'],
+          ['Rajesh M (NRI)','Singapore','+65 9876...','5','₹25K','Jan 2026','Active'],
+          ['Suresh B','Thanjavur','+91 54321...','15','₹5K','Jan 2026','Inactive'],
+        ].map(([name,loc,phone,bookings,donated,joined,status]) => `
+          <tr><td class="td-bold">${name}</td><td>${loc}</td><td>${phone}</td><td>${bookings}</td><td class="td-bold">${donated}</td><td>${joined}</td>
+          <td><span class="badge ${status==='Active'?'badge-success':'badge-gold'}">${status}</span></td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
+// ===== PROVIDERS =====
+views.providers = () => `
+  <div class="kpi-grid" style="margin-bottom:var(--space-5)">
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--primary-bg);color:var(--primary)"><i class="fa-solid fa-person-praying"></i></div><div class="kpi-value">85</div><div class="kpi-label">Total Providers</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-red-bg);color:var(--sacred-red)"><i class="fa-solid fa-om"></i></div><div class="kpi-value">62</div><div class="kpi-label">Priests</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-purple-bg);color:var(--sacred-purple)"><i class="fa-solid fa-moon"></i></div><div class="kpi-value">23</div><div class="kpi-label">Astrologers</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-star"></i></div><div class="kpi-value">4.6</div><div class="kpi-label">Avg Rating</div></div>
+  </div>
+  <div class="flex items-center justify-between mb-4">
+    <div class="chip-row"><button class="chip active">All</button><button class="chip">Priests</button><button class="chip">Astrologers</button><button class="chip">Pending</button></div>
+  </div>
+  <div class="chart-card">
+    <table class="admin-table">
+      <thead><tr><th>Name</th><th>Type</th><th>Temple / Independent</th><th>Rating</th><th>Bookings</th><th>Monthly Earnings</th><th>Status</th></tr></thead>
+      <tbody>
+        ${[
+          ['Sri Venkatesh Sharma','Priest','Kapaleeshwarar Temple','4.9 (85)','85','₹72K','Verified'],
+          ['Jothidar Murugavel','Astrologer','Independent','4.8 (120)','120','₹45K','Verified'],
+          ['Sri Raghavan Iyyer','Priest','Kapaleeshwarar Temple','4.7 (62)','62','₹58K','Verified'],
+          ['Pandit Shanmugam','Astrologer','Independent','4.6 (85)','85','₹38K','Verified'],
+          ['Sri Ganesh Bhattar','Priest','Kanchi Kamakshi','4.8 (45)','45','₹42K','Verified'],
+          ['New Priest Application','Priest','Salem Temple','—','—','—','Pending'],
+        ].map(([name,type,temple,rating,bookings,earnings,status]) => `
+          <tr><td class="td-bold">${name}</td>
+          <td><span class="badge ${type==='Priest'?'badge-danger':'badge-primary'}">${type}</span></td>
+          <td>${temple}</td><td>${rating}</td><td>${bookings}</td><td class="td-bold">${earnings}</td>
+          <td><span class="badge ${status==='Verified'?'badge-success':'badge-gold'}">${status}</span></td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
+// ===== ALL BOOKINGS =====
+views.bookings = () => `
+  <div class="kpi-grid" style="margin-bottom:var(--space-5)">
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--primary-bg);color:var(--primary)"><i class="fa-solid fa-calendar-check"></i></div><div class="kpi-value">520</div><div class="kpi-label">Today</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-calendar-week"></i></div><div class="kpi-value">3,200</div><div class="kpi-label">This Week</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-indian-rupee-sign"></i></div><div class="kpi-value">₹18.5L</div><div class="kpi-label">Monthly GMV</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-red-bg);color:var(--sacred-red)"><i class="fa-solid fa-xmark"></i></div><div class="kpi-value">3.2%</div><div class="kpi-label">Cancellation Rate</div></div>
+  </div>
+  <div class="flex items-center justify-between mb-4">
+    <div class="chip-row"><button class="chip active">All</button><button class="chip">Confirmed</button><button class="chip">Completed</button><button class="chip">Cancelled</button></div>
+    <button class="btn btn-sm btn-outline"><i class="fa-solid fa-download"></i> Export</button>
+  </div>
+  <div class="chart-card">
+    <table class="admin-table">
+      <thead><tr><th>ID</th><th>Temple</th><th>Devotee</th><th>Service</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>
+        ${[
+          ['BK-045','Kapaleeshwarar','Ramesh Kumar','Archana','Mar 20','₹50','Confirmed'],
+          ['BK-044','Kapaleeshwarar','Lakshmi Devi','Abhishekam','Mar 20','₹500','Confirmed'],
+          ['BK-043','Meenakshi Amman','Karthik S','Homam','Mar 19','₹1,500','Completed'],
+          ['BK-042','Palani Murugan','Priya R','Special Archana','Mar 19','₹100','Completed'],
+          ['BK-041','Ranganathaswamy','Suresh B','Navagraha','Mar 18','₹300','Completed'],
+          ['BK-040','Kapaleeshwarar','Meera S','Homam','Mar 18','₹2,000','Cancelled'],
+        ].map(([id,temple,name,svc,date,amt,status]) => `
+          <tr><td class="td-bold">${id}</td><td>${temple}</td><td>${name}</td><td>${svc}</td><td>${date}</td><td class="td-bold">${amt}</td>
+          <td><span class="badge ${status==='Confirmed'?'badge-success':status==='Completed'?'badge-gold':'badge-danger'}">${status}</span></td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
+// ===== FINANCE & REVENUE =====
+views.finance = () => `
+  <div class="kpi-grid" style="margin-bottom:var(--space-5)">
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-chart-line"></i></div><div class="kpi-value">₹18.5L</div><div class="kpi-label">Monthly GMV</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-coins"></i></div><div class="kpi-value">₹1.85L</div><div class="kpi-label">Platform Commission</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-clock"></i></div><div class="kpi-value">₹45K</div><div class="kpi-label">Pending Payouts</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-red-bg);color:var(--sacred-red)"><i class="fa-solid fa-rotate-left"></i></div><div class="kpi-value">₹8K</div><div class="kpi-label">Refunds</div></div>
+  </div>
+  <div class="chart-card mb-4">
+    <div class="flex items-center justify-between mb-3"><h3 style="margin:0"><i class="fa-solid fa-building-columns" style="color:var(--sacred-blue)"></i> Revenue by Temple</h3><button class="btn btn-sm btn-primary"><i class="fa-solid fa-paper-plane"></i> Initiate Payout</button></div>
+    <table class="admin-table">
+      <thead><tr><th>Temple</th><th>Bookings Rev</th><th>Donations</th><th>Total GMV</th><th>Commission (10%)</th><th>Payout Status</th></tr></thead>
+      <tbody>
+        ${[
+          ['Meenakshi Amman','₹5.2L','₹3.3L','₹8.5L','₹85K','Paid'],
+          ['Palani Murugan','₹3.1L','₹2.0L','₹5.1L','₹51K','Paid'],
+          ['Kapaleeshwarar','₹2.0L','₹1.2L','₹3.2L','₹32K','Pending'],
+          ['Vinayagar Temple','₹1.2L','₹0.6L','₹1.8L','₹18K','Pending'],
+        ].map(([temple,bookings,donations,total,commission,status]) => `
+          <tr><td class="td-bold">${temple}</td><td>${bookings}</td><td>${donations}</td><td class="td-bold">${total}</td><td>${commission}</td>
+          <td><span class="badge ${status==='Paid'?'badge-success':'badge-gold'}">${status}</span></td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
+// ===== CONTENT MODERATION =====
+views.content = () => `
+  <div class="kpi-grid" style="margin-bottom:var(--space-5)">
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--accent-bg);color:var(--accent-dark)"><i class="fa-solid fa-clock"></i></div><div class="kpi-value">8</div><div class="kpi-label">Pending Reviews</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-red-bg);color:var(--sacred-red)"><i class="fa-solid fa-flag"></i></div><div class="kpi-value">3</div><div class="kpi-label">Flagged Posts</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-blue-bg);color:var(--sacred-blue)"><i class="fa-solid fa-newspaper"></i></div><div class="kpi-value">450</div><div class="kpi-label">Total Posts</div></div>
+    <div class="kpi-card"><div class="kpi-icon" style="background:var(--sacred-green-bg);color:var(--sacred-green)"><i class="fa-solid fa-check-circle"></i></div><div class="kpi-value">98%</div><div class="kpi-label">Approval Rate</div></div>
+  </div>
+  <div class="chart-card">
+    <h3><i class="fa-solid fa-flag" style="color:var(--sacred-red)"></i> Flagged / Pending Content</h3>
+    <table class="admin-table">
+      <thead><tr><th>Content</th><th>Author</th><th>Type</th><th>Reason</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${[
+          ['Inappropriate temple photo','User_892','Post','Inappropriate image','Mar 18'],
+          ['Spam comment on Meenakshi page','User_1204','Comment','Spam / advertising','Mar 18'],
+          ['Misleading priest review','Anon_45','Review','False information','Mar 17'],
+          ['New temple announcement','Kapaleeshwarar Admin','Post','Auto-review','Mar 19'],
+          ['Festival photo gallery','Palani Admin','Post','Auto-review','Mar 19'],
+          ['Community discussion post','Ramesh K','Post','First post review','Mar 19'],
+        ].map(([content,author,type,reason,date]) => `
+          <tr><td class="td-bold">${content}</td><td>${author}</td>
+          <td><span class="badge badge-primary">${type}</span></td>
+          <td>${reason}</td><td>${date}</td>
+          <td>
+            <button class="btn btn-sm btn-success"><i class="fa-solid fa-check"></i></button>
+            <button class="btn btn-sm btn-danger"><i class="fa-solid fa-xmark"></i></button>
+          </td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+`;
+
+// ===== NOTIFICATIONS =====
+views.notifications = () => `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5);margin-bottom:var(--space-5)">
+    <div class="chart-card">
+      <h3><i class="fa-solid fa-paper-plane" style="color:var(--primary)"></i> Send Push Notification</h3>
+      <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Title</label><input placeholder="Notification title..." style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+        <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Message</label><textarea placeholder="Notification message..." rows="3" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary);resize:vertical"></textarea></div>
+        <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Target Audience</label>
+          <select style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"><option>All Users (12,450)</option><option>Specific Temple</option><option>Devotees Only</option><option>Providers Only</option><option>NRI Users (580)</option></select></div>
+        <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Schedule</label>
+          <select style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"><option>Send Now</option><option>Schedule for Later</option></select></div>
+        <button class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Send Notification</button>
+      </div>
+    </div>
+    <div class="chart-card">
+      <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--sacred-blue)"></i> Sent History</h3>
+      <table class="admin-table">
+        <thead><tr><th>Title</th><th>Audience</th><th>Sent</th><th>Opened</th><th>Date</th></tr></thead>
+        <tbody>
+          ${[
+            ['Panguni Uthiram Alert','All Users','12,450','8,200','Mar 17'],
+            ['New Temple Added','Chennai Users','3,200','1,800','Mar 15'],
+            ['Special Offer: 20% off','All Users','12,100','5,400','Mar 12'],
+            ['Maintenance Notice','All Users','12,100','4,200','Mar 10'],
+            ['Festival Calendar Updated','All Users','11,800','6,100','Mar 5'],
+          ].map(([title,audience,sent,opened,date]) => `
+            <tr><td class="td-bold">${title}</td><td>${audience}</td><td>${sent}</td><td>${opened}</td><td>${date}</td></tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+`;
+
+// ===== REPORTS =====
+views.reports = () => `
+  <div class="flex items-center justify-between mb-5">
+    <div class="chip-row"><button class="chip active">This Month</button><button class="chip">Last Month</button><button class="chip">This Quarter</button><button class="chip">Custom</button></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)">
+    ${[
+      ['fa-chart-line','Revenue Report','Platform GMV, commission, payouts by temple','var(--primary)'],
+      ['fa-calendar-check','Booking Analytics','Service-wise breakdown, peak hours, trends','var(--sacred-blue)'],
+      ['fa-users','User Growth','New signups, retention, NRI vs local, DAU/MAU','var(--sacred-green)'],
+      ['fa-place-of-worship','Temple Performance','Rankings by bookings, revenue, ratings','var(--accent-dark)'],
+      ['fa-hand-holding-heart','Donation Summary','Total donations, 80G reports, recurring donors','var(--sacred-purple)'],
+      ['fa-person-praying','Provider Performance','Priests/astrologers by bookings, ratings, earnings','var(--sacred-red)'],
+    ].map(([icon,title,desc,color]) => `
+      <div class="chart-card" style="margin-bottom:0">
+        <div class="flex items-center gap-3 mb-3">
+          <div style="width:40px;height:40px;border-radius:var(--radius-md);background:${color}15;color:${color};display:flex;align-items:center;justify-content:center"><i class="fa-solid ${icon}"></i></div>
+          <div><h3 style="margin:0;font-size:var(--text-md)">${title}</h3><p style="font-size:var(--text-xs);color:var(--text-light);margin:0">${desc}</p></div>
+        </div>
+        <div style="height:100px;background:var(--bg-inset);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:var(--space-3)"><i class="fa-solid fa-chart-bar" style="font-size:1.8rem;color:var(--text-muted)"></i></div>
+        <div class="flex gap-2"><button class="btn btn-sm btn-outline flex-1"><i class="fa-solid fa-file-pdf"></i> PDF</button><button class="btn btn-sm btn-outline flex-1"><i class="fa-solid fa-file-csv"></i> CSV</button></div>
+      </div>
+    `).join('')}
+  </div>
+`;
+
+// ===== PLATFORM SETTINGS =====
+views.settings = () => `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5)">
+    <div>
+      <div class="chart-card mb-4">
+        <h3><i class="fa-solid fa-gear" style="color:var(--primary)"></i> General Settings</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Platform Name</label><input value="Soruban Temple" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Support Email</label><input value="support@sorubantemple.com" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Contact Phone</label><input value="+91 44 2345 6789" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fa-solid fa-percent" style="color:var(--accent-dark)"></i> Commission Settings</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Default Commission %</label><input type="number" value="10" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Payment Gateway</label><input value="Razorpay" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Razorpay Key</label><input value="rzp_live_xxxx****xxxx" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="chart-card mb-4">
+        <h3><i class="fa-solid fa-mobile-screen" style="color:var(--sacred-blue)"></i> App Configuration</h3>
+        ${[
+          ['Maintenance Mode', false],['Force Update', false],['Registration Open', true],['NRI Mode Enabled', true],
+        ].map(([name, on]) => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-3) 0;border-bottom:1px solid var(--divider)">
+            <span style="font-size:var(--text-sm)">${name}</span>
+            <button class="toggle ${on?'active':''}" onclick="this.classList.toggle('active')"></button>
+          </div>
+        `).join('')}
+        <div style="margin-top:var(--space-3)"><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Min App Version</label><input value="1.0.0" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fa-solid fa-file-lines" style="color:var(--sacred-green)"></i> Legal</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--space-3)">
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Terms of Service URL</label><input value="https://sorubantemple.com/terms" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+          <div><label style="font-size:var(--text-sm);font-weight:600;display:block;margin-bottom:4px">Privacy Policy URL</label><input value="https://sorubantemple.com/privacy" style="padding:var(--space-3);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;background:var(--bg-card);color:var(--text-primary)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:var(--space-5);text-align:right"><button class="btn btn-primary"><i class="fa-solid fa-check"></i> Save All Changes</button></div>
+`;
+
+function initSACharts() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const textColor = isDark ? '#BCAAA4' : '#8D6E63';
+  const gridColor = isDark ? '#3E2723' : '#EFEBE9';
+
+  const ctx = document.getElementById('growthChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+        datasets: [
+          { label: 'Temples', data: [80, 95, 105, 118, 130, 142], backgroundColor: '#E65100', borderRadius: 6 },
+          { label: 'Users (÷100)', data: [45, 58, 72, 88, 105, 124], backgroundColor: '#FFB300', borderRadius: 6 },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: textColor } } },
+        scales: {
+          x: { ticks: { color: textColor }, grid: { color: gridColor } },
+          y: { ticks: { color: textColor }, grid: { color: gridColor } }
+        }
+      }
+    });
+  }
+}
+
+init();
+  </script>
+</body>
+</html>
